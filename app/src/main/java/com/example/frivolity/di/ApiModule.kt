@@ -12,12 +12,11 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 class ApiModule {
+    @Provides
     @Singleton
-    fun provideUniversalisApi() {
-        val retrofit = Retrofit.Builder()
-            .baseUrl("https://universalis.app/api/v2/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(UniversalisApi::class.java)
-    }
+    fun provideUniversalisApi() = Retrofit.Builder()
+        .baseUrl("https://universalis.app/api/v2/")
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+        .create(UniversalisApi::class.java)
 }
