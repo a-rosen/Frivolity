@@ -5,7 +5,5 @@ import retrofit2.http.GET
 
 interface UniversalisApi {
     @GET("data-centers")
-    suspend fun getDataCenters() : ApiDataCenter
-
-
+    suspend fun getDataCenters() : List<ApiDataCenter>
 }
