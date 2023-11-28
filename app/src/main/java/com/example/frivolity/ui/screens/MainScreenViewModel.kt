@@ -36,7 +36,11 @@ class MainScreenViewModel @Inject constructor(
             _internalScreenStateFlow.update {
                 return@update MainScreenState(
                     it.dataCentersList,
-                    api.getRecentlyUpdated(),
+                    api.getRecentlyUpdated(
+                        world,
+                        dcName,
+                        5
+                    ),
                 )
             }
         }

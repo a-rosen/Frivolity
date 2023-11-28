@@ -22,7 +22,11 @@ fun MainScreen(
             content = { Text(text = "Get data centers") }
         )
         Button(
-            onClick = { viewModel.requestRecentlyUpdated("Faerie", "North-America") },
+            onClick = {
+                viewModel.requestRecentlyUpdated(
+                    "Faerie", "North-America"
+                )
+            },
             content = { Text(text = "Get recently updated") }
         )
         LazyColumn() {
@@ -42,7 +46,6 @@ fun MainScreen(
             }
         }
     }
-
 }
 
 @Preview
