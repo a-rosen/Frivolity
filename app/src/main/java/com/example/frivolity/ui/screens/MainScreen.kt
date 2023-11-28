@@ -10,6 +10,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.frivolity.network.MockApi
+import java.util.Date
 
 @Composable
 fun MainScreen(
@@ -41,8 +42,7 @@ fun MainScreen(
             items(mainScreenState.recentlyUpdatedList.items) { item ->
                 Text(text = item.worldName)
                 Text(text = item.itemID.toString())
-                Text(text = item.worldID.toString())
-                Text(text = item.lastUploadTime.toString())
+                Text(text = Date(item.lastUploadTime).toString())
             }
         }
     }
