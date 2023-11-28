@@ -23,7 +23,21 @@ class MainScreenViewModel @Inject constructor(
     fun requestDataCenters() {
         viewModelScope.launch(Dispatchers.IO) {
             _internalScreenStateFlow.update {
-                return@update MainScreenState(api.getDataCenters())
+                return@update MainScreenState(
+                    api.getDataCenters(),
+                    it.recentlyUpdatedList
+                )
+            }
+        }
+    }
+
+    fun requestRecentlyUpdated(world: String, dcName: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            _internalScreenStateFlow.update {
+                return@update MainScreenState(
+                    it.dataCentersList,
+                    api.getRecentlyUpdated(),
+                )
             }
         }
     }
