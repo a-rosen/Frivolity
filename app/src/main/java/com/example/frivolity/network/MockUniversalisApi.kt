@@ -4,7 +4,7 @@ import com.example.frivolity.network.models.ApiDataCenter
 import com.example.frivolity.network.models.ApiItemList
 import retrofit2.http.Query
 
-class MockApi: UniversalisApi {
+class MockUniversalisApi: UniversalisApi {
     override suspend fun getDataCenters(): List<ApiDataCenter> {
         return listOf()
     }

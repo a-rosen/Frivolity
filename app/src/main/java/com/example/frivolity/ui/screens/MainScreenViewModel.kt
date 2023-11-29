@@ -3,6 +3,7 @@ package com.example.frivolity.ui.screens
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.frivolity.network.UniversalisApi
+import com.example.frivolity.repository.FrivolityRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,7 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainScreenViewModel @Inject constructor(
-    private val api: UniversalisApi,
+    private val repository: FrivolityRepository
 ) : ViewModel() {
     private val _internalScreenStateFlow =
         MutableStateFlow<MainScreenState>(value = MainScreenState.EMPTY)
@@ -24,25 +25,50 @@ class MainScreenViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             _internalScreenStateFlow.update {
                 return@update MainScreenState(
-                    api.getDataCenters(),
-                    it.recentlyUpdatedList
+                    repository.getDataCenters(),
+                    it.worldsList,
+                    it.recentlyUpdatedList,
+                    it.selectedDC,
+                    it.selectedWorld
                 )
             }
         }
     }
 
-    fun requestRecentlyUpdated(world: String, dcName: String) {
+    fun requestWorlds() {
         viewModelScope.launch(Dispatchers.IO) {
             _internalScreenStateFlow.update {
                 return@update MainScreenState(
                     it.dataCentersList,
-                    api.getRecentlyUpdated(
-                        world,
-                        dcName,
-                        5
-                    ),
+                    repository.getWorlds(),
+                    it.recentlyUpdatedList,
+                    it.selectedDC,
+                    it.selectedWorld,
                 )
             }
         }
+    }
+
+//
+//    fun requestRecentlyUpdated(world: String, dcName: String) {
+//        viewModelScope.launch(Dispatchers.IO) {
+//            _internalScreenStateFlow.update {
+//                return@update MainScreenState(
+//                    it.dataCentersList,
+//                    it.worldsList,
+//                    api.getRecentlyUpdated(
+//                        world,
+//                        dcName,
+//                        5
+//                    ),
+//                    it.selectedDC,
+//                    it.selectedWorld
+//                )
+//            }
+//        }
+//    }
+
+    fun toggleDropdown() {
+
     }
 }

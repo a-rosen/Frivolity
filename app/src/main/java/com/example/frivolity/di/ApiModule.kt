@@ -1,6 +1,7 @@
 package com.example.frivolity.di
 
 import com.example.frivolity.network.UniversalisApi
+import com.example.frivolity.network.XIVApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,4 +20,12 @@ class ApiModule {
         .addConverterFactory(GsonConverterFactory.create())
         .build()
         .create(UniversalisApi::class.java)
+
+    @Provides
+    @Singleton
+    fun provideXIVApi() = Retrofit.Builder()
+        .baseUrl("https://xivapi.com/")
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+        .create(XIVApi::class.java)
 }

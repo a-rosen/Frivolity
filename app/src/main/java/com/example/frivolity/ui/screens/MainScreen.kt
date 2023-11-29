@@ -9,7 +9,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.frivolity.network.MockApi
+import com.example.frivolity.network.MockUniversalisApi
+import com.example.frivolity.network.MockXIVApi
+import com.example.frivolity.repository.NetworkRepository
 import java.util.Date
 
 @Composable
@@ -19,16 +21,10 @@ fun MainScreen(
     val mainScreenState by viewModel.screenStateFlow.collectAsState()
     Column {
         Button(
-            onClick = { viewModel.requestDataCenters() },
-            content = { Text(text = "Get data centers") }
-        )
-        Button(
             onClick = {
-                viewModel.requestRecentlyUpdated(
-                    "Faerie", "North-America"
-                )
+                viewModel.requestWorlds()
             },
-            content = { Text(text = "Get recently updated") }
+            content = { Text(text = "Get worlds") }
         )
         LazyColumn() {
             items(mainScreenState.dataCentersList) { item ->
@@ -38,22 +34,38 @@ fun MainScreen(
             }
         }
 
+        val names = mainScreenState.worldsList.results.map { item ->
+            item.name
+        }
+
         LazyColumn() {
-            items(mainScreenState.recentlyUpdatedList.items) { item ->
-                Text(text = item.worldName)
-                Text(text = item.itemID.toString())
-                Text(text = Date(item.lastUploadTime).toString())
+            items(names) { item ->
+                if (item != null) {
+                    Text(text = item)
+                } else Text(text = "null")
             }
         }
     }
+
+    LazyColumn() {
+        items(mainScreenState.recentlyUpdatedList.items) { item ->
+            Text(text = item.worldName)
+            Text(text = item.itemID.toString())
+            Text(text = Date(item.lastUploadTime).toString())
+        }
+    }
 }
+
 
 @Preview
 @Composable
 fun MainScreenPreview() {
     MainScreen(
         viewModel = MainScreenViewModel(
-            api = MockApi()
+            repository = NetworkRepository(
+                MockUniversalisApi(),
+                MockXIVApi()
+            )
         ),
     )
 }
