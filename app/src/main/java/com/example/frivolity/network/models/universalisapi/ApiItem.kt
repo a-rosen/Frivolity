@@ -1,4 +1,4 @@
-package com.example.frivolity.network.models
+package com.example.frivolity.network.models.universalisapi
 
 data class ApiItem(
     val itemID: Int,

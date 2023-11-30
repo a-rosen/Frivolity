@@ -2,7 +2,6 @@ package com.example.frivolity.ui.screens
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.frivolity.network.UniversalisApi
 import com.example.frivolity.repository.FrivolityRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -21,7 +20,7 @@ class MainScreenViewModel @Inject constructor(
         MutableStateFlow<MainScreenState>(value = MainScreenState.EMPTY)
     val screenStateFlow: StateFlow<MainScreenState> = _internalScreenStateFlow.asStateFlow()
 
-    fun requestDataCenters() {
+    init {
         viewModelScope.launch(Dispatchers.IO) {
             _internalScreenStateFlow.update {
                 return@update MainScreenState(
@@ -33,6 +32,7 @@ class MainScreenViewModel @Inject constructor(
                 )
             }
         }
+
     }
 
     fun requestWorlds() {

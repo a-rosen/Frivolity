@@ -1,7 +1,8 @@
 package com.example.frivolity.network
 
-import com.example.frivolity.network.models.ApiDataCenter
-import com.example.frivolity.network.models.ApiItemList
+import com.example.frivolity.network.models.universalisapi.ApiDataCenter
+import com.example.frivolity.network.models.universalisapi.ApiItemList
+import com.example.frivolity.network.models.universalisapi.ApiWorld
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -15,4 +16,7 @@ interface UniversalisApi {
         @Query("dcName") dcName: String,
         @Query("entries") entries: Int
     ): ApiItemList
+
+    @GET("worlds")
+    suspend fun getWorlds(): List<ApiWorld>
 }

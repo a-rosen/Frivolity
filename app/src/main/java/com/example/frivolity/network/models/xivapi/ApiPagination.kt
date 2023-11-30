@@ -1,4 +1,4 @@
-package com.example.frivolity.network.models
+package com.example.frivolity.network.models.xivapi
 
 data class ApiPagination (
     val Page: Int,

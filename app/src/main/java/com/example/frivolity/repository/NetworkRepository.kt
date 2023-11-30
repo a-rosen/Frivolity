@@ -2,8 +2,8 @@ package com.example.frivolity.repository
 
 import com.example.frivolity.network.UniversalisApi
 import com.example.frivolity.network.XIVApi
-import com.example.frivolity.network.models.ApiDataCenter
-import com.example.frivolity.network.models.ApiWorldList
+import com.example.frivolity.network.models.universalisapi.ApiDataCenter
+import com.example.frivolity.network.models.universalisapi.ApiWorld
 import javax.inject.Inject
 
 class NetworkRepository @Inject constructor(
@@ -15,7 +15,7 @@ class NetworkRepository @Inject constructor(
         return universalisApi.getDataCenters()
     }
 
-    override suspend fun getWorlds(): ApiWorldList {
-        return xivApi.getWorlds()
+    override suspend fun getWorlds(): List<ApiWorld> {
+        return universalisApi.getWorlds()
     }
 }

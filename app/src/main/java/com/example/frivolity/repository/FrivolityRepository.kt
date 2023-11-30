@@ -1,10 +1,10 @@
 package com.example.frivolity.repository
 
-import com.example.frivolity.network.models.ApiDataCenter
-import com.example.frivolity.network.models.ApiWorldList
+import com.example.frivolity.network.models.universalisapi.ApiDataCenter
+import com.example.frivolity.network.models.universalisapi.ApiWorld
 
 interface FrivolityRepository {
 
     suspend fun getDataCenters(): List<ApiDataCenter>
-    suspend fun getWorlds(): ApiWorldList
+    suspend fun getWorlds(): List<ApiWorld>
 }
