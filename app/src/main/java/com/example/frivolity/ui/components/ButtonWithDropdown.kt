@@ -1,25 +1,30 @@
 package com.example.frivolity.ui.components
 
-import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+
 
 @Composable
 fun ButtonWithDropdown(
-    toggleDropdown: () -> Unit,
+    displayText: String,
     menuItems: List<String>
 ) {
-    Button(
-        onClick = { toggleDropdown }
-    ) {
+    var shouldShowDropdown by remember { mutableStateOf(false) }
 
-    }
+    TextButton(
+        onClick = { shouldShowDropdown = true },
+        content = { Text(text = displayText) }
+    )
     DropdownMenu(
-        expanded = true,
-        onDismissRequest = { toggleDropdown }
+        expanded = shouldShowDropdown,
+        onDismissRequest = { shouldShowDropdown = false }
     ) {
         menuItems.forEach {
             DropdownMenuItem(
@@ -31,15 +36,15 @@ fun ButtonWithDropdown(
 }
 
 
-@Preview
-@Composable
-fun ButtonWithDropdownPreview() {
-    ButtonWithDropdown(
-        toggleDropdown = {},
-        menuItems = listOf(
-            "One",
-            "Two",
-            "Three"
-        )
-    )
-}
+//@Preview
+//@Composable
+//fun ButtonWithDropdownPreview() {
+//    ButtonWithDropdown(
+//        toggleDropdown = {},
+//        menuItems = listOf(
+//            "One",
+//            "Two",
+//            "Three"
+//        )
+//    )
+//}

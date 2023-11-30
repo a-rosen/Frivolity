@@ -22,8 +22,8 @@ fun MainScreen(
 
     Column {
         ButtonWithDropdown(
-            toggleDropdown = {},
-            menuItems = dataCenters
+            menuItems = dataCenters,
+            displayText = "Select Data Center"
         )
     }
 }
