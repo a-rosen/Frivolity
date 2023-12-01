@@ -1,14 +1,11 @@
 package com.example.frivolity.ui.screens
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.tooling.preview.Preview
-import com.example.frivolity.network.MockUniversalisApi
-import com.example.frivolity.network.MockXIVApi
-import com.example.frivolity.repository.NetworkRepository
 import com.example.frivolity.ui.components.ButtonWithDropdown
 
 @Composable
@@ -41,18 +38,29 @@ fun MainScreen(
         )
 
         Text(text = mainScreenState.selectedWorld?.name ?: "")
+
+        Button(
+            onClick = {
+                viewModel.saveSelectedServer(
+                    mainScreenState.selectedDC,
+                    mainScreenState.selectedWorld
+                )
+            },
+            content = { Text(text = "Save current selection") }
+        )
     }
 }
 
-@Preview
-@Composable
-fun MainScreenPreview() {
-    MainScreen(
-        viewModel = MainScreenViewModel(
-            repository = NetworkRepository(
-                MockUniversalisApi(),
-                MockXIVApi()
-            )
-        ),
-    )
-}
+//@Preview
+//@Composable
+//fun MainScreenPreview() {
+//    MainScreen(
+//        viewModel = MainScreenViewModel(
+//            repository = NetworkRepository(
+//                MockUniversalisApi(),
+//                MockXIVApi()
+//            ),
+//            database = DatabaseRepository()
+//        ),
+//    )
+//}

@@ -1,7 +1,10 @@
 package com.example.frivolity.ui.screens
 
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.frivolity.network.models.universalisapi.ApiDataCenter
 import com.example.frivolity.network.models.universalisapi.ApiWorld
 import com.example.frivolity.repository.FrivolityRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -15,7 +18,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainScreenViewModel @Inject constructor(
-    private val repository: FrivolityRepository
+    private val repository: FrivolityRepository,
+    private val dataStore: DataStore<Preferences>,
 ) : ViewModel() {
     private val _internalScreenStateFlow =
         MutableStateFlow<MainScreenState>(value = MainScreenState.EMPTY)
@@ -33,7 +37,6 @@ class MainScreenViewModel @Inject constructor(
                 )
             }
         }
-
     }
 
     fun selectDataCenter(dcName: String) {
@@ -49,10 +52,9 @@ class MainScreenViewModel @Inject constructor(
                 it.worldsList,
                 it.recentlyUpdatedList,
                 dcToSelect,
-                ApiWorld(id = 0, name = "")
+                null
             )
         }
-
     }
 
     fun selectWorld(worldName: String) {
@@ -70,5 +72,8 @@ class MainScreenViewModel @Inject constructor(
                 worldToSelect
             )
         }
+    }
+
+    fun saveSelectedServer(selectedDC: ApiDataCenter?, selectedWorld: ApiWorld?) {
     }
 }

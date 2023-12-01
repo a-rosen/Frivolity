@@ -16,8 +16,8 @@ data class MainScreenState(
             dataCentersList = listOf(),
             worldsList = listOf(),
             recentlyUpdatedList = ApiItemList(listOf()),
-            selectedDC = ApiDataCenter("", "", listOf()),
-            selectedWorld = ApiWorld(0, "")
+            selectedDC = null,
+            selectedWorld = null
         )
     }
 }
