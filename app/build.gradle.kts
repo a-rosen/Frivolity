@@ -62,8 +62,19 @@ dependencies {
     // Navigation
     val nav_version = "2.7.5"
 
+
     implementation("androidx.navigation:navigation-compose:$nav_version")
     implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
+
+    // Database
+    val room_version = "2.6.1"
+
+    implementation("androidx.room:room-runtime:$room_version")
+    annotationProcessor("androidx.room:room-compiler:$room_version")
+    kapt("androidx.room:room-compiler:$room_version")
+    implementation("androidx.room:room-ktx:$room_version")
+
+
 
     // Compose
     implementation("androidx.activity:activity-compose:1.8.1")

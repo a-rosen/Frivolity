@@ -2,6 +2,7 @@ package com.example.frivolity.ui.screens
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.frivolity.network.models.universalisapi.ApiWorld
 import com.example.frivolity.repository.FrivolityRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -25,7 +26,7 @@ class MainScreenViewModel @Inject constructor(
             _internalScreenStateFlow.update {
                 return@update MainScreenState(
                     repository.getDataCenters(),
-                    it.worldsList,
+                    repository.getWorlds(),
                     it.recentlyUpdatedList,
                     it.selectedDC,
                     it.selectedWorld
@@ -35,40 +36,39 @@ class MainScreenViewModel @Inject constructor(
 
     }
 
-    fun requestWorlds() {
-        viewModelScope.launch(Dispatchers.IO) {
-            _internalScreenStateFlow.update {
-                return@update MainScreenState(
-                    it.dataCentersList,
-                    repository.getWorlds(),
-                    it.recentlyUpdatedList,
-                    it.selectedDC,
-                    it.selectedWorld,
-                )
+    fun selectDataCenter(dcName: String) {
+        val dcToSelect = _internalScreenStateFlow
+            .value
+            .dataCentersList.firstOrNull() {
+                it.name == dcName
             }
+
+        _internalScreenStateFlow.update {
+            return@update MainScreenState(
+                it.dataCentersList,
+                it.worldsList,
+                it.recentlyUpdatedList,
+                dcToSelect,
+                ApiWorld(id = 0, name = "")
+            )
         }
+
     }
 
-//
-//    fun requestRecentlyUpdated(world: String, dcName: String) {
-//        viewModelScope.launch(Dispatchers.IO) {
-//            _internalScreenStateFlow.update {
-//                return@update MainScreenState(
-//                    it.dataCentersList,
-//                    it.worldsList,
-//                    api.getRecentlyUpdated(
-//                        world,
-//                        dcName,
-//                        5
-//                    ),
-//                    it.selectedDC,
-//                    it.selectedWorld
-//                )
-//            }
-//        }
-//    }
-
-    fun toggleDropdown() {
-
+    fun selectWorld(worldName: String) {
+        val worldToSelect = _internalScreenStateFlow
+            .value
+            .worldsList.firstOrNull() {
+                it.name == worldName
+            }
+        _internalScreenStateFlow.update {
+            return@update MainScreenState(
+                it.dataCentersList,
+                it.worldsList,
+                it.recentlyUpdatedList,
+                it.selectedDC,
+                worldToSelect
+            )
+        }
     }
 }

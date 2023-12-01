@@ -9,12 +9,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.tooling.preview.Preview
 
 
 @Composable
 fun ButtonWithDropdown(
     displayText: String,
-    menuItems: List<String>
+    menuItems: List<String>,
+    onItemClicked: (String) -> Unit,
 ) {
     var shouldShowDropdown by remember { mutableStateOf(false) }
 
@@ -29,22 +31,23 @@ fun ButtonWithDropdown(
         menuItems.forEach {
             DropdownMenuItem(
                 text = { Text(text = it) },
-                onClick = { TODO() }
+                onClick = { onItemClicked(it) }
             )
         }
     }
 }
 
 
-//@Preview
-//@Composable
-//fun ButtonWithDropdownPreview() {
-//    ButtonWithDropdown(
-//        toggleDropdown = {},
-//        menuItems = listOf(
-//            "One",
-//            "Two",
-//            "Three"
-//        )
-//    )
-//}
+@Preview
+@Composable
+fun ButtonWithDropdownPreview() {
+    ButtonWithDropdown(
+        displayText = "Preview",
+        onItemClicked = {},
+        menuItems = listOf(
+            "One",
+            "Two",
+            "Three"
+        )
+    )
+}

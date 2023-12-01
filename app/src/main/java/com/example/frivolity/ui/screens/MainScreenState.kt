@@ -8,16 +8,16 @@ data class MainScreenState(
     val dataCentersList: List<ApiDataCenter>,
     val worldsList: List<ApiWorld>,
     val recentlyUpdatedList: ApiItemList,
-    val selectedDC: String,
-    val selectedWorld: String
+    val selectedDC: ApiDataCenter?,
+    val selectedWorld: ApiWorld?,
 ) {
     companion object {
         val EMPTY = MainScreenState(
             dataCentersList = listOf(),
             worldsList = listOf(),
             recentlyUpdatedList = ApiItemList(listOf()),
-            selectedDC = "",
-            selectedWorld = ""
+            selectedDC = ApiDataCenter("", "", listOf()),
+            selectedWorld = ApiWorld(0, "")
         )
     }
 }
