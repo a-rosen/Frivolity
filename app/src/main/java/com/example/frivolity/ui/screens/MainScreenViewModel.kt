@@ -1,11 +1,8 @@
 package com.example.frivolity.ui.screens
 
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.frivolity.network.models.universalisapi.ApiDataCenter
-import com.example.frivolity.network.models.universalisapi.ApiWorld
+import com.example.frivolity.repository.DataStoreRepository
 import com.example.frivolity.repository.FrivolityRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -18,8 +15,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainScreenViewModel @Inject constructor(
-    private val repository: FrivolityRepository,
-    private val dataStore: DataStore<Preferences>,
+    private val networkRepository: FrivolityRepository,
+    private val dataStore: DataStoreRepository,
 ) : ViewModel() {
     private val _internalScreenStateFlow =
         MutableStateFlow<MainScreenState>(value = MainScreenState.EMPTY)
@@ -29,22 +26,26 @@ class MainScreenViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             _internalScreenStateFlow.update {
                 return@update MainScreenState(
-                    repository.getDataCenters(),
-                    repository.getWorlds(),
+                    networkRepository.getDataCenters(),
+                    networkRepository.getWorlds(),
                     it.recentlyUpdatedList,
                     it.selectedDC,
                     it.selectedWorld
                 )
+
             }
+            getSelectedServer()
+
         }
     }
 
     fun selectDataCenter(dcName: String) {
         val dcToSelect = _internalScreenStateFlow
             .value
-            .dataCentersList.firstOrNull() {
+            .dataCentersList.firstOrNull {
                 it.name == dcName
             }
+
 
         _internalScreenStateFlow.update {
             return@update MainScreenState(
@@ -60,9 +61,10 @@ class MainScreenViewModel @Inject constructor(
     fun selectWorld(worldName: String) {
         val worldToSelect = _internalScreenStateFlow
             .value
-            .worldsList.firstOrNull() {
+            .worldsList.firstOrNull {
                 it.name == worldName
             }
+
         _internalScreenStateFlow.update {
             return@update MainScreenState(
                 it.dataCentersList,
@@ -74,6 +76,39 @@ class MainScreenViewModel @Inject constructor(
         }
     }
 
-    fun saveSelectedServer(selectedDC: ApiDataCenter?, selectedWorld: ApiWorld?) {
+    fun saveSelectedServer(selectedDcName: String, selectedWorldName: String) {
+        dataStore.saveSelectedServer(selectedDcName, selectedWorldName)
+    }
+
+    private fun getSelectedServer() {
+        viewModelScope.launch {
+            dataStore.storedDcFlow.collect { name ->
+                val dcFromStored = _internalScreenStateFlow.value.dataCentersList
+                    .firstOrNull { it.name == name }
+                _internalScreenStateFlow.update {
+                    return@update MainScreenState(
+                        it.dataCentersList,
+                        it.worldsList,
+                        it.recentlyUpdatedList,
+                        dcFromStored,
+                        it.selectedWorld
+                    )
+                }
+            }
+
+            dataStore.storedWorldFlow.collect { name ->
+                val worldFromStored = _internalScreenStateFlow.value.worldsList
+                    .firstOrNull { it.name == name }
+                _internalScreenStateFlow.update {
+                    return@update MainScreenState(
+                        it.dataCentersList,
+                        it.worldsList,
+                        it.recentlyUpdatedList,
+                        it.selectedDC,
+                        worldFromStored
+                    )
+                }
+            }
+        }
     }
 }

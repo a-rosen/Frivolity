@@ -42,8 +42,8 @@ fun MainScreen(
         Button(
             onClick = {
                 viewModel.saveSelectedServer(
-                    mainScreenState.selectedDC,
-                    mainScreenState.selectedWorld
+                    mainScreenState.selectedDC?.name ?: "",
+                    mainScreenState.selectedWorld?.name ?: ""
                 )
             },
             content = { Text(text = "Save current selection") }

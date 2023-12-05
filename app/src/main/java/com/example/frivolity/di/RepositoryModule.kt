@@ -1,5 +1,6 @@
 package com.example.frivolity.di
 
+import com.example.frivolity.repository.DataStoreRepository
 import com.example.frivolity.repository.FrivolityRepository
 import com.example.frivolity.repository.NetworkRepository
 import dagger.Binds
@@ -11,5 +12,7 @@ import dagger.hilt.components.SingletonComponent
 @InstallIn(SingletonComponent::class)
 abstract class RepositoryModule {
     @Binds
-    abstract fun provideFrivolityRepository(networkRepository: NetworkRepository): FrivolityRepository
+    abstract fun provideFrivolityRepository(
+        networkRepository: NetworkRepository
+    ): FrivolityRepository
 }
