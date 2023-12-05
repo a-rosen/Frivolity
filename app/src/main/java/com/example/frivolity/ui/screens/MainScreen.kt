@@ -13,7 +13,6 @@ fun MainScreen(
     viewModel: MainScreenViewModel,
 ) {
     val mainScreenState by viewModel.screenStateFlow.collectAsState()
-
     val dataCenters = mainScreenState.dataCentersList.filter { it.worlds[0] < 1000 }
     val dataCentersNames = dataCenters.map { it.name }
     val selectedDcWorlds = mainScreenState.worldsList.filter {
