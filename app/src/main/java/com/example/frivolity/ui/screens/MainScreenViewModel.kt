@@ -19,7 +19,7 @@ class MainScreenViewModel @Inject constructor(
     private val dataStore: DataStoreRepository,
 ) : ViewModel() {
     private val _internalScreenStateFlow =
-        MutableStateFlow<MainScreenState>(value = MainScreenState.EMPTY)
+        MutableStateFlow(value = MainScreenState.EMPTY)
     val screenStateFlow: StateFlow<MainScreenState> = _internalScreenStateFlow.asStateFlow()
 
     init {
@@ -32,10 +32,9 @@ class MainScreenViewModel @Inject constructor(
                     it.selectedDC,
                     it.selectedWorld
                 )
-
             }
-            getSelectedServer()
-
+            getSelectedDc()
+            getSelectedWorld()
         }
     }
 
@@ -80,27 +79,33 @@ class MainScreenViewModel @Inject constructor(
         dataStore.saveSelectedServer(selectedDcName, selectedWorldName)
     }
 
-    private fun getSelectedServer() {
+    private fun getSelectedDc() {
         viewModelScope.launch {
             dataStore.storedDcFlow.collect { name ->
                 val dcFromStored = _internalScreenStateFlow.value.dataCentersList
                     .firstOrNull { it.name == name }
+
                 _internalScreenStateFlow.update {
-                    return@update MainScreenState(
+                    MainScreenState(
                         it.dataCentersList,
                         it.worldsList,
                         it.recentlyUpdatedList,
                         dcFromStored,
-                        it.selectedWorld
+                        it.selectedWorld,
                     )
                 }
             }
+        }
+    }
 
+    private fun getSelectedWorld() {
+        viewModelScope.launch(Dispatchers.IO) {
             dataStore.storedWorldFlow.collect { name ->
                 val worldFromStored = _internalScreenStateFlow.value.worldsList
                     .firstOrNull { it.name == name }
+
                 _internalScreenStateFlow.update {
-                    return@update MainScreenState(
+                    MainScreenState(
                         it.dataCentersList,
                         it.worldsList,
                         it.recentlyUpdatedList,
@@ -112,3 +117,4 @@ class MainScreenViewModel @Inject constructor(
         }
     }
 }
+

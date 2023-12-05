@@ -15,8 +15,8 @@ class DataStoreRepository @Inject constructor(
     private val dataStore: DataStore<Preferences>,
     private val repositoryScope: CoroutineScope
 ) {
-    val storedDcName = stringPreferencesKey("dcName")
-    val storedWorldName = stringPreferencesKey("worldName")
+    private val storedDcName = stringPreferencesKey("dcName")
+    private val storedWorldName = stringPreferencesKey("worldName")
 
     val storedDcFlow: Flow<String> = dataStore.data
         .map { data ->
