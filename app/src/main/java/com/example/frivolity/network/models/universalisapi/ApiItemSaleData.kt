@@ -2,7 +2,7 @@ package com.example.frivolity.network.models.universalisapi
 
 data class ApiItemSaleData(
     val hq: Boolean,
-    val pricePerUnit: Long,
+    val pricePerUnit: Int,
     val quantity: Int,
     val timestamp: Long,
     val onMannequin: Boolean,
