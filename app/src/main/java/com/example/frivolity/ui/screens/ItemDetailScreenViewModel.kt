@@ -3,7 +3,6 @@ package com.example.frivolity.ui.screens
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.frivolity.network.models.universalisapi.ApiItemDetail
 import com.example.frivolity.repository.FrivolityRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -25,9 +24,10 @@ class ItemDetailScreenViewModel @Inject constructor(
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
+            val item = repository.getItemDetails()
             _internalScreenStateFlow.update {
                 ItemDetailScreenState(
-                    item = repository.getItemDetails(itemId)
+                   item = item
                 )
             }
         }
@@ -37,7 +37,7 @@ class ItemDetailScreenViewModel @Inject constructor(
         MutableStateFlow(value = ItemDetailScreenState.EMPTY)
     val screenStateFlow: StateFlow<ItemDetailScreenState> = _internalScreenStateFlow.asStateFlow()
 
-    fun getItem(): ApiItemDetail? {
-        return _internalScreenStateFlow.value.item
-    }
+//    fun getItem(): ApiItemDetail {
+//        return _internalScreenStateFlow.value.item
+//    }
 }

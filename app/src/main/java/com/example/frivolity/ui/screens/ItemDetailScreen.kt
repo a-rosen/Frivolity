@@ -22,13 +22,15 @@ object DetailsDestination : NavigationDestination {
 fun ItemDetailScreen(
     viewModel: ItemDetailScreenViewModel,
 ) {
-    val itemDetailScreenState by viewModel.screenStateFlow.collectAsState()
-    val item = viewModel.getItem()
+    val itemDetailScreenState by viewModel.screenStateFlow.collectAsState(
+        initial = ItemDetailScreenState.EMPTY
+    )
+    val item = itemDetailScreenState.item
 
     Column {
-        Text(text = "Item ID: ${item?.itemID}")
-        Text(text = "World Name: ${item?.worldName}")
-        Text(text = "Listings: ${item?.listings}")
+        Text(text = "Item ID: ${item.itemID}")
+        Text(text = "World Name: ${item.worldName}")
+        Text(text = "Listings: ${item.listings}")
 
     }
 

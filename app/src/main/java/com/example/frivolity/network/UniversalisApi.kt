@@ -22,5 +22,5 @@ interface UniversalisApi {
     suspend fun getWorlds(): List<ApiWorld>
 
     @GET("Faerie/39940")
-    suspend fun getItemDetails(itemID: Int): ApiItemDetail?
+    suspend fun getItemDetails(): ApiItemDetail
 }
