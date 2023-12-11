@@ -20,7 +20,7 @@ class NetworkRepository @Inject constructor(
         return universalisApi.getWorlds()
     }
 
-    override suspend fun getItemDetails(): ApiItemDetail {
-        return universalisApi.getItemDetails()
+    override suspend fun getItemDetails(world: String, id: Int): ApiItemDetail {
+        return universalisApi.getItemDetails(world, id)
     }
 }

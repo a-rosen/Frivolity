@@ -4,6 +4,7 @@ import com.example.frivolity.network.models.universalisapi.ApiDataCenter
 import com.example.frivolity.network.models.universalisapi.ApiItemDetail
 import com.example.frivolity.network.models.universalisapi.ApiItemList
 import com.example.frivolity.network.models.universalisapi.ApiWorld
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 class MockUniversalisApi: UniversalisApi {
@@ -23,7 +24,10 @@ class MockUniversalisApi: UniversalisApi {
         return listOf()
     }
 
-    override suspend fun getItemDetails(): ApiItemDetail {
+    override suspend fun getItemDetails(
+        @Path(value = "world") world: String,
+        @Path(value = "id") id: Int
+    ): ApiItemDetail {
         return ApiItemDetail(
             itemID = 0,
             worldID = 0,

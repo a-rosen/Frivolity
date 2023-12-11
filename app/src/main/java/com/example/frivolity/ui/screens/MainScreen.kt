@@ -11,7 +11,7 @@ import com.example.frivolity.ui.components.ButtonWithDropdown
 @Composable
 fun MainScreen(
     viewModel: MainScreenViewModel,
-    navigateToDetailScreen: (Int) -> Unit,
+    navigateToDetailScreen: (String, Int) -> Unit,
 ) {
     val mainScreenState by viewModel.screenStateFlow.collectAsState()
     val dataCenters = mainScreenState.dataCentersList.filter { it.worlds[0] < 1000 }
@@ -50,7 +50,14 @@ fun MainScreen(
         )
 
         Button(
-            onClick = { navigateToDetailScreen(39940) },
+            onClick = {
+                if (mainScreenState.selectedWorld != null) {
+                    navigateToDetailScreen(
+                        mainScreenState.selectedWorld!!.name,
+                        23098
+                    )
+                }
+            },
             content = { Text("Item Details") }
         )
     }

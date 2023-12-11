@@ -5,6 +5,7 @@ import com.example.frivolity.network.models.universalisapi.ApiItemDetail
 import com.example.frivolity.network.models.universalisapi.ApiItemList
 import com.example.frivolity.network.models.universalisapi.ApiWorld
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface UniversalisApi {
@@ -21,6 +22,9 @@ interface UniversalisApi {
     @GET("worlds")
     suspend fun getWorlds(): List<ApiWorld>
 
-    @GET("Faerie/39940")
-    suspend fun getItemDetails(): ApiItemDetail
+    @GET("{world}/{id}")
+    suspend fun getItemDetails(
+        @Path("world") world: String,
+        @Path("id") id: Int
+    ): ApiItemDetail
 }

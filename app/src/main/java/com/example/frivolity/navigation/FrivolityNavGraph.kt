@@ -24,9 +24,9 @@ fun FrivolityNavGraph(
         composable("MainScreen") {
             MainScreen(
                 viewModel = hiltViewModel(),
-                navigateToDetailScreen = {
+                navigateToDetailScreen = { worldname, id ->
                     navController.navigate(
-                        "${DetailsDestination.route}/$it"
+                        "${DetailsDestination.route}/$worldname/$id"
                     )
                 }
             )

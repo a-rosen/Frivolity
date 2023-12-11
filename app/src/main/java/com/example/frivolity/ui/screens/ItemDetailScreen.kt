@@ -1,6 +1,7 @@
 package com.example.frivolity.ui.screens
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -14,8 +15,9 @@ import com.example.frivolity.repository.NetworkRepository
 
 object DetailsDestination : NavigationDestination {
     override val route = "ItemDetailScreen"
+    const val worldNameArg = "worldName"
     const val itemIdArg = "itemId"
-    val routeWithArgs = "$route/{$itemIdArg}"
+    val routeWithArgs = "$route/{$worldNameArg}/{$itemIdArg}"
 }
 
 @Composable
@@ -30,9 +32,15 @@ fun ItemDetailScreen(
     Column {
         Text(text = "Item ID: ${item.itemID}")
         Text(text = "World Name: ${item.worldName}")
-        Text(text = "Listings: ${item.listings}")
-
+        LazyColumn(content =
+        {
+            this.item {
+                Text(text = "Listings: ${item.listings}")
+            }
+        }
+        )
     }
+
 
 }
 

@@ -8,5 +8,5 @@ interface FrivolityRepository {
 
     suspend fun getDataCenters(): List<ApiDataCenter>
     suspend fun getWorlds(): List<ApiWorld>
-    suspend fun getItemDetails(): ApiItemDetail
+    suspend fun getItemDetails(world: String, id: Int): ApiItemDetail
 }
