@@ -10,7 +10,7 @@ import androidx.compose.runtime.Composable
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InputWithButton(
-    onButtonClick: (String) -> Unit,
+    onButtonClick: () -> Unit,
     onTextChange: (String) -> Unit,
     displayedText: String,
 ) {
@@ -20,7 +20,7 @@ fun InputWithButton(
             onValueChange = { onTextChange(it) }
         )
         Button(
-            onClick = { onButtonClick }
+            onClick = { onButtonClick() }
         ) {
             Text(text = "Click me pls")
         }

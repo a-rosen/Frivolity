@@ -3,6 +3,7 @@ package com.example.frivolity.network
 import com.example.frivolity.network.models.xivapi.ApiItemDetail
 import com.example.frivolity.network.models.xivapi.ApiItemList
 import com.example.frivolity.network.models.xivapi.ApiWorldList
+import retrofit2.http.Query
 
 class MockXIVApi: XIVApi {
     override suspend fun getWorlds(): ApiWorldList {
@@ -13,7 +14,10 @@ class MockXIVApi: XIVApi {
         TODO("Not yet implemented")
     }
 
-    override suspend fun itemSearchByString(string: String): ApiItemList {
+    override suspend fun itemSearchByString(
+        @Query(value = "string") string: String,
+        @Query(value = "filters") filters: String
+    ): ApiItemList {
         TODO("Not yet implemented")
     }
 }

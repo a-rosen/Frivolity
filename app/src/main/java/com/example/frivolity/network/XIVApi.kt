@@ -16,8 +16,9 @@ interface XIVApi {
         @Path("id") id: Int
     ): ApiItemDetail
 
-    @GET("search?filters=IsUntradable=0&string={string}")
+    @GET("search")
     suspend fun itemSearchByString(
-        @Query("string") string: String
+        @Query("string") string: String,
+        @Query("filters") filters: String = "IsUntradable=0"
     ): ApiItemList
 }

@@ -1,5 +1,6 @@
 package com.example.frivolity.ui.screens
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.frivolity.repository.DataStoreRepository
@@ -57,7 +58,6 @@ class MainScreenViewModel @Inject constructor(
                 null,
                 it.searchBoxText,
                 it.searchResults
-
             )
         }
     }
@@ -78,7 +78,6 @@ class MainScreenViewModel @Inject constructor(
                 worldToSelect,
                 it.searchBoxText,
                 it.searchResults
-
             )
         }
     }
@@ -97,7 +96,6 @@ class MainScreenViewModel @Inject constructor(
                 it.selectedWorld,
                 inputText,
                 it.searchResults
-
             )
         }
     }
@@ -105,7 +103,7 @@ class MainScreenViewModel @Inject constructor(
     fun submitSearch(inputText: String) {
         viewModelScope.launch(Dispatchers.IO) {
             _internalScreenStateFlow.update {
-                MainScreenState(
+                return@update MainScreenState(
                     it.dataCentersList,
                     it.worldsList,
                     it.recentlyUpdatedList,
@@ -115,6 +113,7 @@ class MainScreenViewModel @Inject constructor(
                     networkRepository.itemSearchByString(inputText)
                 )
             }
+            Log.d("annie", "${_internalScreenStateFlow.value.searchResults}")
         }
     }
 
