@@ -1,11 +1,11 @@
 package com.example.frivolity.network.models.universalisapi
 
-data class ApiItemDetail(
+data class ApiMarketItemDetail(
     val itemID: Int,
     val worldID: Int,
     val lastUploadTime: Long,
     val listings: List<ApiListingDetail>,
-    val recentHistory: List<ApiItemSaleData>,
+    val recentHistory: List<ApiMarketItemSaleData>,
     val currentAveragePrice: Float,
     val currentAveragePriceNQ: Float,
     val currentAveragePriceHQ: Float,

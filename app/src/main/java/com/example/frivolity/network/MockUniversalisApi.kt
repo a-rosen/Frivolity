@@ -1,8 +1,8 @@
 package com.example.frivolity.network
 
 import com.example.frivolity.network.models.universalisapi.ApiDataCenter
-import com.example.frivolity.network.models.universalisapi.ApiItemDetail
-import com.example.frivolity.network.models.universalisapi.ApiItemList
+import com.example.frivolity.network.models.universalisapi.ApiMarketItemDetail
+import com.example.frivolity.network.models.universalisapi.ApiMarketItemList
 import com.example.frivolity.network.models.universalisapi.ApiWorld
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -16,8 +16,8 @@ class MockUniversalisApi: UniversalisApi {
         @Query(value = "world") world: String,
         @Query(value = "dcName") dcName: String,
         @Query(value = "entries") entries: Int
-    ): ApiItemList {
-        return ApiItemList(items = listOf())
+    ): ApiMarketItemList {
+        return ApiMarketItemList(items = listOf())
     }
 
     override suspend fun getWorlds(): List<ApiWorld> {
@@ -27,8 +27,8 @@ class MockUniversalisApi: UniversalisApi {
     override suspend fun getItemDetails(
         @Path(value = "world") world: String,
         @Path(value = "id") id: Int
-    ): ApiItemDetail {
-        return ApiItemDetail(
+    ): ApiMarketItemDetail {
+        return ApiMarketItemDetail(
             itemID = 0,
             worldID = 0,
             lastUploadTime = 0,

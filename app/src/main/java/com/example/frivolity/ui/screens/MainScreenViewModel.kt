@@ -30,7 +30,9 @@ class MainScreenViewModel @Inject constructor(
                     networkRepository.getWorlds(),
                     it.recentlyUpdatedList,
                     it.selectedDC,
-                    it.selectedWorld
+                    it.selectedWorld,
+                    it.searchBoxText,
+                    it.searchResults
                 )
             }
             getSelectedDc()
@@ -52,7 +54,10 @@ class MainScreenViewModel @Inject constructor(
                 it.worldsList,
                 it.recentlyUpdatedList,
                 dcToSelect,
-                null
+                null,
+                it.searchBoxText,
+                it.searchResults
+
             )
         }
     }
@@ -70,13 +75,47 @@ class MainScreenViewModel @Inject constructor(
                 it.worldsList,
                 it.recentlyUpdatedList,
                 it.selectedDC,
-                worldToSelect
+                worldToSelect,
+                it.searchBoxText,
+                it.searchResults
+
             )
         }
     }
 
     fun saveSelectedServer(selectedDcName: String, selectedWorldName: String) {
         dataStore.saveSelectedServer(selectedDcName, selectedWorldName)
+    }
+
+    fun updateSearchBoxText(inputText: String) {
+        _internalScreenStateFlow.update {
+            MainScreenState(
+                it.dataCentersList,
+                it.worldsList,
+                it.recentlyUpdatedList,
+                it.selectedDC,
+                it.selectedWorld,
+                inputText,
+                it.searchResults
+
+            )
+        }
+    }
+
+    fun submitSearch(inputText: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            _internalScreenStateFlow.update {
+                MainScreenState(
+                    it.dataCentersList,
+                    it.worldsList,
+                    it.recentlyUpdatedList,
+                    it.selectedDC,
+                    it.selectedWorld,
+                    it.searchBoxText,
+                    networkRepository.itemSearchByString(inputText)
+                )
+            }
+        }
     }
 
     private fun getSelectedDc() {
@@ -92,6 +131,8 @@ class MainScreenViewModel @Inject constructor(
                         it.recentlyUpdatedList,
                         dcFromStored,
                         it.selectedWorld,
+                        it.searchBoxText,
+                        it.searchResults
                     )
                 }
             }
@@ -110,7 +151,9 @@ class MainScreenViewModel @Inject constructor(
                         it.worldsList,
                         it.recentlyUpdatedList,
                         it.selectedDC,
-                        worldFromStored
+                        worldFromStored,
+                        it.searchBoxText,
+                        it.searchResults
                     )
                 }
             }

@@ -1,6 +1,6 @@
 package com.example.frivolity.network.models.universalisapi
 
-data class ApiItemSaleData(
+data class ApiMarketItemSaleData(
     val hq: Boolean,
     val pricePerUnit: Int,
     val quantity: Int,

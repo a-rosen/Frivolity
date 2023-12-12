@@ -1,13 +1,17 @@
 package com.example.frivolity.ui.screens
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import com.example.frivolity.ui.components.ButtonWithDropdown
+import com.example.frivolity.ui.components.InputWithButton
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
     viewModel: MainScreenViewModel,
@@ -60,19 +64,18 @@ fun MainScreen(
             },
             content = { Text("Item Details") }
         )
+
+        InputWithButton(
+            onButtonClick = { viewModel.submitSearch(mainScreenState.searchBoxText) },
+            onTextChange = { viewModel.updateSearchBoxText(it) },
+            displayedText = mainScreenState.searchBoxText
+        )
+
+        LazyColumn(content = {
+            this.item {
+                Text(text = "Search Results: ${mainScreenState.searchResults}")
+            }
+        }
+        )
     }
 }
-
-//@Preview
-//@Composable
-//fun MainScreenPreview() {
-//    MainScreen(
-//        viewModel = MainScreenViewModel(
-//            repository = NetworkRepository(
-//                MockUniversalisApi(),
-//                MockXIVApi()
-//            ),
-//            database = DatabaseRepository()
-//        ),
-//    )
-//}

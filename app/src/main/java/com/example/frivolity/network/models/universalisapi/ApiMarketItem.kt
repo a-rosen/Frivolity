@@ -1,6 +1,6 @@
 package com.example.frivolity.network.models.universalisapi
 
-data class ApiItem(
+data class ApiMarketItem(
     val itemID: Int,
     val lastUploadTime: Long,
     val worldID: Int,
