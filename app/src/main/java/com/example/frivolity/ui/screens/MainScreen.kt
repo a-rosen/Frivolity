@@ -75,7 +75,10 @@ fun MainScreen(
 
         LazyColumn {
             items(mainScreenState.searchResults.results) {
-                ItemListItem(itemName = it.name)
+                ItemListItem(
+                    itemName = it.name,
+                    iconUrl = "https://xivapi.com/${it.icon}"
+                )
             }
         }
     }
