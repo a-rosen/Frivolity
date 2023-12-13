@@ -1,6 +1,8 @@
 package com.example.frivolity.ui.screens
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
@@ -9,6 +11,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import com.example.frivolity.ui.components.ButtonWithDropdown
 import com.example.frivolity.ui.components.InputWithButton
+import com.example.frivolity.ui.components.ItemListItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -70,9 +73,10 @@ fun MainScreen(
             displayedText = mainScreenState.searchBoxText
         )
 
-    
-        Text(text = "${mainScreenState.searchResults}")
+        LazyColumn {
+            items(mainScreenState.searchResults.results) {
+                ItemListItem(itemName = it.name)
+            }
+        }
     }
 }
-
-// OKHttp: Interceptor (For logging)
