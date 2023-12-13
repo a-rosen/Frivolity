@@ -21,7 +21,7 @@ class DatabaseModule {
             .databaseBuilder(
                 context,
                 FrivolityDatabase::class.java,
-                "todo-database"
+                "frivolity-database"
             )
             .fallbackToDestructiveMigration()
             .build()

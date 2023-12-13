@@ -62,7 +62,6 @@ dependencies {
     // Navigation
     val nav_version = "2.7.5"
 
-
     implementation("androidx.navigation:navigation-compose:$nav_version")
     implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
 
@@ -88,6 +87,7 @@ dependencies {
     // Network
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("com.squareup.okhttp3:okhttp:4.11.0")
 
     // Testing
     testImplementation("junit:junit:4.13.2")

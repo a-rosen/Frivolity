@@ -2,10 +2,12 @@ package com.example.frivolity.di
 
 import com.example.frivolity.network.UniversalisApi
 import com.example.frivolity.network.XIVApi
+import com.example.frivolity.network.log.LoggingInterceptor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
@@ -15,8 +17,14 @@ import javax.inject.Singleton
 class ApiModule {
     @Provides
     @Singleton
+    fun provideClientInterceptor() = OkHttpClient.Builder()
+        .addInterceptor(LoggingInterceptor())
+        .build()
+    @Provides
+    @Singleton
     fun provideUniversalisApi() = Retrofit.Builder()
         .baseUrl("https://universalis.app/api/v2/")
+        .client(provideClientInterceptor())
         .addConverterFactory(GsonConverterFactory.create())
         .build()
         .create(UniversalisApi::class.java)
@@ -25,6 +33,7 @@ class ApiModule {
     @Singleton
     fun provideXIVApi() = Retrofit.Builder()
         .baseUrl("https://xivapi.com/")
+        .client(provideClientInterceptor())
         .addConverterFactory(GsonConverterFactory.create())
         .build()
         .create(XIVApi::class.java)
