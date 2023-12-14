@@ -14,6 +14,10 @@ class MockXIVApi: XIVApi {
         TODO("Not yet implemented")
     }
 
+    override suspend fun getItemLevelById(id: Int, columns: String): ApiItemDetail {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun itemSearchByString(
         @Query(value = "string") string: String,
         @Query(value = "filters") filters: String

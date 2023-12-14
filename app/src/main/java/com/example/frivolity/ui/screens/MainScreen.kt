@@ -72,13 +72,11 @@ fun MainScreen(
         )
 
         LazyColumn {
-            items(mainScreenState.searchResults.results) {
-                val iLevel = viewModel.getItemDetailById(it.id)
-
+            items(mainScreenState.searchResultsDetail) {
                 ItemListItem(
                     itemName = it.name,
                     iconUrl = "https://xivapi.com/${it.icon}",
-                    itemLevel =
+                    itemLevel = it.iLevel
                 )
             }
         }

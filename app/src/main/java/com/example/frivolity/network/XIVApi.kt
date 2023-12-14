@@ -16,9 +16,16 @@ interface XIVApi {
         @Path("id") id: Int
     ): ApiItemDetail
 
+    @GET("item/{id}")
+    suspend fun getItemLevelById(
+        @Path("id") id: Int,
+        @Query("columns") columns: String = "LevelItem"
+    ) : ApiItemDetail
+
     @GET("search")
     suspend fun itemSearchByString(
         @Query("string") string: String,
         @Query("filters") filters: String = "IsUntradable=0"
     ): ApiItemList
+
 }
