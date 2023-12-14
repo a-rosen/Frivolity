@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -13,7 +12,6 @@ import com.example.frivolity.ui.components.ButtonWithDropdown
 import com.example.frivolity.ui.components.InputWithButton
 import com.example.frivolity.ui.components.ItemListItem
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
     viewModel: MainScreenViewModel,
@@ -75,9 +73,12 @@ fun MainScreen(
 
         LazyColumn {
             items(mainScreenState.searchResults.results) {
+                val iLevel = viewModel.getItemDetailById(it.id)
+
                 ItemListItem(
                     itemName = it.name,
-                    iconUrl = "https://xivapi.com/${it.icon}"
+                    iconUrl = "https://xivapi.com/${it.icon}",
+                    itemLevel =
                 )
             }
         }

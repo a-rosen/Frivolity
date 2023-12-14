@@ -30,6 +30,10 @@ class NetworkRepository @Inject constructor(
         return xivApi.getItemById(id)
     }
 
+    override suspend fun getItemLevelById(id: Int): Int {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun itemSearchByString(string: String): ApiItemList {
         return xivApi.itemSearchByString(string)
     }

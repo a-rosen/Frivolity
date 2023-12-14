@@ -117,6 +117,19 @@ class MainScreenViewModel @Inject constructor(
         }
     }
 
+    fun getItemDetailById(id: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            networkRepository.getFullItemDetails(id)
+        }
+    }
+
+    fun getItemLevelById(id: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            networkRepository.getItemLevelById(id)
+        }
+    }
+
+
     private fun getSelectedDc() {
         viewModelScope.launch {
             dataStore.storedDcFlow.collect { name ->
