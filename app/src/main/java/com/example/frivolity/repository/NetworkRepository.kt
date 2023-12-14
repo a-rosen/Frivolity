@@ -8,22 +8,12 @@ import com.example.frivolity.network.models.universalisapi.ApiWorld
 import com.example.frivolity.network.models.xivapi.ApiItemDetail
 import com.example.frivolity.network.models.xivapi.ApiItemList
 import com.example.frivolity.network.models.xivapi.asItemDetailDataRecord
-import com.example.frivolity.repository.models.ItemDetailDataRecord
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 class NetworkRepository @Inject constructor(
     private val universalisApi: UniversalisApi,
     private val xivApi: XIVApi,
 ) : FrivolityRepository {
-    val _internalDataFlow = MutableStateFlow<ItemDetailDataRecord>(
-        value = ItemDetailDataRecord(
-            "", "", 0, 0
-        )
-    )
-    override val dataFlow = _internalDataFlow.asStateFlow()
 
     override suspend fun getDataCenters(): List<ApiDataCenter> {
         return universalisApi.getDataCenters()
@@ -42,9 +32,8 @@ class NetworkRepository @Inject constructor(
     }
 
     override suspend fun getItemLevelById(id: Int) {
-        _internalDataFlow.update {
+
             xivApi.getItemById(id).asItemDetailDataRecord()
-        }
     }
 
     override suspend fun itemSearchByString(string: String): ApiItemList {

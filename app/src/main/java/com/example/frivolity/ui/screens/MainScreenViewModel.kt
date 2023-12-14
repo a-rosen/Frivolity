@@ -25,8 +25,6 @@ class MainScreenViewModel @Inject constructor(
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            networkRepository.dataFlow
-                .collect { results ->
                     _internalScreenStateFlow.update {
                         return@update MainScreenState(
                             networkRepository.getDataCenters(),
@@ -41,7 +39,7 @@ class MainScreenViewModel @Inject constructor(
                     }
                     getSelectedDc()
                     getSelectedWorld()
-                }
+
         }
     }
 
@@ -132,14 +130,6 @@ class MainScreenViewModel @Inject constructor(
             }
         }
     }
-
-    fun getItemLevelById(id: Int) {
-        viewModelScope.launch(Dispatchers.IO) {
-            networkRepository.getItemLevelById(id)
-        }
-
-    }
-
 
     private fun getSelectedDc() {
         viewModelScope.launch {
