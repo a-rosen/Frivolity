@@ -78,3 +78,5 @@ fun MainScreen(
         }
     }
 }
+
+//rewrite queries using filtration system that xivapi has
