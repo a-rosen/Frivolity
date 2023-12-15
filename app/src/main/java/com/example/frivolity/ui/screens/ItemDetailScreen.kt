@@ -31,6 +31,7 @@ import com.example.frivolity.network.MockUniversalisApi
 import com.example.frivolity.network.MockXIVApi
 import com.example.frivolity.network.models.universalisapi.asUiListingDetail
 import com.example.frivolity.repository.NetworkRepository
+import com.example.frivolity.ui.components.MarketItemListItem
 import com.example.frivolity.ui.theme.PurpleGrey40
 
 object DetailsDestination : NavigationDestination {
@@ -106,9 +107,7 @@ fun ItemDetailScreen(
             Text(text = "Item Name: ${itemDetail.name}")
             LazyColumn {
                 items(listings) {
-                    Text(text = "Price per unit: ${it.pricePerUnit}")
-                    Text(text = "Quantity: ${it.quantity}")
-                    Text(text = "Total: ${it.total}")
+                    MarketItemListItem(item = it)
                 }
             }
         }

@@ -22,5 +22,5 @@ data class ApiListingDetail(
 )
 
 fun ApiListingDetail.asUiListingDetail() = UiListingDetail(
-    pricePerUnit, quantity, hq, retainerCity, total
+    pricePerUnit, quantity, hq, retainerName, retainerCity, total
 )
