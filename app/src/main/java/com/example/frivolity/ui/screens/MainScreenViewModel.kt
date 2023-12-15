@@ -37,7 +37,6 @@ class MainScreenViewModel @Inject constructor(
                     }
                     getSelectedDc()
                     getSelectedWorld()
-
         }
     }
 
@@ -156,7 +155,6 @@ class MainScreenViewModel @Inject constructor(
                         worldFromStored,
                         it.searchBoxText,
                         it.searchResults,
-
                     )
                 }
             }

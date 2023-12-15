@@ -1,5 +1,7 @@
 package com.example.frivolity.network.models.universalisapi
 
+import com.example.frivolity.ui.models.UiListingDetail
+
 data class ApiListingDetail(
     val lastReviewTime: Long,
     val pricePerUnit: Int,
@@ -17,4 +19,8 @@ data class ApiListingDetail(
     val retainerName: String,
     val sellerID: String,
     val total: Int
+)
+
+fun ApiListingDetail.asUiListingDetail() = UiListingDetail(
+    pricePerUnit, quantity, hq, retainerCity, total
 )

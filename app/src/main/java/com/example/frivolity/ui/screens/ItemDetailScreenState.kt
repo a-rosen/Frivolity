@@ -1,13 +1,15 @@
 package com.example.frivolity.ui.screens
 
 import com.example.frivolity.network.models.universalisapi.ApiMarketItemDetail
+import com.example.frivolity.network.models.xivapi.ApiItemDetail
 
 data class ItemDetailScreenState (
-    val item: ApiMarketItemDetail
+    val marketItemDetail: ApiMarketItemDetail,
+    val itemDetail: ApiItemDetail
 ) {
     companion object {
         val EMPTY = ItemDetailScreenState(
-            item = ApiMarketItemDetail(
+            marketItemDetail = ApiMarketItemDetail(
                 itemID = 0,
                 worldID = 0,
                 lastUploadTime = 0,
@@ -36,6 +38,9 @@ data class ItemDetailScreenState (
                 recentHistoryCount = 0,
                 unitsForSale = 0,
                 unitsSold = 0
+            ),
+            itemDetail = ApiItemDetail(
+                "", 0, "", 0, 0
             )
         )
     }

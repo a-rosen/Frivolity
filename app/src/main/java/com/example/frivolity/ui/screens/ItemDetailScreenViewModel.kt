@@ -26,10 +26,12 @@ class ItemDetailScreenViewModel @Inject constructor(
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            val item = repository.getMarketItemDetails(worldName, itemId)
+            val marketItem = repository.getMarketItemDetails(worldName, itemId)
+            val itemDetail = repository.getFullItemDetails(itemId)
             _internalScreenStateFlow.update {
                 ItemDetailScreenState(
-                   item = item
+                    marketItemDetail = marketItem,
+                    itemDetail = itemDetail
                 )
             }
         }

@@ -2,6 +2,7 @@ package com.example.frivolity.ui.screens
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -11,6 +12,7 @@ import androidx.lifecycle.SavedStateHandle
 import com.example.frivolity.navigation.NavigationDestination
 import com.example.frivolity.network.MockUniversalisApi
 import com.example.frivolity.network.MockXIVApi
+import com.example.frivolity.network.models.universalisapi.asUiListingDetail
 import com.example.frivolity.repository.NetworkRepository
 
 object DetailsDestination : NavigationDestination {
@@ -27,18 +29,24 @@ fun ItemDetailScreen(
     val itemDetailScreenState by viewModel.screenStateFlow.collectAsState(
         initial = ItemDetailScreenState.EMPTY
     )
-    val item = itemDetailScreenState.item
+    val item = itemDetailScreenState.marketItemDetail
+    val itemDetail = itemDetailScreenState.itemDetail
+
+    val listings = item.listings.map {
+        it.asUiListingDetail()
+    }
 
     Column {
-        Text(text = "Item ID: ${item.itemID}")
         Text(text = "World Name: ${item.worldName}")
-        LazyColumn(content =
-        {
-            this.item {
-                Text(text = "Listings: ${item.listings}")
+        Text(text = "Item Name: ${itemDetail.name}")
+        LazyColumn {
+            items(listings){
+                Text(text = "Price per unit: ${it.pricePerUnit}")
+                Text(text = "Quantity: ${it.quantity}")
+                Text(text = "Total: ${it.total}")
+
             }
         }
-        )
     }
 }
 
@@ -53,7 +61,7 @@ fun ItemDetailScreenPreview(
                 xivApi = MockXIVApi()
             ),
             detailSavedStateHandle = SavedStateHandle()
-        )
+        ),
     )
 
 }
