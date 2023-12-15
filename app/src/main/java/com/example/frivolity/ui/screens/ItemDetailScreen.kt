@@ -40,8 +40,6 @@ fun ItemDetailScreen(
         }
         )
     }
-
-
 }
 
 @Preview

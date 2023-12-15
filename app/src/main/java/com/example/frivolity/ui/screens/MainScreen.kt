@@ -53,17 +53,6 @@ fun MainScreen(
             content = { Text(text = "Save current selection") }
         )
 
-        Button(
-            onClick = {
-                if (mainScreenState.selectedWorld != null) {
-                    navigateToDetailScreen(
-                        mainScreenState.selectedWorld!!.name,
-                        23098
-                    )
-                }
-            },
-            content = { Text("Item Details") }
-        )
 
         InputWithButton(
             onButtonClick = { viewModel.submitSearch(mainScreenState.searchBoxText) },
@@ -72,11 +61,18 @@ fun MainScreen(
         )
 
         LazyColumn {
-            items(mainScreenState.searchResultsDetail) {
+            items(mainScreenState.searchResults) {
                 ItemListItem(
                     itemName = it.name,
                     iconUrl = "https://xivapi.com/${it.icon}",
-                    itemLevel = it.iLevel
+                    onClick = {
+                        if (mainScreenState.selectedWorld != null) {
+                            navigateToDetailScreen(
+                                mainScreenState.selectedWorld!!.name,
+                                it.id
+                            )
+                        }
+                    }
                 )
             }
         }

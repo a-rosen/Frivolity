@@ -2,7 +2,6 @@ package com.example.frivolity.ui.screens
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.frivolity.network.models.xivapi.asItemDetailDataRecord
 import com.example.frivolity.repository.DataStoreRepository
 import com.example.frivolity.repository.FrivolityRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -34,7 +33,6 @@ class MainScreenViewModel @Inject constructor(
                             it.selectedWorld,
                             it.searchBoxText,
                             it.searchResults,
-                            it.searchResultsDetail
                         )
                     }
                     getSelectedDc()
@@ -60,7 +58,6 @@ class MainScreenViewModel @Inject constructor(
                 null,
                 it.searchBoxText,
                 it.searchResults,
-                it.searchResultsDetail
 
             )
         }
@@ -82,7 +79,6 @@ class MainScreenViewModel @Inject constructor(
                 worldToSelect,
                 it.searchBoxText,
                 it.searchResults,
-                it.searchResultsDetail
 
             )
         }
@@ -102,20 +98,13 @@ class MainScreenViewModel @Inject constructor(
                 it.selectedWorld,
                 inputText,
                 it.searchResults,
-                it.searchResultsDetail
 
             )
         }
     }
 
     fun submitSearch(inputText: String) {
-
         viewModelScope.launch(Dispatchers.IO) {
-            val searchResults = networkRepository.itemSearchByString(inputText).results.map {
-                networkRepository.getFullItemDetails(it.id)
-                .asItemDetailDataRecord()
-            }
-
             _internalScreenStateFlow.update {
                 return@update MainScreenState(
                     it.dataCentersList,
@@ -125,7 +114,6 @@ class MainScreenViewModel @Inject constructor(
                     it.selectedWorld,
                     it.searchBoxText,
                     networkRepository.itemSearchByString(inputText).results,
-                    searchResults
                 )
             }
         }
@@ -146,7 +134,6 @@ class MainScreenViewModel @Inject constructor(
                         it.selectedWorld,
                         it.searchBoxText,
                         it.searchResults,
-                        it.searchResultsDetail
 
                     )
                 }
@@ -169,7 +156,6 @@ class MainScreenViewModel @Inject constructor(
                         worldFromStored,
                         it.searchBoxText,
                         it.searchResults,
-                        it.searchResultsDetail
 
                     )
                 }

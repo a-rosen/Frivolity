@@ -1,5 +1,6 @@
 package com.example.frivolity.ui.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,14 +20,14 @@ import com.example.frivolity.ui.theme.PurpleGrey40
 fun ItemListItem(
     iconUrl: String,
     itemName: String = "Item Name Placeholder",
-    itemLevel: Int = 625,
-
+    onClick: () -> Unit,
     ) {
     Row(
         horizontalArrangement = Arrangement.SpaceEvenly,
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
+            .clickable { onClick() }
     ) {
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
@@ -37,8 +38,6 @@ fun ItemListItem(
         )
 
         Text(text = itemName)
-
-        Text(text = itemLevel.toString())
     }
 }
 
@@ -47,5 +46,6 @@ fun ItemListItem(
 fun ItemListItemPreview() {
     ItemListItem(
         iconUrl = "",
+        onClick = {}
     )
 }

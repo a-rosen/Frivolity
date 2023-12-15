@@ -4,7 +4,6 @@ import com.example.frivolity.network.models.universalisapi.ApiDataCenter
 import com.example.frivolity.network.models.universalisapi.ApiMarketItemList
 import com.example.frivolity.network.models.universalisapi.ApiWorld
 import com.example.frivolity.network.models.xivapi.ApiItem
-import com.example.frivolity.repository.models.ItemDetailDataRecord
 
 data class MainScreenState(
     val dataCentersList: List<ApiDataCenter>,
@@ -14,7 +13,6 @@ data class MainScreenState(
     val selectedWorld: ApiWorld?,
     val searchBoxText: String,
     val searchResults: List<ApiItem>,
-    val searchResultsDetail: List<ItemDetailDataRecord>
 ) {
     companion object {
         val EMPTY = MainScreenState(
@@ -25,7 +23,6 @@ data class MainScreenState(
             selectedWorld = null,
             searchBoxText = "",
             searchResults = listOf(),
-            searchResultsDetail = listOf()
         )
     }
 }

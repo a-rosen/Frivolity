@@ -32,7 +32,6 @@ class NetworkRepository @Inject constructor(
     }
 
     override suspend fun getItemLevelById(id: Int) {
-
             xivApi.getItemById(id).asItemDetailDataRecord()
     }
 
