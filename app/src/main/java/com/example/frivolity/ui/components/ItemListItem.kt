@@ -36,7 +36,6 @@ fun ItemListItem(
             contentDescription = "",
             placeholder = ColorPainter(color = PurpleGrey40)
         )
-
         Text(text = itemName)
     }
 }

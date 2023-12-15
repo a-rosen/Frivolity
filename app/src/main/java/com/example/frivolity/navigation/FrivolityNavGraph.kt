@@ -40,6 +40,9 @@ fun FrivolityNavGraph(
         ) {
             ItemDetailScreen(
                 viewModel = hiltViewModel(),
+                navigateBack = {
+                    navController.popBackStack()
+                }
             )
         }
     }
