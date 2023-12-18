@@ -40,8 +40,9 @@ data class ItemDetailScreenState (
                 unitsSold = 0
             ),
             itemDetail = ApiItemDetail(
-                "", 0, "", 0, 0
+                "", 0, "", 0, 0, ""
             )
         )
     }
 }
+

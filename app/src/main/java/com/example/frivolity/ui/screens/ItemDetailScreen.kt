@@ -18,21 +18,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.painter.ColorPainter
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.SavedStateHandle
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
 import com.example.frivolity.navigation.NavigationDestination
 import com.example.frivolity.network.MockUniversalisApi
 import com.example.frivolity.network.MockXIVApi
 import com.example.frivolity.network.models.universalisapi.asUiListingDetail
+import com.example.frivolity.network.models.xivapi.asUiItemDetail
 import com.example.frivolity.repository.NetworkRepository
+import com.example.frivolity.ui.components.ItemDetailCard
 import com.example.frivolity.ui.components.MarketItemListItem
-import com.example.frivolity.ui.theme.PurpleGrey40
 
 object DetailsDestination : NavigationDestination {
     override val route = "ItemDetailScreen"
@@ -74,22 +71,8 @@ fun ItemDetailScreen(
                 },
                 title = {
                     Text(
-                        text = "${itemDetail.name}",
+                        text = "Item Detail",
                         overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier
-                            .padding(8.dp)
-                    )
-                },
-                actions = {
-                    AsyncImage(
-                        model = ImageRequest.Builder(LocalContext.current)
-                            .data("https://xivapi.com/${itemDetail.iconUrl}")
-                            .build(),
-                        contentDescription = "",
-                        placeholder = ColorPainter(color = PurpleGrey40)
-                    )
-                    Text(
-                        text = itemDetail.iLevel.toString(),
                         modifier = Modifier
                             .padding(8.dp)
                     )
@@ -103,6 +86,9 @@ fun ItemDetailScreen(
                 .padding(innerPadding)
                 .consumeWindowInsets(innerPadding)
         ) {
+            ItemDetailCard(
+                itemDetail = itemDetail.asUiItemDetail(),
+            )
             Text(text = "World Name: ${item.worldName}")
             Text(text = "Item Name: ${itemDetail.name}")
             LazyColumn {

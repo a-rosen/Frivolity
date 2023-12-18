@@ -30,3 +30,4 @@ data class ApiMarketItemDetail(
     val unitsForSale: Int,
     val unitsSold: Int
 )
+
