@@ -65,6 +65,7 @@ fun MainScreen(
                 ItemListItem(
                     itemName = it.name,
                     iconUrl = "https://xivapi.com/${it.icon}",
+                    itemLevel = it.iLevel,
                     onClick = {
                         if (mainScreenState.selectedWorld != null) {
                             navigateToDetailScreen(
@@ -78,5 +79,3 @@ fun MainScreen(
         }
     }
 }
-
-//rewrite queries using filtration system that xivapi has

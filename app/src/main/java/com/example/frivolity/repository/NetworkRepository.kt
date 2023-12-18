@@ -7,7 +7,6 @@ import com.example.frivolity.network.models.universalisapi.ApiMarketItemDetail
 import com.example.frivolity.network.models.universalisapi.ApiWorld
 import com.example.frivolity.network.models.xivapi.ApiItemDetail
 import com.example.frivolity.network.models.xivapi.ApiItemList
-import com.example.frivolity.network.models.xivapi.asItemDetailDataRecord
 import javax.inject.Inject
 
 class NetworkRepository @Inject constructor(
@@ -29,10 +28,6 @@ class NetworkRepository @Inject constructor(
 
     override suspend fun getFullItemDetails(id: Int): ApiItemDetail {
         return xivApi.getItemById(id)
-    }
-
-    override suspend fun getItemLevelById(id: Int) {
-            xivApi.getItemById(id).asItemDetailDataRecord()
     }
 
     override suspend fun itemSearchByString(string: String): ApiItemList {

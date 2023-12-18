@@ -11,6 +11,5 @@ interface FrivolityRepository {
     suspend fun getWorlds(): List<ApiWorld>
     suspend fun getMarketItemDetails(world: String, id: Int): ApiMarketItemDetail
     suspend fun getFullItemDetails(id: Int): ApiItemDetail
-    suspend fun getItemLevelById(id: Int)
     suspend fun itemSearchByString(string: String): ApiItemList
 }

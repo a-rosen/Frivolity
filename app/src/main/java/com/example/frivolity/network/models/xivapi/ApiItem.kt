@@ -11,4 +11,6 @@ data class ApiItem(
     val name: String,
     @SerializedName("Url")
     val url: String,
+    @SerializedName("LevelItem")
+    val iLevel: Int,
 )

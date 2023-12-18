@@ -20,7 +20,8 @@ class MockXIVApi: XIVApi {
 
     override suspend fun itemSearchByString(
         @Query(value = "string") string: String,
-        @Query(value = "filters") filters: String
+        @Query(value = "filters") filters: String,
+        @Query(value = "columns") columns: String,
     ): ApiItemList {
         TODO("Not yet implemented")
     }
