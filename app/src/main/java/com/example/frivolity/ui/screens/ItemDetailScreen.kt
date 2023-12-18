@@ -28,6 +28,7 @@ import com.example.frivolity.network.MockXIVApi
 import com.example.frivolity.network.models.universalisapi.asUiListingDetail
 import com.example.frivolity.network.models.xivapi.asUiItemDetail
 import com.example.frivolity.repository.NetworkRepository
+import com.example.frivolity.ui.components.CheapestCard
 import com.example.frivolity.ui.components.ItemDetailCard
 import com.example.frivolity.ui.components.MarketItemListItem
 
@@ -89,9 +90,14 @@ fun ItemDetailScreen(
             ItemDetailCard(
                 itemDetail = itemDetail.asUiItemDetail(),
             )
-            Text(text = "World Name: ${item.worldName}")
-            Text(text = "Item Name: ${itemDetail.name}")
-            LazyColumn {
+            itemDetailScreenState.cheapestPrice?.let {
+                CheapestCard(
+                    prices = it,
+                )
+            }
+
+            LazyColumn(
+            ) {
                 items(listings) {
                     MarketItemListItem(item = it)
                 }

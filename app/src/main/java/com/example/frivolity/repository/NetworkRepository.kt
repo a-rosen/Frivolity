@@ -4,6 +4,7 @@ import com.example.frivolity.network.UniversalisApi
 import com.example.frivolity.network.XIVApi
 import com.example.frivolity.network.models.universalisapi.ApiDataCenter
 import com.example.frivolity.network.models.universalisapi.ApiMarketItemDetail
+import com.example.frivolity.network.models.universalisapi.ApiPricesList
 import com.example.frivolity.network.models.universalisapi.ApiWorld
 import com.example.frivolity.network.models.xivapi.ApiItemDetail
 import com.example.frivolity.network.models.xivapi.ApiItemList
@@ -24,6 +25,10 @@ class NetworkRepository @Inject constructor(
 
     override suspend fun getMarketItemDetails(world: String, id: Int): ApiMarketItemDetail {
         return universalisApi.getItemDetails(world, id)
+    }
+
+    override suspend fun getMarketItemPrices(region: String, id: Int): ApiPricesList {
+        return universalisApi.getItemPrices(region, id, "listings.quantity,listings.total,listings.worldName")
     }
 
     override suspend fun getFullItemDetails(id: Int): ApiItemDetail {

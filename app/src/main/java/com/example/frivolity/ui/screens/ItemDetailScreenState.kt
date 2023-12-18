@@ -1,11 +1,14 @@
 package com.example.frivolity.ui.screens
 
 import com.example.frivolity.network.models.universalisapi.ApiMarketItemDetail
+import com.example.frivolity.network.models.universalisapi.ApiPrices
 import com.example.frivolity.network.models.xivapi.ApiItemDetail
 
-data class ItemDetailScreenState (
+data class ItemDetailScreenState(
     val marketItemDetail: ApiMarketItemDetail,
-    val itemDetail: ApiItemDetail
+    val itemDetail: ApiItemDetail,
+    val regionToSearch: String,
+    val cheapestPrice: ApiPrices?
 ) {
     companion object {
         val EMPTY = ItemDetailScreenState(
@@ -41,7 +44,9 @@ data class ItemDetailScreenState (
             ),
             itemDetail = ApiItemDetail(
                 "", 0, "", 0, 0, ""
-            )
+            ),
+            regionToSearch = "North-America",
+            cheapestPrice = ApiPrices(0, 0, "Faerie")
         )
     }
 }

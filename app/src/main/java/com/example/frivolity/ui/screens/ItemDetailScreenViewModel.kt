@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ItemDetailScreenViewModel @Inject constructor(
-    repository: FrivolityRepository,
+    private val repository: FrivolityRepository,
     detailSavedStateHandle: SavedStateHandle
 
 ) : ViewModel() {
@@ -24,20 +24,47 @@ class ItemDetailScreenViewModel @Inject constructor(
     private val worldName: String =
         checkNotNull(detailSavedStateHandle[DetailsDestination.worldNameArg])
 
+    private val _internalScreenStateFlow =
+        MutableStateFlow(value = ItemDetailScreenState.EMPTY)
+    val screenStateFlow: StateFlow<ItemDetailScreenState> = _internalScreenStateFlow.asStateFlow()
+
     init {
         viewModelScope.launch(Dispatchers.IO) {
             val marketItem = repository.getMarketItemDetails(worldName, itemId)
             val itemDetail = repository.getFullItemDetails(itemId)
+
             _internalScreenStateFlow.update {
                 ItemDetailScreenState(
                     marketItemDetail = marketItem,
-                    itemDetail = itemDetail
+                    itemDetail = itemDetail,
+                    regionToSearch = "North-America",
+                    it.cheapestPrice
                 )
+            }
+
+            findCheapestItemListing()
+
+        }
+    }
+
+    private fun findCheapestItemListing() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val allPrices = repository
+                .getMarketItemPrices(_internalScreenStateFlow.value.regionToSearch, itemId)
+                .listings
+
+            val cheapest = allPrices.minOfOrNull { it.total }
+            val cheapestListing = allPrices.firstOrNull() { it.total == cheapest }
+
+            _internalScreenStateFlow.update {ItemDetailScreenState(
+                it.marketItemDetail,
+                it.itemDetail,
+                it.regionToSearch,
+                cheapestListing
+            )
             }
         }
     }
 
-    private val _internalScreenStateFlow =
-        MutableStateFlow(value = ItemDetailScreenState.EMPTY)
-    val screenStateFlow: StateFlow<ItemDetailScreenState> = _internalScreenStateFlow.asStateFlow()
+
 }

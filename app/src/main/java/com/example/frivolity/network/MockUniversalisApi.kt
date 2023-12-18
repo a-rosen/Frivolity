@@ -3,6 +3,7 @@ package com.example.frivolity.network
 import com.example.frivolity.network.models.universalisapi.ApiDataCenter
 import com.example.frivolity.network.models.universalisapi.ApiMarketItemDetail
 import com.example.frivolity.network.models.universalisapi.ApiMarketItemList
+import com.example.frivolity.network.models.universalisapi.ApiPricesList
 import com.example.frivolity.network.models.universalisapi.ApiWorld
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -58,5 +59,9 @@ class MockUniversalisApi: UniversalisApi {
             unitsForSale = 0,
             unitsSold = 0
         )
+    }
+
+    override suspend fun getItemPrices(region: String, id: Int, fields: String): ApiPricesList {
+        TODO("Not yet implemented")
     }
 }
