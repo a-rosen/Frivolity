@@ -43,8 +43,7 @@ data class ItemDetailScreenState(
                 unitsSold = 0
             ),
             itemDetail = ApiItemDetail(
-                "", 0, "", 0, 0, ""
-            ),
+                "", 0, "", 0, 0, mapOf(Pair("Name", "JOB JOB JOB JOB")), "", ""),
             regionToSearch = "North-America",
             cheapestPrice = ApiPrices(0, 0, "Faerie")
         )

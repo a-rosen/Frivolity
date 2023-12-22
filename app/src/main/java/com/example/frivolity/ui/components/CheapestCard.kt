@@ -26,9 +26,7 @@ fun CheapestCard(
             Text(text = "Quantity: ${prices.quantity}")
             Text(text = "Total: ${prices.total}")
         }
-
     }
-
 }
 
 @Preview

@@ -6,5 +6,7 @@ data class UiItemDetail(
     val iconUrl: String,
     val levelToEquip: Int?,
     val iLevel: Int,
-    val jobToEquip: String?
+    val jobToEquip: Map<String, Any>?,
+    val description: String,
+    val type: String?,
 )

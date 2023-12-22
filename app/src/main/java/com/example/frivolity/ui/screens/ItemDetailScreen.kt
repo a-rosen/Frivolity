@@ -140,7 +140,9 @@ fun ItemDetailScreenPreviewButHasStuff(
                     "",
                     25,
                     50,
-                    "Job Job Job"
+                    jobToEquip = mapOf(Pair("Name", "ACN BLM RDM SMN")),
+                    "This sure is an item that does stuff.",
+                    "Arms"
                 ),
                 regionToSearch = "TestRegion",
                 cheapestPrice = ApiPrices(

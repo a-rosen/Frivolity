@@ -42,22 +42,37 @@ fun ItemDetailCard(
                 .align(Alignment.CenterHorizontally)
         )
         Row(
-            horizontalArrangement = Arrangement.SpaceEvenly,
+            horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .fillMaxWidth()
                 .padding(bottom = 8.dp)
         ) {
-            Text(text = "iLvl: ${itemDetail.iLevel.toString()}")
-            Text(text = itemDetail.jobToEquip ?: "")
+            Text(
+                text =
+                if (itemDetail.jobToEquip?.get("Name") != null) {
+                    itemDetail.jobToEquip["Name"].toString()
+                } else {
+                    ""
+                }
+            )
+            Text(text = "iLvl: ${itemDetail.iLevel}")
+            Text(text = "Type: ${itemDetail.type}")
             Text(text = "equippable: ${itemDetail.levelToEquip.toString()}")
+
         }
+        Text(
+            text = "\"${itemDetail.description}\"",
+            style = MaterialTheme.typography.bodySmall,
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+        )
     }
 }
 
 @Preview
 @Composable
-fun ItemDetailCardPreview() {
+fun ItemDetailCardPreviewEquippable() {
     ItemDetailCard(
         itemDetail = UiItemDetail(
             "Allagan Tomestone of Frivolity",
@@ -65,7 +80,26 @@ fun ItemDetailCardPreview() {
             "",
             0,
             1,
-            "ACN SMN RDM BLU"
+            mapOf(Pair("Name", "ACN BLM RDM SMN")),
+            description = "This sure is an item that does things.",
+            type = "Arms"
+        ),
+    )
+}
+
+@Preview
+@Composable
+fun ItemDetailCardPreviewRegular() {
+    ItemDetailCard(
+        itemDetail = UiItemDetail(
+            "Allagan Tomestone of Frivolity",
+            0,
+            "",
+            null,
+            1,
+            null,
+            description = "This is a piece of furniture or something, you can't put it on.",
+            type = "Outdoor Furniture"
         ),
     )
 }
