@@ -1,11 +1,11 @@
 package com.example.frivolity.ui.components
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,9 +20,10 @@ import com.example.frivolity.ui.models.UiItemDetail
 fun ItemDetailCard(
     itemDetail: UiItemDetail,
 ) {
-    Card(
+    Column(
         modifier = Modifier
             .fillMaxWidth()
+            .padding(12.dp)
     ) {
         ImageWithPreview(
             url = "https://xivapi.com/${itemDetail.iconUrl}",
@@ -45,6 +46,7 @@ fun ItemDetailCard(
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .fillMaxWidth()
+                .padding(bottom = 8.dp)
         ) {
             Text(text = "iLvl: ${itemDetail.iLevel.toString()}")
             Text(text = itemDetail.jobToEquip ?: "")

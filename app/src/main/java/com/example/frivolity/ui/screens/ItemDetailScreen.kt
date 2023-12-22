@@ -2,32 +2,33 @@ package com.example.frivolity.ui.screens
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.SavedStateHandle
 import com.example.frivolity.navigation.NavigationDestination
-import com.example.frivolity.network.MockUniversalisApi
-import com.example.frivolity.network.MockXIVApi
+import com.example.frivolity.network.models.universalisapi.ApiMarketItemDetail
+import com.example.frivolity.network.models.universalisapi.ApiPrices
 import com.example.frivolity.network.models.universalisapi.asUiListingDetail
+import com.example.frivolity.network.models.xivapi.ApiItemDetail
 import com.example.frivolity.network.models.xivapi.asUiItemDetail
-import com.example.frivolity.repository.NetworkRepository
 import com.example.frivolity.ui.components.CheapestCard
 import com.example.frivolity.ui.components.ItemDetailCard
 import com.example.frivolity.ui.components.MarketItemListItem
@@ -42,14 +43,12 @@ object DetailsDestination : NavigationDestination {
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun ItemDetailScreen(
-    viewModel: ItemDetailScreenViewModel,
+    state: ItemDetailScreenState,
     navigateBack: () -> Unit,
 ) {
-    val itemDetailScreenState by viewModel.screenStateFlow.collectAsState(
-        initial = ItemDetailScreenState.EMPTY
-    )
-    val item = itemDetailScreenState.marketItemDetail
-    val itemDetail = itemDetailScreenState.itemDetail
+
+    val item = state.marketItemDetail
+    val itemDetail = state.itemDetail
 
     val listings = item.listings.map {
         it.asUiListingDetail()
@@ -67,12 +66,12 @@ fun ItemDetailScreen(
                                 contentDescription = "back button"
                             )
                         }
-
                     )
                 },
                 title = {
                     Text(
-                        text = "Item Detail",
+                        text = "Listings Detail: ${item.worldName}",
+                        style = MaterialTheme.typography.labelMedium,
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier
                             .padding(8.dp)
@@ -80,22 +79,31 @@ fun ItemDetailScreen(
                 },
                 modifier = Modifier
             )
-        }
+        },
+        bottomBar = {
+            BottomAppBar {
+
+            }
+        },
     ) { innerPadding ->
         Column(
             modifier = Modifier
                 .padding(innerPadding)
-                .consumeWindowInsets(innerPadding)
+                .consumeWindowInsets(innerPadding),
         ) {
             ItemDetailCard(
                 itemDetail = itemDetail.asUiItemDetail(),
             )
-            itemDetailScreenState.cheapestPrice?.let {
+
+            Spacer(
+                modifier = Modifier
+                    .height(32.dp)
+            )
+            state.cheapestPrice?.let {
                 CheapestCard(
                     prices = it,
                 )
             }
-
             LazyColumn(
             ) {
                 items(listings) {
@@ -108,17 +116,38 @@ fun ItemDetailScreen(
 
 @Preview
 @Composable
-fun ItemDetailScreenPreview(
+fun ItemDetailScreenPreviewButItsEmptyLol(
 ) {
-    ItemDetailScreen(
-        ItemDetailScreenViewModel(
-            repository = NetworkRepository(
-                universalisApi = MockUniversalisApi(),
-                xivApi = MockXIVApi()
-            ),
-            detailSavedStateHandle = SavedStateHandle()
-        ),
-        navigateBack = {}
-    )
+    MaterialTheme {
+        ItemDetailScreen(
+            state = ItemDetailScreenState.EMPTY,
+            navigateBack = {}
+        )
+    }
+}
 
+@Preview
+@Composable
+fun ItemDetailScreenPreviewButHasStuff(
+) {
+    MaterialTheme {
+        ItemDetailScreen(
+            state = ItemDetailScreenState(
+                marketItemDetail = ApiMarketItemDetail(),
+                itemDetail = ApiItemDetail(
+                    "TestItem",
+                    0,
+                    "",
+                    25,
+                    50,
+                    "Job Job Job"
+                ),
+                regionToSearch = "TestRegion",
+                cheapestPrice = ApiPrices(
+                    5, 2000, "Gilgamesh"
+                )
+            ),
+            navigateBack = {}
+        )
+    }
 }

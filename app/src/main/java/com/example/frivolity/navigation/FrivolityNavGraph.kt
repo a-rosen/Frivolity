@@ -1,6 +1,8 @@
 package com.example.frivolity.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -9,6 +11,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.frivolity.ui.screens.DetailsDestination
 import com.example.frivolity.ui.screens.ItemDetailScreen
+import com.example.frivolity.ui.screens.ItemDetailScreenState
+import com.example.frivolity.ui.screens.ItemDetailScreenViewModel
 import com.example.frivolity.ui.screens.MainScreen
 
 
@@ -38,8 +42,11 @@ fun FrivolityNavGraph(
                 { type = NavType.IntType }
             )
         ) {
+            val itemDetailScreenState by hiltViewModel<ItemDetailScreenViewModel>().screenStateFlow.collectAsState(
+                initial = ItemDetailScreenState.EMPTY
+            )
             ItemDetailScreen(
-                viewModel = hiltViewModel(),
+                state = itemDetailScreenState,
                 navigateBack = {
                     navController.popBackStack()
                 }

@@ -1,6 +1,7 @@
 package com.example.frivolity.ui.components
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -10,6 +11,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
@@ -37,7 +39,7 @@ fun ImageWithPreview(
 
         if (isInPreview) {
             painter = ColorPainter(color = Color.Blue)
-            scaling = ContentScale.FillBounds
+            scaling = ContentScale.Crop
         } else {
             painter = rememberAsyncImagePainter(
                 model = ImageRequest.Builder(LocalContext.current)
@@ -67,6 +69,7 @@ fun ImageWithPreview(
             contentScale = scaling,
             contentDescription = "Icon",
             modifier = modifier
+                .size(36.dp)
         )
     }
 }
