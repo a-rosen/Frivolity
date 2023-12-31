@@ -2,12 +2,13 @@ package com.example.frivolity.di
 
 import com.example.frivolity.network.UniversalisApi
 import com.example.frivolity.network.XIVApi
-import com.example.frivolity.network.log.LoggingInterceptor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
@@ -18,8 +19,15 @@ class ApiModule {
     @Provides
     @Singleton
     fun provideClientInterceptor() = OkHttpClient.Builder()
-        .addInterceptor(LoggingInterceptor())
+        .addInterceptor(provideHttpLoggingInterceptor())
         .build()
+
+    @Provides
+    internal fun provideHttpLoggingInterceptor(): Interceptor {
+        val logger = HttpLoggingInterceptor()
+        logger.level = HttpLoggingInterceptor.Level.BODY
+        return logger
+    }
     @Provides
     @Singleton
     fun provideUniversalisApi() = Retrofit.Builder()
