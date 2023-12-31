@@ -31,7 +31,7 @@ import com.example.frivolity.network.models.xivapi.ApiItemDetail
 import com.example.frivolity.network.models.xivapi.asUiItemDetail
 import com.example.frivolity.ui.components.CheapestCard
 import com.example.frivolity.ui.components.ItemDetailCard
-import com.example.frivolity.ui.components.MarketItemListItem
+import com.example.frivolity.ui.components.MarketItemListItemByUnit
 
 object DetailsDestination : NavigationDestination {
     override val route = "ItemDetailScreen"
@@ -107,7 +107,7 @@ fun ItemDetailScreen(
             LazyColumn(
             ) {
                 items(listings) {
-                    MarketItemListItem(item = it)
+                    MarketItemListItemByUnit(item = it)
                 }
             }
         }

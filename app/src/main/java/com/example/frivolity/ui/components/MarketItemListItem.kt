@@ -1,43 +1,86 @@
 package com.example.frivolity.ui.components
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.Column
+import androidx.compose.material3.Divider
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ListItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
 import com.example.frivolity.ui.models.UiListingDetail
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MarketItemListItem(
+fun MarketItemListItemByTotal(
     item: UiListingDetail
 ) {
-    Row(
-        horizontalArrangement = Arrangement.SpaceBetween,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp)
-    ) {
-        if (item.hq) {
-            AsyncImage(model = "https://xivapi.com/img-misc/hq.png", contentDescription = "")
-        }
-        Text(text = item.retainerName)
-        Text(text = item.quantity.toString())
-        Text(text = item.pricePerUnit.toString())
-        Text(text = item.total.toString())
+    Column {
+        ListItem(
+            headlineText = { Text(item.total.toString()) },
+            supportingText = { Text("${item.quantity} x ${item.pricePerUnit}") },
+            trailingContent =
+            {
+                if (item.hq) {
+                    ImageWithPreview(
+                        url = "https://xivapi.com/img-misc/hq.png",
+                        isLoading = false,
+                        drawableId = 0
+                    )
+                }
+            },
+        )
+        Divider()
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun MarketItemListItemByUnit(
+    item: UiListingDetail
+) {
+    Column {
+        ListItem(
+            leadingContent = {
+                ImageWithPreview(
+                    url = "https://xivapi.com/img-misc/061575.png",
+                    isLoading = false,
+                    drawableId = 0
+                )
+            },
+            headlineText = { Text(item.pricePerUnit.toString()) },
+            supportingText = { Text("${item.total} for ${item.quantity}") },
+            trailingContent =
+            {
+                if (item.hq) {
+                    ImageWithPreview(
+                        url = "https://xivapi.com/img-misc/hq.png",
+                        isLoading = false,
+                        drawableId = 0
+                    )
+                }
+            },
+        )
+        Divider()
     }
 }
 
 @Preview
 @Composable
 fun MarketItemListItemPreview() {
-    MarketItemListItem(
+    MarketItemListItemByTotal(
         item = UiListingDetail(
             50, 3, true, "RetainerNameLol", 2, 150
         )
     )
+}
+
+@Preview
+@Composable
+fun MarketItemListItemUnitPreview() {
+    MarketItemListItemByUnit(
+        item = UiListingDetail(
+            50, 3, true, "RetainerNameLol", 2, 150
+        )
+    )
+
 }
