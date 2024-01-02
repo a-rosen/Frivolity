@@ -11,10 +11,10 @@ data class ApiItemDetail(
     @SerializedName("LevelItem") val iLevel: Int,
     @SerializedName("ClassJobCategory") var jobToEquip: Map<String, Any>,
     @SerializedName("Description") val description: String,
-    @SerializedName("ItemKind.Name") val type: String?,
+    @SerializedName("ItemKind") val itemKind: ApiItemKind,
 )
 
 fun ApiItemDetail.asUiItemDetail() =
     UiItemDetail(
-        name, id, iconUrl, levelToEquip, iLevel, jobToEquip, description, type
+        name, id, iconUrl, levelToEquip, iLevel, jobToEquip, description, itemKind.type
     )

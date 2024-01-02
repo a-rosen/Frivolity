@@ -28,6 +28,7 @@ import com.example.frivolity.network.models.universalisapi.ApiMarketItemDetail
 import com.example.frivolity.network.models.universalisapi.ApiPrices
 import com.example.frivolity.network.models.universalisapi.asUiListingDetail
 import com.example.frivolity.network.models.xivapi.ApiItemDetail
+import com.example.frivolity.network.models.xivapi.ApiItemKind
 import com.example.frivolity.network.models.xivapi.asUiItemDetail
 import com.example.frivolity.ui.components.CheapestCard
 import com.example.frivolity.ui.components.ItemDetailCard
@@ -145,7 +146,7 @@ fun ItemDetailScreenPreviewButHasStuff(
                     50,
                     jobToEquip = mapOf(Pair("Name", "ACN BLM RDM SMN")),
                     "This sure is an item that does stuff.",
-                    "Arms"
+                    ApiItemKind("Arms")
                 ),
                 regionToSearch = "TestRegion",
                 cheapestPrice = ApiPrices(

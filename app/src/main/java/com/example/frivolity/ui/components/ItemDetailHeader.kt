@@ -3,9 +3,11 @@ package com.example.frivolity.ui.components
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -44,6 +46,7 @@ fun ItemDetailCard(
                 .padding(top = 4.dp)
                 .align(Alignment.CenterHorizontally)
         )
+        Spacer(modifier = Modifier.size(8.dp))
 
         if (itemDetail.jobToEquip?.get("Name") != null) {
             Text(
@@ -54,6 +57,8 @@ fun ItemDetailCard(
                     .padding(bottom = 8.dp)
             )
         }
+        Spacer(modifier = Modifier.size(8.dp))
+
         Row(
             horizontalArrangement = Arrangement.SpaceEvenly,
             modifier = Modifier
@@ -68,6 +73,8 @@ fun ItemDetailCard(
                 Text(text = "Level To Equip: ${itemDetail.levelToEquip}")
             }
         }
+        Spacer(modifier = Modifier.size(8.dp))
+
         Text(
             text = itemDetail.description,
             style = MaterialTheme.typography.bodySmall,

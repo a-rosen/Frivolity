@@ -3,6 +3,7 @@ package com.example.frivolity.ui.screens
 import com.example.frivolity.network.models.universalisapi.ApiMarketItemDetail
 import com.example.frivolity.network.models.universalisapi.ApiPrices
 import com.example.frivolity.network.models.xivapi.ApiItemDetail
+import com.example.frivolity.network.models.xivapi.ApiItemKind
 
 data class ItemDetailScreenState(
     val marketItemDetail: ApiMarketItemDetail,
@@ -43,7 +44,8 @@ data class ItemDetailScreenState(
                 unitsSold = 0
             ),
             itemDetail = ApiItemDetail(
-                "", 0, "", 0, 0, mapOf(Pair("Name", "JOB JOB JOB JOB")), "", ""),
+                "", 0, "", 0, 0, mapOf(Pair("Name", "JOB JOB JOB JOB")), "", ApiItemKind("")
+            ),
             regionToSearch = "North-America",
             cheapestPrice = ApiPrices(0, 0, "Faerie")
         )
