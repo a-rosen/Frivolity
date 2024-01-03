@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.frivolity.repository.FrivolityRepository
+import com.example.frivolity.ui.models.SortMethods
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -38,12 +39,35 @@ class ItemDetailScreenViewModel @Inject constructor(
                     marketItemDetail = marketItem,
                     itemDetail = itemDetail,
                     regionToSearch = "North-America",
-                    it.cheapestPrice
+                    it.cheapestPrice,
+                    it.sortMethod,
                 )
             }
-
             findCheapestItemListing()
+        }
+    }
 
+    fun sortByTotal() {
+        _internalScreenStateFlow.update {
+            ItemDetailScreenState(
+                it.marketItemDetail,
+                it.itemDetail,
+                it.regionToSearch,
+                it.cheapestPrice,
+                SortMethods.TOTAL
+            )
+        }
+    }
+
+    fun sortByUnit() {
+        _internalScreenStateFlow.update {
+            ItemDetailScreenState(
+                it.marketItemDetail,
+                it.itemDetail,
+                it.regionToSearch,
+                it.cheapestPrice,
+                SortMethods.UNIT
+            )
         }
     }
 
@@ -60,7 +84,8 @@ class ItemDetailScreenViewModel @Inject constructor(
                 it.marketItemDetail,
                 it.itemDetail,
                 it.regionToSearch,
-                cheapestListing
+                cheapestListing,
+                it.sortMethod
             )
             }
         }

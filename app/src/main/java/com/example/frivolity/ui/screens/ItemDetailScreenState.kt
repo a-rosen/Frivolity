@@ -4,12 +4,14 @@ import com.example.frivolity.network.models.universalisapi.ApiMarketItemDetail
 import com.example.frivolity.network.models.universalisapi.ApiPrices
 import com.example.frivolity.network.models.xivapi.ApiItemDetail
 import com.example.frivolity.network.models.xivapi.ApiItemKind
+import com.example.frivolity.ui.models.SortMethods
 
 data class ItemDetailScreenState(
     val marketItemDetail: ApiMarketItemDetail,
     val itemDetail: ApiItemDetail,
     val regionToSearch: String,
-    val cheapestPrice: ApiPrices?
+    val cheapestPrice: ApiPrices?,
+    val sortMethod: SortMethods,
 ) {
     companion object {
         val EMPTY = ItemDetailScreenState(
@@ -47,7 +49,8 @@ data class ItemDetailScreenState(
                 "", 0, "", 0, 0, mapOf(Pair("Name", "JOB JOB JOB JOB")), "", ApiItemKind("")
             ),
             regionToSearch = "North-America",
-            cheapestPrice = ApiPrices(0, 0, "Faerie")
+            cheapestPrice = ApiPrices(0, 0, "Faerie"),
+            sortMethod = SortMethods.TOTAL
         )
     }
 }

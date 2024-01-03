@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.dp
 import com.example.frivolity.ui.models.UiItemDetail
 
 @Composable
-fun ItemDetailCard(
+fun ItemDetailHeader(
     itemDetail: UiItemDetail,
     numberOfListings: String,
 ) {
@@ -22,7 +22,7 @@ fun ItemDetailCard(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(12.dp)
+            .padding(top = 12.dp, start = 12.dp, end = 12.dp)
     ) {
         ImageWithBadge(
             imageUrl = "https://xivapi.com/${itemDetail.iconUrl}",
@@ -44,7 +44,7 @@ fun ItemDetailCard(
 @Preview(showBackground = true)
 @Composable
 fun ItemDetailCardPreviewEquippable() {
-    ItemDetailCard(
+    ItemDetailHeader(
         itemDetail = UiItemDetail(
             "Allagan Tomestone of Frivolity But Much Longer In Title",
             0,
@@ -62,7 +62,7 @@ fun ItemDetailCardPreviewEquippable() {
 @Preview(showBackground = true)
 @Composable
 fun ItemDetailCardPreviewRegular() {
-    ItemDetailCard(
+    ItemDetailHeader(
         itemDetail = UiItemDetail(
             "Allagan Tomestone of Frivolity",
             0,

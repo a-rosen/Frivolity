@@ -2,9 +2,7 @@ package com.example.frivolity.ui.screens
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.consumeWindowInsets
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -23,15 +21,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.SavedStateHandle
 import com.example.frivolity.navigation.NavigationDestination
+import com.example.frivolity.network.MockUniversalisApi
+import com.example.frivolity.network.MockXIVApi
 import com.example.frivolity.network.models.universalisapi.ApiMarketItemDetail
 import com.example.frivolity.network.models.universalisapi.ApiPrices
 import com.example.frivolity.network.models.universalisapi.asUiListingDetail
 import com.example.frivolity.network.models.xivapi.ApiItemDetail
 import com.example.frivolity.network.models.xivapi.ApiItemKind
 import com.example.frivolity.network.models.xivapi.asUiItemDetail
-import com.example.frivolity.ui.components.ItemDetailCard
+import com.example.frivolity.repository.NetworkRepository
+import com.example.frivolity.ui.components.ChipRow
+import com.example.frivolity.ui.components.ItemDetailHeader
 import com.example.frivolity.ui.components.ListingListItem
+import com.example.frivolity.ui.models.SortMethods
 
 object DetailsDestination : NavigationDestination {
     override val route = "ItemDetailScreen"
@@ -44,15 +48,20 @@ object DetailsDestination : NavigationDestination {
 @Composable
 fun ItemDetailScreen(
     state: ItemDetailScreenState,
+    viewModel: ItemDetailScreenViewModel,
     navigateBack: () -> Unit,
 ) {
 
     val item = state.marketItemDetail
     val itemDetail = state.itemDetail
 
-    val listings = item.listings.map {
+    val listingsByTotal = item.listings.map {
         it.asUiListingDetail()
     }
+    val listingsByUnit = listingsByTotal.sortedBy {
+        it.pricePerUnit
+    }
+
 
     Scaffold(
         topBar = {
@@ -91,24 +100,37 @@ fun ItemDetailScreen(
                 .padding(innerPadding)
                 .consumeWindowInsets(innerPadding),
         ) {
-            ItemDetailCard(
+            ItemDetailHeader(
                 itemDetail = itemDetail.asUiItemDetail(),
                 numberOfListings = item.listings.size.toString()
             )
 
-            Spacer(
-                modifier = Modifier
-                    .height(32.dp)
+            ChipRow(
+                onTotalSortClick = { viewModel.sortByTotal() },
+                onUnitSortClick = { viewModel.sortByUnit() },
+                state = state
             )
 
             LazyColumn(
             ) {
-                items(listings) {
-                    ListingListItem(
-                        headlineText = "%,d".format(it.total),
-                        supportingText = "%,d".format(it.quantity) + " x " + "%,d".format(it.pricePerUnit),
-                        isHq = it.hq)
+                if (state.sortMethod == SortMethods.TOTAL) {
+                    items(listingsByTotal) {
+                        ListingListItem(
+                            headlineText = "%,d".format(it.total),
+                            supportingText = "%,d".format(it.quantity) + " x " + "%,d".format(it.pricePerUnit),
+                            isHq = it.hq
+                        )
+                    }
+                } else {
+                    items(listingsByUnit) {
+                        ListingListItem(
+                            headlineText = "%,d".format(it.pricePerUnit),
+                            supportingText = "%,d".format(it.quantity) + " for " + "%,d".format(it.total),
+                            isHq = it.hq
+                        )
+                    }
                 }
+
             }
         }
     }
@@ -121,6 +143,12 @@ fun ItemDetailScreenPreviewButItsEmptyLol(
     MaterialTheme {
         ItemDetailScreen(
             state = ItemDetailScreenState.EMPTY,
+            viewModel = ItemDetailScreenViewModel(
+                repository = NetworkRepository(
+                    MockUniversalisApi(), MockXIVApi()
+                ),
+                detailSavedStateHandle = SavedStateHandle()
+            ),
             navigateBack = {}
         )
     }
@@ -147,7 +175,14 @@ fun ItemDetailScreenPreviewButHasStuff(
                 regionToSearch = "TestRegion",
                 cheapestPrice = ApiPrices(
                     5, 2000, "Gilgamesh"
-                )
+                ),
+                sortMethod = SortMethods.UNIT,
+            ),
+            viewModel = ItemDetailScreenViewModel(
+                repository = NetworkRepository(
+                    MockUniversalisApi(), MockXIVApi()
+                ),
+                detailSavedStateHandle = SavedStateHandle()
             ),
             navigateBack = {}
         )
