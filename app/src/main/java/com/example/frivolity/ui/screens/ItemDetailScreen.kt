@@ -30,7 +30,6 @@ import com.example.frivolity.network.models.universalisapi.asUiListingDetail
 import com.example.frivolity.network.models.xivapi.ApiItemDetail
 import com.example.frivolity.network.models.xivapi.ApiItemKind
 import com.example.frivolity.network.models.xivapi.asUiItemDetail
-import com.example.frivolity.ui.components.CheapestCard
 import com.example.frivolity.ui.components.ItemDetailCard
 import com.example.frivolity.ui.components.ListingListItem
 
@@ -94,17 +93,14 @@ fun ItemDetailScreen(
         ) {
             ItemDetailCard(
                 itemDetail = itemDetail.asUiItemDetail(),
+                numberOfListings = item.listings.size.toString()
             )
 
             Spacer(
                 modifier = Modifier
                     .height(32.dp)
             )
-            state.cheapestPrice?.let {
-                CheapestCard(
-                    prices = it,
-                )
-            }
+
             LazyColumn(
             ) {
                 items(listings) {

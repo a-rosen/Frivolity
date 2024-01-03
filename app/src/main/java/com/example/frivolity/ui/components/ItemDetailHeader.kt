@@ -1,86 +1,42 @@
 package com.example.frivolity.ui.components
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.frivolity.R
 import com.example.frivolity.ui.models.UiItemDetail
 
 @Composable
 fun ItemDetailCard(
     itemDetail: UiItemDetail,
+    numberOfListings: String,
 ) {
-    Column(
+
+    Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(12.dp)
     ) {
-        ImageWithPreview(
-            url = "https://xivapi.com/${itemDetail.iconUrl}",
-            isLoading = false,
-            drawableId = R.drawable.baseline_cruelty_free_24,
+        ImageWithBadge(
+            imageUrl = "https://xivapi.com/${itemDetail.iconUrl}",
+            badgeText = numberOfListings,
             modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .padding(top = 4.dp)
-                .defaultMinSize(48.dp, 48.dp)
+                .align(Alignment.CenterVertically)
         )
         Text(
             text = itemDetail.name,
             style = MaterialTheme.typography.headlineSmall,
             textAlign = TextAlign.Center,
             modifier = Modifier
-                .padding(top = 4.dp)
-                .align(Alignment.CenterHorizontally)
-        )
-        Spacer(modifier = Modifier.size(8.dp))
-
-        if (itemDetail.jobToEquip?.get("Name") != null) {
-            Text(
-                text = itemDetail.jobToEquip["Name"].toString(),
-                style = MaterialTheme.typography.labelMedium,
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .padding(bottom = 8.dp)
-            )
-        }
-        Spacer(modifier = Modifier.size(8.dp))
-
-        Row(
-            horizontalArrangement = Arrangement.SpaceEvenly,
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .fillMaxWidth()
-        ) {
-            Text(text = "iLevel: ${itemDetail.iLevel}")
-            if (itemDetail.type != null) {
-                Text(text = "Type: ${itemDetail.type}")
-            }
-            if (itemDetail.levelToEquip != null) {
-                Text(text = "Level To Equip: ${itemDetail.levelToEquip}")
-            }
-        }
-        Spacer(modifier = Modifier.size(8.dp))
-
-        Text(
-            text = itemDetail.description,
-            style = MaterialTheme.typography.bodySmall,
-            fontStyle = FontStyle.Italic,
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
+                .padding(4.dp)
+                .align(Alignment.CenterVertically)
         )
     }
 }
@@ -99,6 +55,7 @@ fun ItemDetailCardPreviewEquippable() {
             description = "This sure is an item that does things.",
             type = "Arms"
         ),
+        numberOfListings = "1"
     )
 }
 
@@ -116,5 +73,6 @@ fun ItemDetailCardPreviewRegular() {
             description = "This is a piece of furniture or something, you can't put it on.",
             type = "Outdoor Furniture"
         ),
+        numberOfListings = "999"
     )
 }
