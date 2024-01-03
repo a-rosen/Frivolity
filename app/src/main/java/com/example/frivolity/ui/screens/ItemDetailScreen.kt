@@ -55,10 +55,13 @@ fun ItemDetailScreen(
     val item = state.marketItemDetail
     val itemDetail = state.itemDetail
 
-    val listingsByTotal = item.listings.map {
+    val listings = item.listings.map {
         it.asUiListingDetail()
     }
-    val listingsByUnit = listingsByTotal.sortedBy {
+    val listingsByTotal = listings.sortedBy {
+       it.total
+    }
+    val listingsByUnit = listings.sortedBy {
         it.pricePerUnit
     }
 
