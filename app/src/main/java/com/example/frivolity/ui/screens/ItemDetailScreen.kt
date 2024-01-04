@@ -104,13 +104,13 @@ fun ItemDetailScreen(
                 .consumeWindowInsets(innerPadding),
         ) {
             ItemDetailHeader(
-                itemDetail = itemDetail.asUiItemDetail(),
-                numberOfListings = item.listings.size.toString()
+                itemDetail = itemDetail.asUiItemDetail()
             )
 
             ChipRow(
                 onTotalSortClick = { viewModel.sortByTotal() },
                 onUnitSortClick = { viewModel.sortByUnit() },
+                onHqOnlyClick = { viewModel.filterHq() },
                 state = state
             )
 
@@ -118,22 +118,27 @@ fun ItemDetailScreen(
             ) {
                 if (state.sortMethod == SortMethods.TOTAL) {
                     items(listingsByTotal) {
-                        ListingListItem(
-                            headlineText = "%,d".format(it.total),
-                            supportingText = "%,d".format(it.quantity) + " x " + "%,d".format(it.pricePerUnit),
-                            isHq = it.hq
-                        )
+                        if (it.hq || !state.showHqOnly) {
+                            ListingListItem(
+                                headlineText = "%,d".format(it.total),
+                                supportingText = "%,d".format(it.quantity) + " x " + "%,d".format(it.pricePerUnit),
+                                isHq = it.hq
+                            )
+                        }
                     }
                 } else {
                     items(listingsByUnit) {
-                        ListingListItem(
-                            headlineText = "%,d".format(it.pricePerUnit),
-                            supportingText = "%,d".format(it.quantity) + " for " + "%,d".format(it.total),
-                            isHq = it.hq
-                        )
+                        if (it.hq || !state.showHqOnly) {
+                            ListingListItem(
+                                headlineText = "%,d".format(it.pricePerUnit),
+                                supportingText = "%,d".format(it.quantity) + " for " + "%,d".format(
+                                    it.total
+                                ),
+                                isHq = it.hq
+                            )
+                        }
                     }
                 }
-
             }
         }
     }
@@ -180,6 +185,7 @@ fun ItemDetailScreenPreviewButHasStuff(
                     5, 2000, "Gilgamesh"
                 ),
                 sortMethod = SortMethods.UNIT,
+                showHqOnly = false
             ),
             viewModel = ItemDetailScreenViewModel(
                 repository = NetworkRepository(

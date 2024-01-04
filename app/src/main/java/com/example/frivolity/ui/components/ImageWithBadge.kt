@@ -25,7 +25,6 @@ fun ImageWithBadge(
     ) {
         ImageWithPreview(
             url = imageUrl,
-            isLoading = false,
             drawableId = R.drawable.baseline_cruelty_free_24,
             modifier = Modifier
                 .padding(4.dp)

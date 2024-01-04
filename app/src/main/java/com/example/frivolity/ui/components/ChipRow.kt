@@ -17,6 +17,7 @@ import com.example.frivolity.ui.screens.ItemDetailScreenState
 fun ChipRow(
     onTotalSortClick: () -> Unit,
     onUnitSortClick: () -> Unit,
+    onHqOnlyClick: () -> Unit,
     state: ItemDetailScreenState,
 ) {
     Row(
@@ -33,6 +34,11 @@ fun ChipRow(
             selected = state.sortMethod == SortMethods.UNIT,
             onClick = { onUnitSortClick() },
             label = { Text(text = "Sort By Unit") })
+        FilterChip(
+            selected = state.showHqOnly,
+            onClick = { onHqOnlyClick() },
+            label = { Text(text = "HQ Only") })
+
     }
 
 }
@@ -40,5 +46,5 @@ fun ChipRow(
 @Composable
 @Preview
 fun ChipRowPreview() {
-    ChipRow({}, {}, ItemDetailScreenState.EMPTY)
+    ChipRow({}, {}, {}, ItemDetailScreenState.EMPTY)
 }

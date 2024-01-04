@@ -12,6 +12,7 @@ data class ItemDetailScreenState(
     val regionToSearch: String,
     val cheapestPrice: ApiPrices?,
     val sortMethod: SortMethods,
+    val showHqOnly: Boolean,
 ) {
     companion object {
         val EMPTY = ItemDetailScreenState(
@@ -50,7 +51,8 @@ data class ItemDetailScreenState(
             ),
             regionToSearch = "North-America",
             cheapestPrice = ApiPrices(0, 0, "Faerie"),
-            sortMethod = SortMethods.TOTAL
+            sortMethod = SortMethods.TOTAL,
+            showHqOnly = false
         )
     }
 }

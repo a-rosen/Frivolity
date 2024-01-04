@@ -21,7 +21,6 @@ fun ListingListItem(
             leadingContent = {
                 ImageWithPreview(
                     url = "https://xivapi.com/img-misc/061575.png",
-                    isLoading = false,
                     drawableId = 0
                 )
             },
@@ -42,7 +41,6 @@ fun ListingListItem(
                 if (isHq) {
                     ImageWithPreview(
                         url = "https://xivapi.com/img-misc/hq.png",
-                        isLoading = false,
                         drawableId = 0
                     )
                 }

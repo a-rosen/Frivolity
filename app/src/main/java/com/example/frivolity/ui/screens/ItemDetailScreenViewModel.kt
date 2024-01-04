@@ -41,6 +41,7 @@ class ItemDetailScreenViewModel @Inject constructor(
                     regionToSearch = "North-America",
                     it.cheapestPrice,
                     it.sortMethod,
+                    it.showHqOnly
                 )
             }
             findCheapestItemListing()
@@ -54,7 +55,8 @@ class ItemDetailScreenViewModel @Inject constructor(
                 it.itemDetail,
                 it.regionToSearch,
                 it.cheapestPrice,
-                SortMethods.TOTAL
+                SortMethods.TOTAL,
+                it.showHqOnly
             )
         }
     }
@@ -66,9 +68,24 @@ class ItemDetailScreenViewModel @Inject constructor(
                 it.itemDetail,
                 it.regionToSearch,
                 it.cheapestPrice,
-                SortMethods.UNIT
+                SortMethods.UNIT,
+                it.showHqOnly
             )
         }
+    }
+
+    fun filterHq() {
+        _internalScreenStateFlow.update {
+            ItemDetailScreenState(
+                it.marketItemDetail,
+                it.itemDetail,
+                it.regionToSearch,
+                it.cheapestPrice,
+                it.sortMethod,
+                !it.showHqOnly
+            )
+        }
+
     }
 
     private fun findCheapestItemListing() {
@@ -85,7 +102,8 @@ class ItemDetailScreenViewModel @Inject constructor(
                 it.itemDetail,
                 it.regionToSearch,
                 cheapestListing,
-                it.sortMethod
+                it.sortMethod,
+                it.showHqOnly
             )
             }
         }
