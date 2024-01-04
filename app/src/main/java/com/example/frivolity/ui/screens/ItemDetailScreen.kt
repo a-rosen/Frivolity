@@ -2,6 +2,7 @@ package com.example.frivolity.ui.screens
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -32,6 +33,7 @@ import com.example.frivolity.network.models.xivapi.ApiItemDetail
 import com.example.frivolity.network.models.xivapi.ApiItemKind
 import com.example.frivolity.network.models.xivapi.asUiItemDetail
 import com.example.frivolity.repository.NetworkRepository
+import com.example.frivolity.ui.components.CheapestCard
 import com.example.frivolity.ui.components.ChipRow
 import com.example.frivolity.ui.components.ItemDetailHeader
 import com.example.frivolity.ui.components.ListingListItem
@@ -59,7 +61,7 @@ fun ItemDetailScreen(
         it.asUiListingDetail()
     }
     val listingsByTotal = listings.sortedBy {
-       it.total
+        it.total
     }
     val listingsByUnit = listings.sortedBy {
         it.pricePerUnit
@@ -106,6 +108,24 @@ fun ItemDetailScreen(
             ItemDetailHeader(
                 itemDetail = itemDetail.asUiItemDetail()
             )
+
+            Row {
+                if (state.sortMethod == SortMethods.TOTAL) {
+                    state.cheapestTotalPrice?.let {
+                        CheapestCard(
+                            prices = it,
+                            state = state
+                        )
+                    }
+                } else {
+                    state.cheapestUnitPrice?.let {
+                        CheapestCard(
+                            prices = it,
+                            state = state
+                        )
+                    }
+                }
+            }
 
             ChipRow(
                 onTotalSortClick = { viewModel.sortByTotal() },
@@ -181,8 +201,11 @@ fun ItemDetailScreenPreviewButHasStuff(
                     ApiItemKind("Arms")
                 ),
                 regionToSearch = "TestRegion",
-                cheapestPrice = ApiPrices(
-                    5, 2000, "Gilgamesh"
+                cheapestTotalPrice = ApiPrices(
+                    5, 2000, 400, "Gilgamesh"
+                ),
+                cheapestUnitPrice = ApiPrices(
+                    99, 9900, 100, "Sargatanas"
                 ),
                 sortMethod = SortMethods.UNIT,
                 showHqOnly = false

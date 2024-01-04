@@ -10,7 +10,8 @@ data class ItemDetailScreenState(
     val marketItemDetail: ApiMarketItemDetail,
     val itemDetail: ApiItemDetail,
     val regionToSearch: String,
-    val cheapestPrice: ApiPrices?,
+    val cheapestTotalPrice: ApiPrices?,
+    val cheapestUnitPrice: ApiPrices?,
     val sortMethod: SortMethods,
     val showHqOnly: Boolean,
 ) {
@@ -50,7 +51,8 @@ data class ItemDetailScreenState(
                 "", 0, "", 0, 0, mapOf(Pair("Name", "JOB JOB JOB JOB")), "", ApiItemKind("")
             ),
             regionToSearch = "North-America",
-            cheapestPrice = ApiPrices(0, 0, "Faerie"),
+            cheapestTotalPrice = ApiPrices(0, 0, 0, "Faerie"),
+            cheapestUnitPrice = ApiPrices(0, 0, 0, "Faerie"),
             sortMethod = SortMethods.TOTAL,
             showHqOnly = false
         )

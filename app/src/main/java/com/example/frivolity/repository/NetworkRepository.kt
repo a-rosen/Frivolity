@@ -28,7 +28,7 @@ class NetworkRepository @Inject constructor(
     }
 
     override suspend fun getMarketItemPrices(region: String, id: Int): ApiPricesList {
-        return universalisApi.getItemPrices(region, id, "listings.quantity,listings.total,listings.worldName")
+        return universalisApi.getItemPrices(region, id, "listings.quantity,listings.total,listings.worldName,listings.pricePerUnit")
     }
 
     override suspend fun getFullItemDetails(id: Int): ApiItemDetail {

@@ -39,25 +39,30 @@ class ItemDetailScreenViewModel @Inject constructor(
                     marketItemDetail = marketItem,
                     itemDetail = itemDetail,
                     regionToSearch = "North-America",
-                    it.cheapestPrice,
+                    it.cheapestTotalPrice,
+                    it.cheapestUnitPrice,
                     it.sortMethod,
                     it.showHqOnly
                 )
             }
-            findCheapestItemListing()
+            findCheapestPrices()
         }
     }
 
     fun sortByTotal() {
-        _internalScreenStateFlow.update {
-            ItemDetailScreenState(
-                it.marketItemDetail,
-                it.itemDetail,
-                it.regionToSearch,
-                it.cheapestPrice,
-                SortMethods.TOTAL,
-                it.showHqOnly
-            )
+        viewModelScope.launch(Dispatchers.IO) {
+            findCheapestPrices()
+            _internalScreenStateFlow.update {
+                ItemDetailScreenState(
+                    it.marketItemDetail,
+                    it.itemDetail,
+                    it.regionToSearch,
+                    it.cheapestTotalPrice,
+                    it.cheapestUnitPrice,
+                    SortMethods.TOTAL,
+                    it.showHqOnly
+                )
+            }
         }
     }
 
@@ -67,7 +72,8 @@ class ItemDetailScreenViewModel @Inject constructor(
                 it.marketItemDetail,
                 it.itemDetail,
                 it.regionToSearch,
-                it.cheapestPrice,
+                it.cheapestTotalPrice,
+                it.cheapestUnitPrice,
                 SortMethods.UNIT,
                 it.showHqOnly
             )
@@ -80,7 +86,8 @@ class ItemDetailScreenViewModel @Inject constructor(
                 it.marketItemDetail,
                 it.itemDetail,
                 it.regionToSearch,
-                it.cheapestPrice,
+                it.cheapestTotalPrice,
+                it.cheapestUnitPrice,
                 it.sortMethod,
                 !it.showHqOnly
             )
@@ -88,26 +95,28 @@ class ItemDetailScreenViewModel @Inject constructor(
 
     }
 
-    private fun findCheapestItemListing() {
+    private fun findCheapestPrices() {
         viewModelScope.launch(Dispatchers.IO) {
             val allPrices = repository
                 .getMarketItemPrices(_internalScreenStateFlow.value.regionToSearch, itemId)
                 .listings
 
-            val cheapest = allPrices.minOfOrNull { it.total }
-            val cheapestListing = allPrices.firstOrNull() { it.total == cheapest }
+            val cheapestTotal = allPrices.minOfOrNull { it.total }
+            val cheapestTotalListing = allPrices.firstOrNull() { it.total == cheapestTotal }
+            val cheapestUnit = allPrices.minOfOrNull { it.pricePerUnit }
+            val cheapestUnitListing = allPrices.firstOrNull() { it.pricePerUnit == cheapestUnit }
 
-            _internalScreenStateFlow.update {ItemDetailScreenState(
-                it.marketItemDetail,
-                it.itemDetail,
-                it.regionToSearch,
-                cheapestListing,
-                it.sortMethod,
-                it.showHqOnly
-            )
+            _internalScreenStateFlow.update {
+                ItemDetailScreenState(
+                    it.marketItemDetail,
+                    it.itemDetail,
+                    it.regionToSearch,
+                    cheapestTotalListing,
+                    cheapestUnitListing,
+                    it.sortMethod,
+                    it.showHqOnly
+                )
             }
         }
     }
-
-
 }
