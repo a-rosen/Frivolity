@@ -1,5 +1,6 @@
 package com.example.frivolity.ui.screens
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.consumeWindowInsets
@@ -109,13 +110,14 @@ fun ItemDetailScreen(
                 onDropdownClick = { viewModel.toggleDropdown() },
             )
 
-            if (state.shouldShowDropdown) {
+            AnimatedVisibility(visible = state.shouldShowDropdown) {
                 StatsRow(
                     state = state,
                     iLevel = itemDetail.iLevel,
                     levelToEquip = itemDetail.levelToEquip,
                 )
             }
+
 
             ChipRow(
                 onTotalSortClick = { viewModel.sortByTotal() },
