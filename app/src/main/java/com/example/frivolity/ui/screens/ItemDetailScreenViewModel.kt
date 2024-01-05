@@ -42,28 +42,44 @@ class ItemDetailScreenViewModel @Inject constructor(
                     it.cheapestTotalPrice,
                     it.cheapestUnitPrice,
                     it.sortMethod,
-                    it.showHqOnly
+                    it.showHqOnly,
+                    it.shouldShowDropdown
                 )
             }
             findCheapestPrices()
         }
     }
 
-    fun sortByTotal() {
-        viewModelScope.launch(Dispatchers.IO) {
-            findCheapestPrices()
-            _internalScreenStateFlow.update {
-                ItemDetailScreenState(
-                    it.marketItemDetail,
-                    it.itemDetail,
-                    it.regionToSearch,
-                    it.cheapestTotalPrice,
-                    it.cheapestUnitPrice,
-                    SortMethods.TOTAL,
-                    it.showHqOnly
-                )
-            }
+    fun toggleDropdown() {
+        _internalScreenStateFlow.update {
+            ItemDetailScreenState(
+                it.marketItemDetail,
+                it.itemDetail,
+                it.regionToSearch,
+                it.cheapestTotalPrice,
+                it.cheapestUnitPrice,
+                it.sortMethod,
+                it.showHqOnly,
+                !it.shouldShowDropdown
+            )
         }
+
+    }
+
+    fun sortByTotal() {
+        _internalScreenStateFlow.update {
+            ItemDetailScreenState(
+                it.marketItemDetail,
+                it.itemDetail,
+                it.regionToSearch,
+                it.cheapestTotalPrice,
+                it.cheapestUnitPrice,
+                SortMethods.TOTAL,
+                it.showHqOnly,
+                it.shouldShowDropdown
+            )
+        }
+
     }
 
     fun sortByUnit() {
@@ -75,7 +91,8 @@ class ItemDetailScreenViewModel @Inject constructor(
                 it.cheapestTotalPrice,
                 it.cheapestUnitPrice,
                 SortMethods.UNIT,
-                it.showHqOnly
+                it.showHqOnly,
+                it.shouldShowDropdown
             )
         }
     }
@@ -89,7 +106,8 @@ class ItemDetailScreenViewModel @Inject constructor(
                 it.cheapestTotalPrice,
                 it.cheapestUnitPrice,
                 it.sortMethod,
-                !it.showHqOnly
+                !it.showHqOnly,
+                it.shouldShowDropdown
             )
         }
 
@@ -114,7 +132,8 @@ class ItemDetailScreenViewModel @Inject constructor(
                     cheapestTotalListing,
                     cheapestUnitListing,
                     it.sortMethod,
-                    it.showHqOnly
+                    it.showHqOnly,
+                    it.shouldShowDropdown
                 )
             }
         }

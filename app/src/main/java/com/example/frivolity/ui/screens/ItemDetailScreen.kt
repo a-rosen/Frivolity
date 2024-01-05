@@ -102,14 +102,20 @@ fun ItemDetailScreen(
         Column(
             modifier = Modifier
                 .padding(innerPadding)
-                .consumeWindowInsets(innerPadding),
+                .consumeWindowInsets(innerPadding)
         ) {
             ItemDetailHeader(
-                itemDetail = itemDetail.asUiItemDetail()
+                itemDetail = itemDetail.asUiItemDetail(),
+                onDropdownClick = { viewModel.toggleDropdown() },
             )
 
-            StatsRow(state = state, iLevel = itemDetail.iLevel, levelToEquip = itemDetail.levelToEquip )
-
+            if (state.shouldShowDropdown) {
+                StatsRow(
+                    state = state,
+                    iLevel = itemDetail.iLevel,
+                    levelToEquip = itemDetail.levelToEquip,
+                )
+            }
 
             ChipRow(
                 onTotalSortClick = { viewModel.sortByTotal() },
@@ -192,7 +198,8 @@ fun ItemDetailScreenPreviewButHasStuff(
                     99, 9900, 100, "Sargatanas"
                 ),
                 sortMethod = SortMethods.UNIT,
-                showHqOnly = false
+                showHqOnly = false,
+                shouldShowDropdown = false
             ),
             viewModel = ItemDetailScreenViewModel(
                 repository = NetworkRepository(

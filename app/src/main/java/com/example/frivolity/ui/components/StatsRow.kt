@@ -41,9 +41,8 @@ fun StatsRow(
                 text = iLevel.toString(),
                 style = MaterialTheme.typography.headlineSmall
             )
-
         }
-
+        
         Column(
             horizontalAlignment = Alignment.Start,
             modifier = Modifier

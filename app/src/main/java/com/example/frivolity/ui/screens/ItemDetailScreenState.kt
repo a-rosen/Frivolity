@@ -14,6 +14,7 @@ data class ItemDetailScreenState(
     val cheapestUnitPrice: ApiPrices?,
     val sortMethod: SortMethods,
     val showHqOnly: Boolean,
+    val shouldShowDropdown: Boolean,
 ) {
     companion object {
         val EMPTY = ItemDetailScreenState(
@@ -54,7 +55,8 @@ data class ItemDetailScreenState(
             cheapestTotalPrice = ApiPrices(0, 0, 0, "Faerie"),
             cheapestUnitPrice = ApiPrices(0, 0, 0, "Faerie"),
             sortMethod = SortMethods.TOTAL,
-            showHqOnly = false
+            showHqOnly = false,
+            shouldShowDropdown = false
         )
     }
 }
