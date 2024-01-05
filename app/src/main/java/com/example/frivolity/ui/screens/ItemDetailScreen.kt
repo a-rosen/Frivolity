@@ -2,7 +2,6 @@ package com.example.frivolity.ui.screens
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -33,10 +32,10 @@ import com.example.frivolity.network.models.xivapi.ApiItemDetail
 import com.example.frivolity.network.models.xivapi.ApiItemKind
 import com.example.frivolity.network.models.xivapi.asUiItemDetail
 import com.example.frivolity.repository.NetworkRepository
-import com.example.frivolity.ui.components.CheapestCard
 import com.example.frivolity.ui.components.ChipRow
 import com.example.frivolity.ui.components.ItemDetailHeader
 import com.example.frivolity.ui.components.ListingListItem
+import com.example.frivolity.ui.components.StatsRow
 import com.example.frivolity.ui.models.SortMethods
 
 object DetailsDestination : NavigationDestination {
@@ -109,23 +108,8 @@ fun ItemDetailScreen(
                 itemDetail = itemDetail.asUiItemDetail()
             )
 
-            Row {
-                if (state.sortMethod == SortMethods.TOTAL) {
-                    state.cheapestTotalPrice?.let {
-                        CheapestCard(
-                            prices = it,
-                            state = state
-                        )
-                    }
-                } else {
-                    state.cheapestUnitPrice?.let {
-                        CheapestCard(
-                            prices = it,
-                            state = state
-                        )
-                    }
-                }
-            }
+            StatsRow(state = state, iLevel = itemDetail.iLevel, levelToEquip = itemDetail.levelToEquip )
+
 
             ChipRow(
                 onTotalSortClick = { viewModel.sortByTotal() },
