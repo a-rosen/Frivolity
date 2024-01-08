@@ -9,11 +9,12 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -23,6 +24,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.SavedStateHandle
+import com.example.frivolity.R
 import com.example.frivolity.navigation.NavigationDestination
 import com.example.frivolity.network.MockUniversalisApi
 import com.example.frivolity.network.MockXIVApi
@@ -37,6 +39,7 @@ import com.example.frivolity.ui.components.ChipRow
 import com.example.frivolity.ui.components.ItemDetailHeader
 import com.example.frivolity.ui.components.ListingListItem
 import com.example.frivolity.ui.components.StatsRow
+import com.example.frivolity.ui.components.VectorIcon
 import com.example.frivolity.ui.models.SortMethods
 
 object DetailsDestination : NavigationDestination {
@@ -95,8 +98,25 @@ fun ItemDetailScreen(
             )
         },
         bottomBar = {
-            BottomAppBar {
-
+            NavigationBar {
+                NavigationBarItem(
+                    selected = false,
+                    onClick = { /*TODO*/ },
+                    icon = { VectorIcon(drawableId = R.drawable.ic_world, description = "Switch DC") },
+                    label = { Text("Switch DC") }
+                )
+                NavigationBarItem(
+                    selected = false,
+                    onClick = { /*TODO*/ },
+                    icon = { VectorIcon(drawableId = R.drawable.ic_group, description = "Switch World" ) },
+                    label = { Text("Switch World"
+                    )}
+                )
+                NavigationBarItem(
+                    selected = false,
+                    onClick = { /*TODO*/ },
+                    icon = { /*TODO*/ }
+                )
             }
         },
     ) { innerPadding ->
@@ -117,7 +137,6 @@ fun ItemDetailScreen(
                     levelToEquip = itemDetail.levelToEquip,
                 )
             }
-
 
             ChipRow(
                 onTotalSortClick = { viewModel.sortByTotal() },
