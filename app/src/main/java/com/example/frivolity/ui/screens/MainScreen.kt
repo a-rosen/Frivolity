@@ -8,7 +8,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import com.example.frivolity.ui.components.ButtonWithDropdown
+import com.example.frivolity.ui.components.ChipWithDropdown
 import com.example.frivolity.ui.components.InputWithButton
 import com.example.frivolity.ui.components.ItemListItem
 
@@ -27,7 +27,7 @@ fun MainScreen(
     val selectedDcWorldsNames = selectedDcWorlds.map { it.name }
 
     Column {
-        ButtonWithDropdown(
+        ChipWithDropdown(
             menuItems = dataCentersNames,
             displayText = "Select Data Center",
             onItemClicked = { viewModel.selectDataCenter(it) }
@@ -35,7 +35,7 @@ fun MainScreen(
 
         Text(text = mainScreenState.selectedDC?.name ?: "")
 
-        ButtonWithDropdown(
+        ChipWithDropdown(
             menuItems = selectedDcWorldsNames,
             displayText = "Select World",
             onItemClicked = { viewModel.selectWorld(it) }

@@ -29,15 +29,23 @@ fun ChipRow(
         FilterChip(
             selected = state.sortMethod == SortMethods.TOTAL,
             onClick = { onTotalSortClick() },
-            label = { Text(text = "Sort By Total") })
-        FilterChip(
-            selected = state.sortMethod == SortMethods.UNIT,
-            onClick = { onUnitSortClick() },
-            label = { Text(text = "Sort By Unit") })
+            label = { Text(text = "Sort") })
+//        FilterChip(
+//            selected = state.sortMethod == SortMethods.UNIT,
+//            onClick = { onUnitSortClick() },
+//            label = { Text(text = "Sort By Unit") })
         FilterChip(
             selected = state.showHqOnly,
             onClick = { onHqOnlyClick() },
             label = { Text(text = "HQ Only") })
+        ChipWithDropdown(
+            displayText = "Switch DC" ,
+            menuItems = listOf(),
+            onItemClicked = {})
+        ChipWithDropdown(
+            displayText = "Switch World" ,
+            menuItems = listOf(),
+            onItemClicked = {})
 
     }
 
