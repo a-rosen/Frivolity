@@ -50,7 +50,7 @@ fun FrivolityNavGraph(
                 viewModel = hiltViewModel(),
                 navigateBack = {
                     navController.popBackStack()
-                }
+                },
             )
         }
     }

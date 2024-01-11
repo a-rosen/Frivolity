@@ -21,20 +21,11 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.SavedStateHandle
 import com.example.frivolity.R
 import com.example.frivolity.navigation.NavigationDestination
-import com.example.frivolity.network.MockUniversalisApi
-import com.example.frivolity.network.MockXIVApi
-import com.example.frivolity.network.models.universalisapi.ApiMarketItemDetail
-import com.example.frivolity.network.models.universalisapi.ApiPrices
 import com.example.frivolity.network.models.universalisapi.asUiListingDetail
-import com.example.frivolity.network.models.xivapi.ApiItemDetail
-import com.example.frivolity.network.models.xivapi.ApiItemKind
 import com.example.frivolity.network.models.xivapi.asUiItemDetail
-import com.example.frivolity.repository.NetworkRepository
 import com.example.frivolity.ui.components.ChipRow
 import com.example.frivolity.ui.components.ItemDetailHeader
 import com.example.frivolity.ui.components.ListingListItem
@@ -143,10 +134,10 @@ fun ItemDetailScreen(
                 onTotalSortClick = { viewModel.sortByTotal() },
                 onUnitSortClick = { viewModel.sortByUnit() },
                 onHqOnlyClick = { viewModel.filterHq() },
-                onDcClick = ,
-                onWorldClick = ,
-                worldNameList = ,
-                dcNameList = ,
+                onDcClick = {} ,
+                onWorldClick = {},
+                worldNameList = listOf(),
+                dcNameList = listOf(),
             )
 
             LazyColumn(
@@ -178,61 +169,62 @@ fun ItemDetailScreen(
         }
     }
 }
-
-@Preview
-@Composable
-fun ItemDetailScreenPreviewButItsEmptyLol(
-) {
-    MaterialTheme {
-        ItemDetailScreen(
-            state = ItemDetailScreenState.EMPTY,
-            viewModel = ItemDetailScreenViewModel(
-                repository = NetworkRepository(
-                    MockUniversalisApi(), MockXIVApi()
-                ),
-                detailSavedStateHandle = SavedStateHandle()
-            ),
-            navigateBack = {}
-        )
-    }
-}
-
-@Preview
-@Composable
-fun ItemDetailScreenPreviewButHasStuff(
-) {
-    MaterialTheme {
-        ItemDetailScreen(
-            state = ItemDetailScreenState(
-                marketItemDetail = ApiMarketItemDetail(),
-                itemDetail = ApiItemDetail(
-                    "TestItem",
-                    0,
-                    "",
-                    25,
-                    50,
-                    jobToEquip = mapOf(Pair("Name", "ACN BLM RDM SMN")),
-                    "This sure is an item that does stuff.",
-                    ApiItemKind("Arms")
-                ),
-                regionToSearch = "TestRegion",
-                cheapestTotalPrice = ApiPrices(
-                    5, 2000, 400, "Gilgamesh"
-                ),
-                cheapestUnitPrice = ApiPrices(
-                    99, 9900, 100, "Sargatanas"
-                ),
-                sortMethod = SortMethods.UNIT,
-                showHqOnly = false,
-                shouldShowDropdown = false
-            ),
-            viewModel = ItemDetailScreenViewModel(
-                repository = NetworkRepository(
-                    MockUniversalisApi(), MockXIVApi()
-                ),
-                detailSavedStateHandle = SavedStateHandle()
-            ),
-            navigateBack = {}
-        )
-    }
-}
+//
+//@Preview
+//@Composable
+//fun ItemDetailScreenPreviewButItsEmptyLol(
+//) {
+//    MaterialTheme {
+//        ItemDetailScreen(
+//            state = ItemDetailScreenState.EMPTY,
+//            viewModel = ItemDetailScreenViewModel(
+//                networkRepository = NetworkRepository(
+//                    MockUniversalisApi(), MockXIVApi()
+//                ),
+//                serverRepository = XIVServersRepository(MockUniversalisApi()),
+//                detailSavedStateHandle = SavedStateHandle()
+//            ),
+//            navigateBack = {},
+//        )
+//    }
+//}
+//
+//@Preview
+//@Composable
+//fun ItemDetailScreenPreviewButHasStuff(
+//) {
+//    MaterialTheme {
+//        ItemDetailScreen(
+//            state = ItemDetailScreenState(
+//                marketItemDetail = ApiMarketItemDetail(),
+//                itemDetail = ApiItemDetail(
+//                    "TestItem",
+//                    0,
+//                    "",
+//                    25,
+//                    50,
+//                    jobToEquip = mapOf(Pair("Name", "ACN BLM RDM SMN")),
+//                    "This sure is an item that does stuff.",
+//                    ApiItemKind("Arms")
+//                ),
+//                regionToSearch = "TestRegion",
+//                cheapestTotalPrice = ApiPrices(
+//                    5, 2000, 400, "Gilgamesh"
+//                ),
+//                cheapestUnitPrice = ApiPrices(
+//                    99, 9900, 100, "Sargatanas"
+//                ),
+//                sortMethod = SortMethods.UNIT,
+//                showHqOnly = false,
+//                shouldShowDropdown = false
+//            ),
+//            viewModel = ItemDetailScreenViewModel(
+//                networkRepository = NetworkRepository(
+//                    MockUniversalisApi(), MockXIVApi()
+//                ),
+//                detailSavedStateHandle = SavedStateHandle()
+//            ),
+//            navigateBack = {},
+//        )
+//    }
+//}

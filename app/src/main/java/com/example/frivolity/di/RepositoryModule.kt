@@ -1,6 +1,5 @@
 package com.example.frivolity.di
 
-import com.example.frivolity.repository.DataStoreRepository
 import com.example.frivolity.repository.FrivolityRepository
 import com.example.frivolity.repository.NetworkRepository
 import dagger.Binds

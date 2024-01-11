@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.frivolity.repository.FrivolityRepository
+import com.example.frivolity.repository.XIVServersRepository
 import com.example.frivolity.ui.models.SortMethods
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -16,7 +17,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ItemDetailScreenViewModel @Inject constructor(
-    private val repository: FrivolityRepository,
+    private val networkRepository: FrivolityRepository,
+    private val serverRepository: XIVServersRepository,
     detailSavedStateHandle: SavedStateHandle
 
 ) : ViewModel() {
@@ -31,8 +33,8 @@ class ItemDetailScreenViewModel @Inject constructor(
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            val marketItem = repository.getMarketItemDetails(worldName, itemId)
-            val itemDetail = repository.getFullItemDetails(itemId)
+            val marketItem = networkRepository.getMarketItemDetails(worldName, itemId)
+            val itemDetail = networkRepository.getFullItemDetails(itemId)
 
             _internalScreenStateFlow.update {
                 ItemDetailScreenState(
@@ -43,7 +45,9 @@ class ItemDetailScreenViewModel @Inject constructor(
                     it.cheapestUnitPrice,
                     it.sortMethod,
                     it.showHqOnly,
-                    it.shouldShowDropdown
+                    it.shouldShowDropdown,
+                    it.dcList,
+                    it.worldList
                 )
             }
             findCheapestPrices()
@@ -60,7 +64,9 @@ class ItemDetailScreenViewModel @Inject constructor(
                 it.cheapestUnitPrice,
                 it.sortMethod,
                 it.showHqOnly,
-                !it.shouldShowDropdown
+                !it.shouldShowDropdown,
+                it.dcList,
+                it.worldList
             )
         }
 
@@ -76,7 +82,9 @@ class ItemDetailScreenViewModel @Inject constructor(
                 it.cheapestUnitPrice,
                 SortMethods.TOTAL,
                 it.showHqOnly,
-                it.shouldShowDropdown
+                it.shouldShowDropdown,
+                it.dcList,
+                it.worldList
             )
         }
 
@@ -92,7 +100,9 @@ class ItemDetailScreenViewModel @Inject constructor(
                 it.cheapestUnitPrice,
                 SortMethods.UNIT,
                 it.showHqOnly,
-                it.shouldShowDropdown
+                it.shouldShowDropdown,
+                it.dcList,
+                it.worldList
             )
         }
     }
@@ -107,7 +117,9 @@ class ItemDetailScreenViewModel @Inject constructor(
                 it.cheapestUnitPrice,
                 it.sortMethod,
                 !it.showHqOnly,
-                it.shouldShowDropdown
+                it.shouldShowDropdown,
+                it.dcList,
+                it.worldList
             )
         }
 
@@ -115,7 +127,7 @@ class ItemDetailScreenViewModel @Inject constructor(
 
     private fun findCheapestPrices() {
         viewModelScope.launch(Dispatchers.IO) {
-            val allPrices = repository
+            val allPrices = networkRepository
                 .getMarketItemPrices(_internalScreenStateFlow.value.regionToSearch, itemId)
                 .listings
 
@@ -133,7 +145,9 @@ class ItemDetailScreenViewModel @Inject constructor(
                     cheapestUnitListing,
                     it.sortMethod,
                     it.showHqOnly,
-                    it.shouldShowDropdown
+                    it.shouldShowDropdown,
+                    it.dcList,
+                    it.worldList
                 )
             }
         }
