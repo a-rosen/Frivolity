@@ -15,10 +15,14 @@ import com.example.frivolity.ui.screens.ItemDetailScreenState
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChipRow(
+    state: ItemDetailScreenState,
     onTotalSortClick: () -> Unit,
     onUnitSortClick: () -> Unit,
     onHqOnlyClick: () -> Unit,
-    state: ItemDetailScreenState,
+    onDcClick: (String) -> Unit,
+    onWorldClick: (String) -> Unit,
+    worldNameList: List<String>,
+    dcNameList: List<String>,
 ) {
     Row(
         horizontalArrangement = Arrangement.SpaceEvenly,
@@ -39,13 +43,15 @@ fun ChipRow(
             onClick = { onHqOnlyClick() },
             label = { Text(text = "HQ Only") })
         ChipWithDropdown(
-            displayText = "Switch DC" ,
-            menuItems = listOf(),
-            onItemClicked = {})
+            displayText = "Switch DC",
+            menuItems = dcNameList,
+            onItemClicked = { onDcClick(it) }
+        )
         ChipWithDropdown(
-            displayText = "Switch World" ,
-            menuItems = listOf(),
-            onItemClicked = {})
+            displayText = "Switch World",
+            menuItems = worldNameList,
+            onItemClicked = { onWorldClick(it) }
+        )
 
     }
 
@@ -54,5 +60,5 @@ fun ChipRow(
 @Composable
 @Preview
 fun ChipRowPreview() {
-    ChipRow({}, {}, {}, ItemDetailScreenState.EMPTY)
+    ChipRow(ItemDetailScreenState.EMPTY, {}, {}, {}, {}, {}, listOf(), listOf())
 }

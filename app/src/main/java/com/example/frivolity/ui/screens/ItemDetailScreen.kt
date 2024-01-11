@@ -139,10 +139,14 @@ fun ItemDetailScreen(
             }
 
             ChipRow(
+                state = state,
                 onTotalSortClick = { viewModel.sortByTotal() },
                 onUnitSortClick = { viewModel.sortByUnit() },
                 onHqOnlyClick = { viewModel.filterHq() },
-                state = state
+                onDcClick = ,
+                onWorldClick = ,
+                worldNameList = ,
+                dcNameList = ,
             )
 
             LazyColumn(
