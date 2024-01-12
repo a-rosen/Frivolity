@@ -139,6 +139,8 @@ fun ItemDetailScreen(
                 worldNameList = listOf(),
                 dcNameList = listOf(),
             )
+            
+            Text(text = state.dcList.toString())
 
             LazyColumn(
             ) {
@@ -181,7 +183,10 @@ fun ItemDetailScreen(
 //                networkRepository = NetworkRepository(
 //                    MockUniversalisApi(), MockXIVApi()
 //                ),
-//                serverRepository = XIVServersRepository(MockUniversalisApi()),
+//                serverRepository = XIVServersRepository(
+//                    MockUniversalisApi(),
+//                    repositoryScope = TODO()
+//                ),
 //                detailSavedStateHandle = SavedStateHandle()
 //            ),
 //            navigateBack = {},

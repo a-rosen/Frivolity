@@ -5,6 +5,7 @@ import com.example.frivolity.network.models.universalisapi.ApiDataCenter
 import com.example.frivolity.network.models.universalisapi.ApiWorld
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -12,18 +13,31 @@ class XIVServersRepository @Inject constructor(
     private val universalisApi: UniversalisApi,
     repositoryScope: CoroutineScope,
 ) {
-    suspend fun getDataCenters(): List<ApiDataCenter> {
-        return universalisApi.getDataCenters()
+
+    init {
+        repositoryScope.launch(Dispatchers.IO) {
+            getDcList()
+            getWorldList()
+        }
     }
 
-    suspend fun getWorlds(): List<ApiWorld> {
+    val dcFlow = flow {
+        val dcList = getDcList()
+        emit(dcList)
+    }
+
+    val worldFlow = flow {
+        val worldList = getWorldList()
+        emit(worldList)
+    }
+
+    private suspend fun getWorldList(): List<ApiWorld> {
         return universalisApi.getWorlds()
     }
 
-    val dcList =
-        repositoryScope.launch(Dispatchers.IO) {
-            getDataCenters()
-        }
+    private suspend fun getDcList(): List<ApiDataCenter> {
+        return universalisApi.getDataCenters()
+    }
 
 
 }

@@ -3,6 +3,8 @@ package com.example.frivolity.ui.screens
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.frivolity.network.models.universalisapi.ApiDataCenter
+import com.example.frivolity.network.models.universalisapi.ApiWorld
 import com.example.frivolity.repository.FrivolityRepository
 import com.example.frivolity.repository.XIVServersRepository
 import com.example.frivolity.ui.models.SortMethods
@@ -26,6 +28,8 @@ class ItemDetailScreenViewModel @Inject constructor(
         checkNotNull(detailSavedStateHandle[DetailsDestination.itemIdArg])
     private val worldName: String =
         checkNotNull(detailSavedStateHandle[DetailsDestination.worldNameArg])
+    private var dcList: List<ApiDataCenter> = listOf()
+    private var worldList: List<ApiWorld> = listOf()
 
     private val _internalScreenStateFlow =
         MutableStateFlow(value = ItemDetailScreenState.EMPTY)
@@ -35,6 +39,8 @@ class ItemDetailScreenViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             val marketItem = networkRepository.getMarketItemDetails(worldName, itemId)
             val itemDetail = networkRepository.getFullItemDetails(itemId)
+            serverRepository.dcFlow.collect { list -> dcList = list}
+            serverRepository.worldFlow.collect { list -> worldList = list }
 
             _internalScreenStateFlow.update {
                 ItemDetailScreenState(
@@ -46,8 +52,8 @@ class ItemDetailScreenViewModel @Inject constructor(
                     it.sortMethod,
                     it.showHqOnly,
                     it.shouldShowDropdown,
-                    it.dcList,
-                    it.worldList
+                    dcList,
+                    worldList
                 )
             }
             findCheapestPrices()
