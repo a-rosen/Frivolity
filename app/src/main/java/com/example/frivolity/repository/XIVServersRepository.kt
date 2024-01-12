@@ -13,7 +13,6 @@ class XIVServersRepository @Inject constructor(
     private val universalisApi: UniversalisApi,
     repositoryScope: CoroutineScope,
 ) {
-
     init {
         repositoryScope.launch(Dispatchers.IO) {
             getDcList()

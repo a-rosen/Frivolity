@@ -93,15 +93,28 @@ fun ItemDetailScreen(
                 NavigationBarItem(
                     selected = false,
                     onClick = { /*TODO*/ },
-                    icon = { VectorIcon(drawableId = R.drawable.ic_world, description = "Switch DC") },
+                    icon = {
+                        VectorIcon(
+                            drawableId = R.drawable.ic_world,
+                            description = "Switch DC"
+                        )
+                    },
                     label = { Text("Switch DC") }
                 )
                 NavigationBarItem(
                     selected = false,
                     onClick = { /*TODO*/ },
-                    icon = { VectorIcon(drawableId = R.drawable.ic_group, description = "Switch World" ) },
-                    label = { Text("Switch World"
-                    )}
+                    icon = {
+                        VectorIcon(
+                            drawableId = R.drawable.ic_group,
+                            description = "Switch World"
+                        )
+                    },
+                    label = {
+                        Text(
+                            "Switch World"
+                        )
+                    }
                 )
                 NavigationBarItem(
                     selected = false,
@@ -134,13 +147,14 @@ fun ItemDetailScreen(
                 onTotalSortClick = { viewModel.sortByTotal() },
                 onUnitSortClick = { viewModel.sortByUnit() },
                 onHqOnlyClick = { viewModel.filterHq() },
-                onDcClick = {} ,
+                onDcClick = {},
                 onWorldClick = {},
-                worldNameList = listOf(),
-                dcNameList = listOf(),
+                worldNameList = state.worldList
+                    .map { world -> world.name },
+                dcNameList = state.dcList
+                    .filter { it.worlds[0] < 1000 }
+                    .map { dc -> dc.name }
             )
-            
-            Text(text = state.dcList.toString())
 
             LazyColumn(
             ) {
