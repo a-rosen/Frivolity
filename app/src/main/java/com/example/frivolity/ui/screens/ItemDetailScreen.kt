@@ -144,8 +144,18 @@ fun ItemDetailScreen(
 
             ChipRow(
                 state = state,
-                onTotalSortClick = { viewModel.sortByTotal() },
-                onUnitSortClick = { viewModel.sortByUnit() },
+                sortLabel = if (state.sortMethod == SortMethods.UNIT) {
+                    "Total Sort"
+                } else {
+                    "Unit Sort"
+                },
+                onSortClick = {
+                    if (state.sortMethod == SortMethods.UNIT) {
+                        viewModel.sortByTotal()
+                    } else {
+                        viewModel.sortByUnit()
+                    }
+                },
                 onHqOnlyClick = { viewModel.filterHq() },
                 onDcClick = {},
                 onWorldClick = {},

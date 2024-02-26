@@ -9,15 +9,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.frivolity.ui.models.SortMethods
 import com.example.frivolity.ui.screens.ItemDetailScreenState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChipRow(
     state: ItemDetailScreenState,
-    onTotalSortClick: () -> Unit,
-    onUnitSortClick: () -> Unit,
+    sortLabel: String,
+    onSortClick: () -> Unit,
     onHqOnlyClick: () -> Unit,
     onDcClick: (String) -> Unit,
     onWorldClick: (String) -> Unit,
@@ -31,13 +30,9 @@ fun ChipRow(
 
     ) {
         FilterChip(
-            selected = state.sortMethod == SortMethods.TOTAL,
-            onClick = { onTotalSortClick() },
-            label = { Text(text = "Sort") })
-//        FilterChip(
-//            selected = state.sortMethod == SortMethods.UNIT,
-//            onClick = { onUnitSortClick() },
-//            label = { Text(text = "Sort By Unit") })
+            selected = false,
+            onClick = { onSortClick() },
+            label = { Text(text = sortLabel) })
         FilterChip(
             selected = state.showHqOnly,
             onClick = { onHqOnlyClick() },
@@ -60,5 +55,5 @@ fun ChipRow(
 @Composable
 @Preview
 fun ChipRowPreview() {
-    ChipRow(ItemDetailScreenState.EMPTY, {}, {}, {}, {}, {}, listOf(), listOf())
+    ChipRow(ItemDetailScreenState.EMPTY, "Sort", {}, {}, {}, {}, listOf(), listOf())
 }
