@@ -1,0 +1,42 @@
+package com.example.frivolity.ui.components
+
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+
+
+@Composable
+fun ButtonWithDropdown(
+    icon: Int,
+    iconDescription: String,
+    menuItems: List<String>,
+    onItemClicked: (String) -> Unit,
+) {
+    var shouldShowDropdown by remember { mutableStateOf(false) }
+
+    IconButton(
+        onClick = { shouldShowDropdown = true },
+    ) {
+        VectorIcon(
+            drawableId = icon,
+            description = iconDescription
+        )
+    }
+    DropdownMenu(
+        expanded = shouldShowDropdown,
+        onDismissRequest = { shouldShowDropdown = false }
+    ) {
+        menuItems.forEach {
+            DropdownMenuItem(
+                text = { Text(text = it) },
+                onClick = { onItemClicked(it) }
+            )
+        }
+    }
+}

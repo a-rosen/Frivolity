@@ -18,10 +18,6 @@ fun ChipRow(
     sortLabel: String,
     onSortClick: () -> Unit,
     onHqOnlyClick: () -> Unit,
-    onDcClick: (String) -> Unit,
-    onWorldClick: (String) -> Unit,
-    worldNameList: List<String>,
-    dcNameList: List<String>,
 ) {
     Row(
         horizontalArrangement = Arrangement.SpaceEvenly,
@@ -37,17 +33,6 @@ fun ChipRow(
             selected = state.showHqOnly,
             onClick = { onHqOnlyClick() },
             label = { Text(text = "HQ Only") })
-        ChipWithDropdown(
-            displayText = "Switch DC",
-            menuItems = dcNameList,
-            onItemClicked = { onDcClick(it) }
-        )
-        ChipWithDropdown(
-            displayText = "Switch World",
-            menuItems = worldNameList,
-            onItemClicked = { onWorldClick(it) }
-        )
-
     }
 
 }
@@ -55,5 +40,5 @@ fun ChipRow(
 @Composable
 @Preview
 fun ChipRowPreview() {
-    ChipRow(ItemDetailScreenState.EMPTY, "Sort", {}, {}, {}, {}, listOf(), listOf())
+    ChipRow(ItemDetailScreenState.EMPTY, "Sort", {}, {})
 }

@@ -14,7 +14,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -26,11 +25,11 @@ import com.example.frivolity.R
 import com.example.frivolity.navigation.NavigationDestination
 import com.example.frivolity.network.models.universalisapi.asUiListingDetail
 import com.example.frivolity.network.models.xivapi.asUiItemDetail
+import com.example.frivolity.ui.components.ButtonWithDropdown
 import com.example.frivolity.ui.components.ChipRow
 import com.example.frivolity.ui.components.ItemDetailHeader
 import com.example.frivolity.ui.components.ListingListItem
 import com.example.frivolity.ui.components.StatsRow
-import com.example.frivolity.ui.components.VectorIcon
 import com.example.frivolity.ui.models.SortMethods
 
 object DetailsDestination : NavigationDestination {
@@ -76,6 +75,24 @@ fun ItemDetailScreen(
                         }
                     )
                 },
+                actions = {
+                    ButtonWithDropdown(
+                        icon = R.drawable.ic_group,
+                        iconDescription = "Switch DC",
+                        menuItems = state.dcList
+                            .filter { it.worlds[0] < 1000 }
+                            .map { dc -> dc.name },
+                        onItemClicked = {}
+                    )
+                    ButtonWithDropdown(
+                        icon = R.drawable.ic_world,
+                        iconDescription = "Switch World",
+                        menuItems = state.worldList
+                            .map { world -> world.name },
+                        onItemClicked = {}
+                    )
+
+                },
                 title = {
                     Text(
                         text = "Listings Detail: ${item.worldName}",
@@ -90,37 +107,7 @@ fun ItemDetailScreen(
         },
         bottomBar = {
             NavigationBar {
-                NavigationBarItem(
-                    selected = false,
-                    onClick = { /*TODO*/ },
-                    icon = {
-                        VectorIcon(
-                            drawableId = R.drawable.ic_world,
-                            description = "Switch DC"
-                        )
-                    },
-                    label = { Text("Switch DC") }
-                )
-                NavigationBarItem(
-                    selected = false,
-                    onClick = { /*TODO*/ },
-                    icon = {
-                        VectorIcon(
-                            drawableId = R.drawable.ic_group,
-                            description = "Switch World"
-                        )
-                    },
-                    label = {
-                        Text(
-                            "Switch World"
-                        )
-                    }
-                )
-                NavigationBarItem(
-                    selected = false,
-                    onClick = { /*TODO*/ },
-                    icon = { /*TODO*/ }
-                )
+
             }
         },
     ) { innerPadding ->
@@ -157,15 +144,7 @@ fun ItemDetailScreen(
                     }
                 },
                 onHqOnlyClick = { viewModel.filterHq() },
-                onDcClick = {},
-                onWorldClick = {},
-                worldNameList = state.worldList
-                    .map { world -> world.name },
-                dcNameList = state.dcList
-                    .filter { it.worlds[0] < 1000 }
-                    .map { dc -> dc.name }
-            )
-
+                )
             LazyColumn(
             ) {
                 if (state.sortMethod == SortMethods.TOTAL) {
