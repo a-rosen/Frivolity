@@ -45,6 +45,7 @@ fun ItemDetailScreen(
     state: ItemDetailScreenState,
     viewModel: ItemDetailScreenViewModel,
     navigateBack: () -> Unit,
+    changeServer: (String, Int) -> Unit
 ) {
 
     val item = state.marketItemDetail
@@ -82,14 +83,14 @@ fun ItemDetailScreen(
                         menuItems = state.dcList
                             .filter { it.worlds[0] < 1000 }
                             .map { dc -> dc.name },
-                        onItemClicked = {}
+                        onItemClicked = {  }
                     )
                     ButtonWithDropdown(
                         icon = R.drawable.ic_world,
                         iconDescription = "Switch World",
                         menuItems = state.worldList
                             .map { world -> world.name },
-                        onItemClicked = {}
+                        onItemClicked = { changeServer(it, item.itemID)}
                     )
 
                 },

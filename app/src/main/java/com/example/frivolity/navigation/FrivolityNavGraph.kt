@@ -51,6 +51,11 @@ fun FrivolityNavGraph(
                 navigateBack = {
                     navController.popBackStack()
                 },
+                changeServer = { worldname, id ->
+                    navController.navigate(
+                        "${DetailsDestination.route}/$worldname/$id}"
+                    )
+                }
             )
         }
     }
