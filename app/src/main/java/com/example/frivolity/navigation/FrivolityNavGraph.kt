@@ -53,7 +53,7 @@ fun FrivolityNavGraph(
                 },
                 changeServer = { worldname, id ->
                     navController.navigate(
-                        "${DetailsDestination.route}/$worldname/$id}"
+                        "${DetailsDestination.route}/$worldname/$id"
                     )
                 }
             )
