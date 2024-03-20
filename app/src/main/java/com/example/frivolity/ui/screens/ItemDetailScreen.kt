@@ -96,7 +96,7 @@ fun ItemDetailScreen(
                 },
                 title = {
                     Text(
-                        text = "Listings Detail: ${item.worldName}",
+                        text = "Listings Detail:${state.currentDc?.name} ${item.worldName}",
                         style = MaterialTheme.typography.labelMedium,
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier

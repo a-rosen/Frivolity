@@ -1,5 +1,6 @@
 package com.example.frivolity.ui.components
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.IconButton
@@ -9,6 +10,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+import com.example.frivolity.R
 
 
 @Composable
@@ -20,23 +24,40 @@ fun ButtonWithDropdown(
 ) {
     var shouldShowDropdown by remember { mutableStateOf(false) }
 
-    IconButton(
-        onClick = { shouldShowDropdown = true },
+    Box(
+        modifier = Modifier
     ) {
-        VectorIcon(
-            drawableId = icon,
-            description = iconDescription
-        )
-    }
-    DropdownMenu(
-        expanded = shouldShowDropdown,
-        onDismissRequest = { shouldShowDropdown = false }
-    ) {
-        menuItems.forEach {
-            DropdownMenuItem(
-                text = { Text(text = it) },
-                onClick = { onItemClicked(it) }
+        IconButton(
+            onClick = { shouldShowDropdown = true },
+        ) {
+            VectorIcon(
+                drawableId = icon,
+                description = iconDescription
             )
         }
+        DropdownMenu(
+            expanded = shouldShowDropdown,
+            onDismissRequest = { shouldShowDropdown = false },
+        ) {
+            menuItems.forEach {
+                DropdownMenuItem(
+                    text = { Text(text = it) },
+                    onClick = { onItemClicked(it) }
+                )
+            }
+        }
     }
+
+}
+
+@Preview
+@Composable
+fun ButtonWithDropdownPreview(
+) {
+    ButtonWithDropdown(
+        icon = R.drawable.ic_group,
+        iconDescription = "",
+        menuItems = listOf(),
+        onItemClicked = {}
+    )
 }

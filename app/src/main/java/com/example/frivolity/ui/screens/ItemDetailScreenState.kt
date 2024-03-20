@@ -18,7 +18,8 @@ data class ItemDetailScreenState(
     val showHqOnly: Boolean,
     val shouldShowDropdown: Boolean,
     val dcList: List<ApiDataCenter>,
-    val worldList: List<ApiWorld>
+    val worldList: List<ApiWorld>,
+    val currentDc: ApiDataCenter? = ApiDataCenter("Aether", "North-America", listOf())
 ) {
     companion object {
         val EMPTY = ItemDetailScreenState(

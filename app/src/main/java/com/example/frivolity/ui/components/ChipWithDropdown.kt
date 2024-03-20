@@ -43,7 +43,7 @@ fun ChipWithDropdown(
 
 @Preview
 @Composable
-fun ButtonWithDropdownPreview() {
+fun ChipWithDropdownPreview() {
     ChipWithDropdown(
         displayText = "Preview",
         onItemClicked = {},

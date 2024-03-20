@@ -39,8 +39,11 @@ class ItemDetailScreenViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             val marketItem = networkRepository.getMarketItemDetails(worldName, itemId)
             val itemDetail = networkRepository.getFullItemDetails(itemId)
-            serverRepository.dcFlow.collect { list -> dcList = list}
+            serverRepository.dcFlow.collect { list -> dcList = list }
             serverRepository.worldFlow.collect { list -> worldList = list }
+            val worldId: Int = worldList
+                .filter { it.name == worldName }
+                .map { it.id }[0]
 
             _internalScreenStateFlow.update {
                 ItemDetailScreenState(
@@ -53,7 +56,10 @@ class ItemDetailScreenViewModel @Inject constructor(
                     it.showHqOnly,
                     it.shouldShowDropdown,
                     dcList,
-                    worldList
+                    worldList,
+                    dcList.firstOrNull {
+                        it.worlds.contains(worldId)
+                    }
                 )
             }
             findCheapestPrices()
@@ -72,10 +78,10 @@ class ItemDetailScreenViewModel @Inject constructor(
                 it.showHqOnly,
                 !it.shouldShowDropdown,
                 it.dcList,
-                it.worldList
+                it.worldList,
+                it.currentDc
             )
         }
-
     }
 
     fun sortByTotal() {
@@ -90,10 +96,10 @@ class ItemDetailScreenViewModel @Inject constructor(
                 it.showHqOnly,
                 it.shouldShowDropdown,
                 it.dcList,
-                it.worldList
+                it.worldList,
+                it.currentDc
             )
         }
-
     }
 
     fun sortByUnit() {
@@ -108,7 +114,8 @@ class ItemDetailScreenViewModel @Inject constructor(
                 it.showHqOnly,
                 it.shouldShowDropdown,
                 it.dcList,
-                it.worldList
+                it.worldList,
+                it.currentDc
             )
         }
     }
@@ -125,10 +132,10 @@ class ItemDetailScreenViewModel @Inject constructor(
                 !it.showHqOnly,
                 it.shouldShowDropdown,
                 it.dcList,
-                it.worldList
+                it.worldList,
+                it.currentDc
             )
         }
-
     }
 
     private fun findCheapestPrices() {
@@ -153,7 +160,8 @@ class ItemDetailScreenViewModel @Inject constructor(
                     it.showHqOnly,
                     it.shouldShowDropdown,
                     it.dcList,
-                    it.worldList
+                    it.worldList,
+                    it.currentDc
                 )
             }
         }
