@@ -66,6 +66,24 @@ class ItemDetailScreenViewModel @Inject constructor(
         }
     }
 
+    fun changeDc(dc: ApiDataCenter?) {
+        _internalScreenStateFlow.update {
+            ItemDetailScreenState(
+                it.marketItemDetail,
+                it.itemDetail,
+                it.regionToSearch,
+                it.cheapestTotalPrice,
+                it.cheapestUnitPrice,
+                it.sortMethod,
+                it.showHqOnly,
+                !it.shouldShowDropdown,
+                it.dcList,
+                it.worldList,
+                dc
+            )
+        }
+    }
+
     fun toggleDropdown() {
         _internalScreenStateFlow.update {
             ItemDetailScreenState(

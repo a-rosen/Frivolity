@@ -83,14 +83,18 @@ fun ItemDetailScreen(
                         menuItems = state.dcList
                             .filter { it.worlds[0] < 1000 }
                             .map { dc -> dc.name },
-                        onItemClicked = {  }
+                        onItemClicked = { item ->
+                            viewModel.changeDc(state.dcList
+                                .firstOrNull { it.name == item })
+                        }
                     )
                     ButtonWithDropdown(
                         icon = R.drawable.ic_world,
                         iconDescription = "Switch World",
                         menuItems = state.worldList
+                            .filter { state.currentDc?.worlds?.contains(it.id) ?: false }
                             .map { world -> world.name },
-                        onItemClicked = { changeServer(it, item.itemID)}
+                        onItemClicked = { changeServer(it, item.itemID) }
                     )
 
                 },
@@ -145,7 +149,7 @@ fun ItemDetailScreen(
                     }
                 },
                 onHqOnlyClick = { viewModel.filterHq() },
-                )
+            )
             LazyColumn(
             ) {
                 if (state.sortMethod == SortMethods.TOTAL) {
