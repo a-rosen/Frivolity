@@ -9,6 +9,9 @@ import com.example.frivolity.network.models.xivapi.ApiItemKind
 import com.example.frivolity.ui.models.SortMethods
 
 data class ItemDetailScreenState(
+    val dcList: List<ApiDataCenter>,
+    val worldList: List<ApiWorld>,
+    val currentDc: ApiDataCenter? = ApiDataCenter("Loading...", "", listOf()),
     val marketItemDetail: ApiMarketItemDetail,
     val itemDetail: ApiItemDetail,
     val regionToSearch: String,
@@ -17,9 +20,7 @@ data class ItemDetailScreenState(
     val sortMethod: SortMethods,
     val showHqOnly: Boolean,
     val shouldShowDropdown: Boolean,
-    val dcList: List<ApiDataCenter>,
-    val worldList: List<ApiWorld>,
-    val currentDc: ApiDataCenter? = ApiDataCenter("Loading...", "", listOf())
+
 ) {
     companion object {
         val EMPTY = ItemDetailScreenState(
@@ -63,7 +64,8 @@ data class ItemDetailScreenState(
             showHqOnly = false,
             shouldShowDropdown = false,
             dcList = listOf(),
-            worldList = listOf()
+            worldList = listOf(),
+            currentDc = null
         )
     }
 }

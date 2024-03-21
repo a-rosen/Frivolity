@@ -47,19 +47,19 @@ class ItemDetailScreenViewModel @Inject constructor(
 
             _internalScreenStateFlow.update {
                 ItemDetailScreenState(
+                    dcList,
+                    worldList,
+                    dcList.firstOrNull {
+                        it.worlds.contains(worldId)
+                    },
                     marketItemDetail = marketItem,
                     itemDetail = itemDetail,
-                    regionToSearch = "North-America",
+                    regionToSearch = it.currentDc?.region ?: "North-America",
                     it.cheapestTotalPrice,
                     it.cheapestUnitPrice,
                     it.sortMethod,
                     it.showHqOnly,
                     it.shouldShowDropdown,
-                    dcList,
-                    worldList,
-                    dcList.firstOrNull {
-                        it.worlds.contains(worldId)
-                    }
                 )
             }
             findCheapestPrices()
@@ -68,91 +68,43 @@ class ItemDetailScreenViewModel @Inject constructor(
 
     fun changeDc(dc: ApiDataCenter?) {
         _internalScreenStateFlow.update {
-            ItemDetailScreenState(
-                it.marketItemDetail,
-                it.itemDetail,
-                it.regionToSearch,
-                it.cheapestTotalPrice,
-                it.cheapestUnitPrice,
-                it.sortMethod,
-                it.showHqOnly,
-                !it.shouldShowDropdown,
-                it.dcList,
-                it.worldList,
-                dc
+            val newShouldShowDropdown = !it.shouldShowDropdown
+            it.copy(
+                currentDc = dc,
+                shouldShowDropdown = newShouldShowDropdown
             )
         }
     }
 
     fun toggleDropdown() {
         _internalScreenStateFlow.update {
-            ItemDetailScreenState(
-                it.marketItemDetail,
-                it.itemDetail,
-                it.regionToSearch,
-                it.cheapestTotalPrice,
-                it.cheapestUnitPrice,
-                it.sortMethod,
-                it.showHqOnly,
-                !it.shouldShowDropdown,
-                it.dcList,
-                it.worldList,
-                it.currentDc
+            val newShouldShowDropdown = !it.shouldShowDropdown
+            it.copy(
+                shouldShowDropdown = newShouldShowDropdown
             )
         }
     }
 
     fun sortByTotal() {
         _internalScreenStateFlow.update {
-            ItemDetailScreenState(
-                it.marketItemDetail,
-                it.itemDetail,
-                it.regionToSearch,
-                it.cheapestTotalPrice,
-                it.cheapestUnitPrice,
-                SortMethods.TOTAL,
-                it.showHqOnly,
-                it.shouldShowDropdown,
-                it.dcList,
-                it.worldList,
-                it.currentDc
+            it.copy(
+                sortMethod = SortMethods.TOTAL
             )
         }
     }
 
     fun sortByUnit() {
         _internalScreenStateFlow.update {
-            ItemDetailScreenState(
-                it.marketItemDetail,
-                it.itemDetail,
-                it.regionToSearch,
-                it.cheapestTotalPrice,
-                it.cheapestUnitPrice,
-                SortMethods.UNIT,
-                it.showHqOnly,
-                it.shouldShowDropdown,
-                it.dcList,
-                it.worldList,
-                it.currentDc
+            it.copy(
+                sortMethod = SortMethods.UNIT
             )
         }
     }
 
     fun filterHq() {
         _internalScreenStateFlow.update {
-            ItemDetailScreenState(
-                it.marketItemDetail,
-                it.itemDetail,
-                it.regionToSearch,
-                it.cheapestTotalPrice,
-                it.cheapestUnitPrice,
-                it.sortMethod,
-                !it.showHqOnly,
-                it.shouldShowDropdown,
-                it.dcList,
-                it.worldList,
-                it.currentDc
-            )
+            val newShowHqOnly = !it.showHqOnly
+            it.copy(showHqOnly = newShowHqOnly)
         }
     }
 
@@ -168,18 +120,9 @@ class ItemDetailScreenViewModel @Inject constructor(
             val cheapestUnitListing = allPrices.firstOrNull() { it.pricePerUnit == cheapestUnit }
 
             _internalScreenStateFlow.update {
-                ItemDetailScreenState(
-                    it.marketItemDetail,
-                    it.itemDetail,
-                    it.regionToSearch,
-                    cheapestTotalListing,
-                    cheapestUnitListing,
-                    it.sortMethod,
-                    it.showHqOnly,
-                    it.shouldShowDropdown,
-                    it.dcList,
-                    it.worldList,
-                    it.currentDc
+                it.copy(
+                    cheapestTotalPrice = cheapestTotalListing,
+                    cheapestUnitPrice = cheapestUnitListing,
                 )
             }
         }
