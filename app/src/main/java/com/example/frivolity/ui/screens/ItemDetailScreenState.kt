@@ -11,6 +11,7 @@ import com.example.frivolity.ui.models.SortMethods
 data class ItemDetailScreenState(
     val dcList: List<ApiDataCenter>,
     val worldList: List<ApiWorld>,
+    val worldId: Int?,
     val currentDc: ApiDataCenter? = ApiDataCenter("Loading...", "", listOf()),
     val marketItemDetail: ApiMarketItemDetail,
     val itemDetail: ApiItemDetail,
@@ -65,7 +66,8 @@ data class ItemDetailScreenState(
             shouldShowDropdown = false,
             dcList = listOf(),
             worldList = listOf(),
-            currentDc = null
+            currentDc = null,
+            worldId = 0,
         )
     }
 }

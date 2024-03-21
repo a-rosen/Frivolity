@@ -1,10 +1,10 @@
 package com.example.frivolity.ui.screens
 
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.frivolity.network.models.universalisapi.ApiDataCenter
-import com.example.frivolity.network.models.universalisapi.ApiWorld
 import com.example.frivolity.repository.FrivolityRepository
 import com.example.frivolity.repository.XIVServersRepository
 import com.example.frivolity.ui.models.SortMethods
@@ -13,6 +13,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -24,46 +25,101 @@ class ItemDetailScreenViewModel @Inject constructor(
     detailSavedStateHandle: SavedStateHandle
 
 ) : ViewModel() {
-    private val itemId: Int =
-        checkNotNull(detailSavedStateHandle[DetailsDestination.itemIdArg])
-    private val worldName: String =
-        checkNotNull(detailSavedStateHandle[DetailsDestination.worldNameArg])
-    private var dcList: List<ApiDataCenter> = listOf()
-    private var worldList: List<ApiWorld> = listOf()
-
-    private val _internalScreenStateFlow =
-        MutableStateFlow(value = ItemDetailScreenState.EMPTY)
+    private val _internalScreenStateFlow = MutableStateFlow(value = ItemDetailScreenState.EMPTY)
     val screenStateFlow: StateFlow<ItemDetailScreenState> = _internalScreenStateFlow.asStateFlow()
 
     init {
-        viewModelScope.launch(Dispatchers.IO) {
-            val marketItem = networkRepository.getMarketItemDetails(worldName, itemId)
-            val itemDetail = networkRepository.getFullItemDetails(itemId)
-            serverRepository.dcFlow.collect { list -> dcList = list }
-            serverRepository.worldFlow.collect { list -> worldList = list }
-            val worldId: Int = worldList
-                .filter { it.name == worldName }
-                .map { it.id }[0]
+        val itemId: Int =
+            checkNotNull(detailSavedStateHandle[DetailsDestination.itemIdArg])
+        val worldName: String =
+            checkNotNull(detailSavedStateHandle[DetailsDestination.worldNameArg])
 
-            _internalScreenStateFlow.update {
-                ItemDetailScreenState(
-                    dcList,
-                    worldList,
-                    dcList.firstOrNull {
-                        it.worlds.contains(worldId)
-                    },
-                    marketItemDetail = marketItem,
-                    itemDetail = itemDetail,
-                    regionToSearch = it.currentDc?.region ?: "North-America",
-                    it.cheapestTotalPrice,
-                    it.cheapestUnitPrice,
-                    it.sortMethod,
-                    it.showHqOnly,
-                    it.shouldShowDropdown,
-                )
-            }
+        viewModelScope.launch(Dispatchers.IO) {
+            getListOfWorlds(worldName)
+            getListOfDataCenters()
+            getMarketItemDetails(worldName, itemId)
+            getFullItemDetails(itemId)
+
             findCheapestPrices()
         }
+    }
+
+    private fun figureOutWhatDataCenterWereOn() {
+        _internalScreenStateFlow.update { oldState ->
+            val worldId = oldState.worldId
+
+            if (worldId == null) {
+                return@update oldState
+            }
+
+            if (oldState.dcList.isEmpty()) {
+                return@update oldState
+            }
+
+            val newDc = oldState
+                .dcList
+                .first { dc -> dc.worlds.contains(worldId) }
+
+            oldState.copy(
+                currentDc = newDc,
+                regionToSearch = newDc.region,
+            )
+        }
+    }
+
+    private suspend fun getMarketItemDetails(worldName: String, itemId: Int) {
+        try {
+            val marketItem = networkRepository.getMarketItemDetails(worldName, itemId)
+            _internalScreenStateFlow.update {
+                it.copy(
+                    marketItemDetail = marketItem
+                )
+            }
+        } catch (error: Exception) {
+            handleError(error)
+        }
+    }
+
+    private suspend fun getFullItemDetails(itemId: Int) {
+        val itemDetail = networkRepository.getFullItemDetails(itemId)
+        _internalScreenStateFlow.update {
+            it.copy(
+                itemDetail = itemDetail
+            )
+        }
+    }
+
+    private suspend fun getListOfDataCenters() {
+        serverRepository
+            .dcFlow
+            .catch { error -> handleError(error) }
+            .collect { listFromNetwork ->
+                _internalScreenStateFlow.update {
+                    it.copy(dcList = listFromNetwork)
+                }
+
+                figureOutWhatDataCenterWereOn()
+            }
+    }
+
+    private suspend fun getListOfWorlds(worldName: String) {
+        serverRepository
+            .worldFlow
+            .collect { listFromNetwork ->
+                val worldId = listFromNetwork
+                    .filter { it.name == worldName }
+                    .map { it.id }
+                    .firstOrNull()
+
+                _internalScreenStateFlow.update {
+                    it.copy(
+                        worldList = listFromNetwork,
+                        worldId = worldId,
+                    )
+                }
+
+                figureOutWhatDataCenterWereOn()
+            }
     }
 
     fun changeDc(dc: ApiDataCenter?) {
@@ -101,6 +157,10 @@ class ItemDetailScreenViewModel @Inject constructor(
         }
     }
 
+    private fun handleError(error: Throwable) {
+        Log.e("Oh My Gaaaad", "Error occurred: ${error.message}")
+    }
+
     fun filterHq() {
         _internalScreenStateFlow.update {
             val newShowHqOnly = !it.showHqOnly
@@ -110,8 +170,16 @@ class ItemDetailScreenViewModel @Inject constructor(
 
     private fun findCheapestPrices() {
         viewModelScope.launch(Dispatchers.IO) {
+            val state = _internalScreenStateFlow.value
+            val region = state.regionToSearch
+
+            Log.d(
+                "cheapest",
+                "after launch FCP coroutine: region to search: $region"
+            )
+
             val allPrices = networkRepository
-                .getMarketItemPrices(_internalScreenStateFlow.value.regionToSearch, itemId)
+                .getMarketItemPrices(region, state.marketItemDetail.itemID)
                 .listings
 
             val cheapestTotal = allPrices.minOfOrNull { it.total }
@@ -125,6 +193,16 @@ class ItemDetailScreenViewModel @Inject constructor(
                     cheapestUnitPrice = cheapestUnitListing,
                 )
             }
+            Log.d(
+                "cheapest",
+                "after update state inside FCP function: cheapest price world: ${state.cheapestTotalPrice?.worldName}" +
+                        "\ncheapest price: ${state.cheapestTotalPrice?.total}"
+            )
+            Log.d(
+                "cheapest",
+                "inside FCP: currentDC: ${state.currentDc}"
+            )
+
         }
     }
 }
