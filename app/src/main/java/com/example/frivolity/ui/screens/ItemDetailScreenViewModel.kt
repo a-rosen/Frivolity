@@ -37,6 +37,7 @@ class ItemDetailScreenViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             getListOfWorlds(worldName)
             getListOfDataCenters()
+
             getMarketItemDetails(worldName, itemId)
             getFullItemDetails(itemId)
 
@@ -44,25 +45,44 @@ class ItemDetailScreenViewModel @Inject constructor(
         }
     }
 
-    private fun figureOutWhatDataCenterWereOn() {
-        _internalScreenStateFlow.update { oldState ->
-            val worldId = oldState.worldId
+    fun changeDc(dc: ApiDataCenter?) {
+        _internalScreenStateFlow.update {
+            val newShouldShowDropdown = !it.shouldShowDropdown
+            it.copy(
+                currentDc = dc,
+                shouldShowDropdown = newShouldShowDropdown
+            )
+        }
+    }
 
-            if (worldId == null) {
-                return@update oldState
-            }
+    fun sortByTotal() {
+        _internalScreenStateFlow.update {
+            it.copy(
+                sortMethod = SortMethods.TOTAL
+            )
+        }
+    }
 
-            if (oldState.dcList.isEmpty()) {
-                return@update oldState
-            }
+    fun sortByUnit() {
+        _internalScreenStateFlow.update {
+            it.copy(
+                sortMethod = SortMethods.UNIT
+            )
+        }
+    }
 
-            val newDc = oldState
-                .dcList
-                .first { dc -> dc.worlds.contains(worldId) }
+    fun filterHq() {
+        _internalScreenStateFlow.update {
+            val newShowHqOnly = !it.showHqOnly
+            it.copy(showHqOnly = newShowHqOnly)
+        }
+    }
 
-            oldState.copy(
-                currentDc = newDc,
-                regionToSearch = newDc.region,
+    fun toggleDropdown() {
+        _internalScreenStateFlow.update {
+            val newShouldShowDropdown = !it.shouldShowDropdown
+            it.copy(
+                shouldShowDropdown = newShouldShowDropdown
             )
         }
     }
@@ -98,7 +118,7 @@ class ItemDetailScreenViewModel @Inject constructor(
                     it.copy(dcList = listFromNetwork)
                 }
 
-                figureOutWhatDataCenterWereOn()
+                findCurrentDcAndRegion()
             }
     }
 
@@ -118,53 +138,30 @@ class ItemDetailScreenViewModel @Inject constructor(
                     )
                 }
 
-                figureOutWhatDataCenterWereOn()
+                findCurrentDcAndRegion()
             }
     }
 
-    fun changeDc(dc: ApiDataCenter?) {
-        _internalScreenStateFlow.update {
-            val newShouldShowDropdown = !it.shouldShowDropdown
-            it.copy(
-                currentDc = dc,
-                shouldShowDropdown = newShouldShowDropdown
+    private fun findCurrentDcAndRegion() {
+        _internalScreenStateFlow.update { oldState ->
+            val worldId = oldState.worldId
+
+            if (worldId == null) {
+                return@update oldState
+            }
+
+            if (oldState.dcList.isEmpty()) {
+                return@update oldState
+            }
+
+            val newDc = oldState
+                .dcList
+                .first { dc -> dc.worlds.contains(worldId) }
+
+            oldState.copy(
+                currentDc = newDc,
+                regionToSearch = newDc.region,
             )
-        }
-    }
-
-    fun toggleDropdown() {
-        _internalScreenStateFlow.update {
-            val newShouldShowDropdown = !it.shouldShowDropdown
-            it.copy(
-                shouldShowDropdown = newShouldShowDropdown
-            )
-        }
-    }
-
-    fun sortByTotal() {
-        _internalScreenStateFlow.update {
-            it.copy(
-                sortMethod = SortMethods.TOTAL
-            )
-        }
-    }
-
-    fun sortByUnit() {
-        _internalScreenStateFlow.update {
-            it.copy(
-                sortMethod = SortMethods.UNIT
-            )
-        }
-    }
-
-    private fun handleError(error: Throwable) {
-        Log.e("Oh My Gaaaad", "Error occurred: ${error.message}")
-    }
-
-    fun filterHq() {
-        _internalScreenStateFlow.update {
-            val newShowHqOnly = !it.showHqOnly
-            it.copy(showHqOnly = newShowHqOnly)
         }
     }
 
@@ -172,11 +169,6 @@ class ItemDetailScreenViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             val state = _internalScreenStateFlow.value
             val region = state.regionToSearch
-
-            Log.d(
-                "cheapest",
-                "after launch FCP coroutine: region to search: $region"
-            )
 
             val allPrices = networkRepository
                 .getMarketItemPrices(region, state.marketItemDetail.itemID)
@@ -193,16 +185,11 @@ class ItemDetailScreenViewModel @Inject constructor(
                     cheapestUnitPrice = cheapestUnitListing,
                 )
             }
-            Log.d(
-                "cheapest",
-                "after update state inside FCP function: cheapest price world: ${state.cheapestTotalPrice?.worldName}" +
-                        "\ncheapest price: ${state.cheapestTotalPrice?.total}"
-            )
-            Log.d(
-                "cheapest",
-                "inside FCP: currentDC: ${state.currentDc}"
-            )
-
         }
     }
+
+    private fun handleError(error: Throwable) {
+        Log.e("IDSVM Error", "Error occurred: ${error.message}")
+    }
+
 }
