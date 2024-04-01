@@ -86,6 +86,7 @@ fun ItemDetailScreen(
                         onItemClicked = { item ->
                             viewModel.changeDc(state.dcList
                                 .firstOrNull { it.name == item })
+
                         }
                     )
                     ButtonWithDropdown(
@@ -126,7 +127,7 @@ fun ItemDetailScreen(
                 onDropdownClick = { viewModel.toggleDropdown() },
             )
 
-            AnimatedVisibility(visible = state.shouldShowDropdown) {
+            AnimatedVisibility(visible = state.shouldShowStatsRow) {
                 StatsRow(
                     state = state,
                     iLevel = itemDetail.iLevel,

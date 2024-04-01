@@ -49,7 +49,9 @@ fun FrivolityNavGraph(
                 state = itemDetailScreenState,
                 viewModel = hiltViewModel(),
                 navigateBack = {
-                    navController.popBackStack()
+                    navController.navigate(
+                        route = "MainScreen"
+                    )
                 },
                 changeServer = { worldname, id ->
                     navController.navigate(

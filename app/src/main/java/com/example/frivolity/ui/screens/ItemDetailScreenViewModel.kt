@@ -47,10 +47,8 @@ class ItemDetailScreenViewModel @Inject constructor(
 
     fun changeDc(dc: ApiDataCenter?) {
         _internalScreenStateFlow.update {
-            val newShouldShowDropdown = !it.shouldShowDropdown
             it.copy(
                 currentDc = dc,
-                shouldShowDropdown = newShouldShowDropdown
             )
         }
     }
@@ -80,9 +78,9 @@ class ItemDetailScreenViewModel @Inject constructor(
 
     fun toggleDropdown() {
         _internalScreenStateFlow.update {
-            val newShouldShowDropdown = !it.shouldShowDropdown
+            val newShouldShowDropdown = !it.shouldShowStatsRow
             it.copy(
-                shouldShowDropdown = newShouldShowDropdown
+                shouldShowStatsRow = newShouldShowDropdown
             )
         }
     }

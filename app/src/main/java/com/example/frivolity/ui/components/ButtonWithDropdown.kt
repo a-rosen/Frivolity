@@ -42,7 +42,10 @@ fun ButtonWithDropdown(
             menuItems.forEach {
                 DropdownMenuItem(
                     text = { Text(text = it) },
-                    onClick = { onItemClicked(it) }
+                    onClick = {
+                        onItemClicked(it)
+                        shouldShowDropdown = false
+                    }
                 )
             }
         }
