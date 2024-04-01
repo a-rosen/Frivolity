@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.frivolity.repository.DataStoreRepository
 import com.example.frivolity.repository.FrivolityRepository
+import com.example.frivolity.repository.XIVServersRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,6 +17,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MainScreenViewModel @Inject constructor(
     private val networkRepository: FrivolityRepository,
+    private val serverRepository: XIVServersRepository,
     private val dataStore: DataStoreRepository,
 ) : ViewModel() {
     private val _internalScreenStateFlow =
@@ -24,21 +26,30 @@ class MainScreenViewModel @Inject constructor(
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-                    _internalScreenStateFlow.update {
-                        return@update MainScreenState(
-                            networkRepository.getDataCenters(),
-                            networkRepository.getWorlds(),
-                            it.recentlyUpdatedList,
-                            it.selectedDC,
-                            it.selectedWorld,
-                            it.searchBoxText,
-                            it.searchResults,
-                        )
-                    }
-                    getSelectedDc()
-                    getSelectedWorld()
+            getDcListFromApi()
+            getWorldListFromApi()
+            getSelectedDc()
+            getSelectedWorld()
         }
     }
+
+    private suspend fun getDcListFromApi() {
+        serverRepository.dcFlow.collect { collectedList ->
+            _internalScreenStateFlow.update {
+                it.copy(dataCentersList = collectedList)
+            }
+        }
+    }
+
+    private suspend fun getWorldListFromApi() {
+        serverRepository.worldFlow.collect { collectedList ->
+            _internalScreenStateFlow.update {
+                it.copy(worldsList = collectedList)
+            }
+        }
+    }
+
+
 
     fun selectDataCenter(dcName: String) {
         val dcToSelect = _internalScreenStateFlow
@@ -58,7 +69,7 @@ class MainScreenViewModel @Inject constructor(
                 it.searchBoxText,
                 it.searchResults,
 
-            )
+                )
         }
     }
 
@@ -79,7 +90,7 @@ class MainScreenViewModel @Inject constructor(
                 it.searchBoxText,
                 it.searchResults,
 
-            )
+                )
         }
     }
 
@@ -98,7 +109,7 @@ class MainScreenViewModel @Inject constructor(
                 inputText,
                 it.searchResults,
 
-            )
+                )
         }
     }
 
@@ -134,7 +145,7 @@ class MainScreenViewModel @Inject constructor(
                         it.searchBoxText,
                         it.searchResults,
 
-                    )
+                        )
                 }
             }
         }

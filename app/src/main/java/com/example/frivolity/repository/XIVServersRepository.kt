@@ -30,11 +30,11 @@ class XIVServersRepository @Inject constructor(
         emit(worldList)
     }
 
-    private suspend fun getWorldList(): List<ApiWorld> {
+    suspend fun getWorldList(): List<ApiWorld> {
         return universalisApi.getWorlds()
     }
 
-    private suspend fun getDcList(): List<ApiDataCenter> {
+    suspend fun getDcList(): List<ApiDataCenter> {
         return universalisApi.getDataCenters()
     }
 
