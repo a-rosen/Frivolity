@@ -190,4 +190,5 @@ class ItemDetailScreenViewModel @Inject constructor(
         Log.e("IDSVM Error", "Error occurred: ${error.message}")
     }
 
+
 }

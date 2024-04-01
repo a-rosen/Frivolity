@@ -21,8 +21,9 @@ fun ButtonWithDropdown(
     iconDescription: String,
     menuItems: List<String>,
     onItemClicked: (String) -> Unit,
+    expanded: Boolean,
 ) {
-    var shouldShowDropdown by remember { mutableStateOf(false) }
+    var shouldShowDropdown by remember { mutableStateOf(expanded) }
 
     Box(
         modifier = Modifier
@@ -61,6 +62,7 @@ fun ButtonWithDropdownPreview(
         icon = R.drawable.ic_group,
         iconDescription = "",
         menuItems = listOf(),
-        onItemClicked = {}
+        onItemClicked = {},
+        expanded = false
     )
 }

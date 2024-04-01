@@ -86,8 +86,8 @@ fun ItemDetailScreen(
                         onItemClicked = { item ->
                             viewModel.changeDc(state.dcList
                                 .firstOrNull { it.name == item })
-
-                        }
+                        },
+                        expanded = false
                     )
                     ButtonWithDropdown(
                         icon = R.drawable.ic_world,
@@ -95,7 +95,8 @@ fun ItemDetailScreen(
                         menuItems = state.worldList
                             .filter { state.currentDc?.worlds?.contains(it.id) ?: false }
                             .map { world -> world.name },
-                        onItemClicked = { changeServer(it, item.itemID) }
+                        onItemClicked = { changeServer(it, item.itemID) },
+                        expanded = state.shouldShowWorldsDropdown
                     )
 
                 },

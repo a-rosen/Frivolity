@@ -21,6 +21,7 @@ data class ItemDetailScreenState(
     val sortMethod: SortMethods,
     val showHqOnly: Boolean,
     val shouldShowStatsRow: Boolean,
+    val shouldShowWorldsDropdown: Boolean,
 
     ) {
     companion object {
@@ -68,6 +69,7 @@ data class ItemDetailScreenState(
             worldList = listOf(),
             currentDc = null,
             worldId = 0,
+            shouldShowWorldsDropdown = false
         )
     }
 }
