@@ -68,7 +68,11 @@ data class ItemDetailScreenState(
             shouldShowStatsRow = false,
             dcList = listOf(),
             worldList = listOf(),
-            currentDc = null,
+            currentDc = ApiDataCenter(
+                "Loading...",
+                "",
+                listOf()
+            ),
             worldId = 0,
             shouldShowDcList = false,
             shouldShowWorldList = false
