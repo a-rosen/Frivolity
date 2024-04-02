@@ -76,11 +76,29 @@ class ItemDetailScreenViewModel @Inject constructor(
         }
     }
 
-    fun toggleDropdown() {
+    fun toggleStatsRow() {
         _internalScreenStateFlow.update {
             val newShouldShowStatsRow = !it.shouldShowStatsRow
             it.copy(
                 shouldShowStatsRow = newShouldShowStatsRow
+            )
+        }
+    }
+
+    fun toggleDcList() {
+        _internalScreenStateFlow.update {
+            val newShouldShowDcList = !it.shouldShowDcList
+            it.copy(
+                shouldShowDcList = newShouldShowDcList
+            )
+        }
+    }
+
+    fun toggleWorldList() {
+        _internalScreenStateFlow.update {
+            val newShouldShowWorldList = !it.shouldShowWorldList
+            it.copy(
+                shouldShowWorldList = newShouldShowWorldList
             )
         }
     }

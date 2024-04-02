@@ -87,8 +87,11 @@ fun ItemDetailScreen(
                         onItemClicked = { item ->
                             viewModel.changeDc(state.dcList
                                 .firstOrNull { it.name == item })
+                            viewModel.toggleDcList()
+                            viewModel.toggleWorldList()
                         },
-                        expanded = false
+                        onIconClicked = { viewModel.toggleDcList() },
+                        expanded = state.shouldShowDcList
                     )
                     ButtonWithDropdown(
                         icon = R.drawable.ic_world,
@@ -97,7 +100,8 @@ fun ItemDetailScreen(
                             .filter { state.currentDc?.worlds?.contains(it.id) ?: false }
                             .map { world -> world.name },
                         onItemClicked = { changeServer(it, item.itemID) },
-                        expanded = state.shouldShowWorldsDropdown
+                        onIconClicked = { viewModel.toggleWorldList() },
+                        expanded = state.shouldShowWorldList
                     )
 
                 },
@@ -125,8 +129,17 @@ fun ItemDetailScreen(
                 .consumeWindowInsets(innerPadding)
         ) {
             ItemDetailHeader(
-                itemDetail = itemDetail?.asUiItemDetail() ?: UiItemDetail("", 0, "", 0, 0, mapOf(), "", ""),
-                onDropdownClick = { viewModel.toggleDropdown() },
+                itemDetail = itemDetail?.asUiItemDetail() ?: UiItemDetail(
+                    "",
+                    0,
+                    "",
+                    0,
+                    0,
+                    mapOf(),
+                    "",
+                    ""
+                ),
+                onDropdownClick = { viewModel.toggleStatsRow() },
             )
 
             AnimatedVisibility(visible = state.shouldShowStatsRow) {
