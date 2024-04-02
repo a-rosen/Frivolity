@@ -14,7 +14,7 @@ data class ItemDetailScreenState(
     val worldId: Int?,
     val currentDc: ApiDataCenter? = ApiDataCenter("Loading...", "", listOf()),
     val marketItemDetail: ApiMarketItemDetail,
-    val itemDetail: ApiItemDetail,
+    val itemDetail: ApiItemDetail?,
     val regionToSearch: String,
     val cheapestTotalPrice: ApiPrices?,
     val cheapestUnitPrice: ApiPrices?,
@@ -69,7 +69,7 @@ data class ItemDetailScreenState(
             worldList = listOf(),
             currentDc = null,
             worldId = 0,
-            shouldShowWorldsDropdown = false
+            shouldShowWorldsDropdown = true
         )
     }
 }

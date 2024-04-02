@@ -31,6 +31,7 @@ import com.example.frivolity.ui.components.ItemDetailHeader
 import com.example.frivolity.ui.components.ListingListItem
 import com.example.frivolity.ui.components.StatsRow
 import com.example.frivolity.ui.models.SortMethods
+import com.example.frivolity.ui.models.UiItemDetail
 
 object DetailsDestination : NavigationDestination {
     override val route = "ItemDetailScreen"
@@ -124,15 +125,15 @@ fun ItemDetailScreen(
                 .consumeWindowInsets(innerPadding)
         ) {
             ItemDetailHeader(
-                itemDetail = itemDetail.asUiItemDetail(),
+                itemDetail = itemDetail?.asUiItemDetail() ?: UiItemDetail("", 0, "", 0, 0, mapOf(), "", ""),
                 onDropdownClick = { viewModel.toggleDropdown() },
             )
 
             AnimatedVisibility(visible = state.shouldShowStatsRow) {
                 StatsRow(
                     state = state,
-                    iLevel = itemDetail.iLevel,
-                    levelToEquip = itemDetail.levelToEquip,
+                    iLevel = itemDetail?.iLevel ?: 0,
+                    levelToEquip = itemDetail?.levelToEquip ?: 0,
                 )
             }
 

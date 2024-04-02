@@ -78,9 +78,9 @@ class ItemDetailScreenViewModel @Inject constructor(
 
     fun toggleDropdown() {
         _internalScreenStateFlow.update {
-            val newShouldShowDropdown = !it.shouldShowStatsRow
+            val newShouldShowStatsRow = !it.shouldShowStatsRow
             it.copy(
-                shouldShowStatsRow = newShouldShowDropdown
+                shouldShowStatsRow = newShouldShowStatsRow
             )
         }
     }
