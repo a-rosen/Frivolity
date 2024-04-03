@@ -28,7 +28,7 @@ data class ItemDetailScreenState(
     companion object {
         val EMPTY = ItemDetailScreenState(
             marketItemDetail = ApiMarketItemDetail(
-                itemID = 0,
+                itemID = 1,
                 worldID = 0,
                 lastUploadTime = 0,
                 listings = listOf(),
@@ -58,7 +58,14 @@ data class ItemDetailScreenState(
                 unitsSold = 0
             ),
             itemDetail = ApiItemDetail(
-                "", 0, "", 0, 0, mapOf(Pair("Name", "JOB JOB JOB JOB")), "", ApiItemKind("")
+                "",
+                1,
+                "",
+                0,
+                0,
+                mapOf(Pair("Name", "JOB JOB JOB JOB")),
+                "",
+                ApiItemKind("")
             ),
             regionToSearch = "North-America",
             cheapestTotalPrice = ApiPrices(0, 0, 0, "Faerie"),
