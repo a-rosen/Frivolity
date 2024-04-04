@@ -6,10 +6,11 @@ import com.example.frivolity.network.models.universalisapi.ApiPrices
 import com.example.frivolity.network.models.universalisapi.ApiWorld
 import com.example.frivolity.network.models.xivapi.ApiItemDetail
 import com.example.frivolity.network.models.xivapi.ApiItemKind
+import com.example.frivolity.ui.Asynchronous
 import com.example.frivolity.ui.models.SortMethods
 
 data class ItemDetailScreenState(
-    val dcList: List<ApiDataCenter>,
+    val dcList: Asynchronous<List<ApiDataCenter>>,
     val worldList: List<ApiWorld>,
     val worldId: Int?,
     val currentDc: ApiDataCenter? = ApiDataCenter("Loading...", "", listOf()),
@@ -73,7 +74,7 @@ data class ItemDetailScreenState(
             sortMethod = SortMethods.TOTAL,
             showHqOnly = false,
             shouldShowStatsRow = false,
-            dcList = listOf(),
+            dcList = Asynchronous.Uninitialized(),
             worldList = listOf(),
             currentDc = ApiDataCenter(
                 "Loading...",

@@ -130,11 +130,11 @@ class ItemDetailScreenViewModel @Inject constructor(
             .dcFlow
             .catch { error -> handleError(error) }
             .collect { listFromNetwork ->
-                _internalScreenStateFlow.update {
+                _internalScreenStateFlow.update {;
                     it.copy(dcList = listFromNetwork)
                 }
 
-                findCurrentDcAndRegion()
+                findCurrentDcAndRegion();
             }
     }
 
