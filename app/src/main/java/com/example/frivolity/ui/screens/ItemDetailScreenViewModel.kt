@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.frivolity.network.models.universalisapi.ApiDataCenter
 import com.example.frivolity.repository.FrivolityRepository
 import com.example.frivolity.repository.XIVServersRepository
+import com.example.frivolity.ui.Asynchronous
 import com.example.frivolity.ui.models.SortMethods
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -126,12 +127,18 @@ class ItemDetailScreenViewModel @Inject constructor(
     }
 
     private suspend fun getListOfDataCenters() {
+        _internalScreenStateFlow.update {
+            it.copy(
+                dcList = Asynchronous.Loading()
+            )
+        }
+
         serverRepository
             .dcFlow
-            .catch { error -> handleError(error) }
+            .catch { error -> handleError(error.message) }
             .collect { listFromNetwork ->
                 _internalScreenStateFlow.update {;
-                    it.copy(dcList = listFromNetwork)
+                    it.copy(dcList = Asynchronous.Success(listFromNetwork))
                 }
 
                 findCurrentDcAndRegion();
@@ -204,8 +211,13 @@ class ItemDetailScreenViewModel @Inject constructor(
         }
     }
 
-    private fun handleError(error: Throwable) {
-        Log.e("IDSVM Error", "Error occurred: ${error.message}")
+    private fun handleError(message: String?) {
+        Log.e("IDSVM Error", "Error occurred: $message")
+        _internalScreenStateFlow.update {
+            it.copy(
+                dcList =  Asynchronous.Error(message ?: "Unknown Error")
+            )
+        }
     }
 
 
