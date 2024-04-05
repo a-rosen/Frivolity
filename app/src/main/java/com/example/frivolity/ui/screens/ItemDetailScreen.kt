@@ -111,16 +111,25 @@ fun ItemDetailScreen(
                         onIconClicked = { viewModel.toggleDcList() },
                         expanded = state.shouldShowDcList
                     )
-                    ButtonWithDropdown(
-                        icon = R.drawable.ic_world,
-                        iconDescription = "Switch World",
-                        menuItems = state.worldList
-                            .filter { state.currentDc?.worlds?.contains(it.id) ?: false }
-                            .map { world -> world.name },
-                        onItemClicked = { changeServer(it, item.itemID) },
-                        onIconClicked = { viewModel.toggleWorldList() },
-                        expanded = state.shouldShowWorldList
-                    )
+                    if (state.worldList !is Asynchronous.Loading) {
+                        ButtonWithDropdown(
+                            icon = R.drawable.ic_world,
+                            iconDescription = "Switch World",
+                            menuItems = when (state.worldList) {
+                                is Asynchronous.Uninitialized -> listOf("Uninitialized")
+                                is Asynchronous.Loading -> listOf("Loading...")
+                                is Asynchronous.Error -> listOf("Error")
+                                is Asynchronous.Success ->
+                                    state.worldList.resultData
+                                        .filter { state.currentDc?.worlds?.contains(it.id) ?: false }
+                                        .map { world -> world.name }
+                            },
+                            onItemClicked = { changeServer(it, item.itemID) },
+                            onIconClicked = { viewModel.toggleWorldList() },
+                            expanded = state.shouldShowWorldList
+                        )
+                    }
+
 
                 },
                 title = {

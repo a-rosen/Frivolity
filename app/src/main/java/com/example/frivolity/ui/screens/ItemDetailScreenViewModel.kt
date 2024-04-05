@@ -43,6 +43,12 @@ class ItemDetailScreenViewModel @Inject constructor(
             getFullItemDetails(itemId)
 
             findCheapestPrices()
+
+            screenStateFlow.collect {
+                if (it.dcList is Asynchronous.Success) {
+                    findCurrentDcAndRegion()
+                }
+            }
         }
     }
 
@@ -141,13 +147,18 @@ class ItemDetailScreenViewModel @Inject constructor(
                     it.copy(dcList = Asynchronous.Success(listFromNetwork))
                 }
 
-                findCurrentDcAndRegion()
             }
     }
 
     private suspend fun getListOfWorlds(worldName: String) {
+        _internalScreenStateFlow.update {
+            it.copy(
+                worldList = Asynchronous.Loading()
+            )
+        }
         serverRepository
             .worldFlow
+            .catch { error -> handleError(error.message) }
             .collect { listFromNetwork ->
                 val worldId = listFromNetwork
                     .filter { it.name == worldName }
@@ -156,12 +167,11 @@ class ItemDetailScreenViewModel @Inject constructor(
 
                 _internalScreenStateFlow.update {
                     it.copy(
-                        worldList = listFromNetwork,
+                        worldList = Asynchronous.Success(listFromNetwork),
                         worldId = worldId,
                     )
                 }
 
-                findCurrentDcAndRegion()
             }
     }
 
@@ -172,25 +182,29 @@ class ItemDetailScreenViewModel @Inject constructor(
             if (worldId == null) {
                 return@update oldState
             }
-            when (oldState.dcList) {
+
+           when (oldState.dcList) {
                 is Asynchronous.Loading ->
-                    return@update oldState
+                    oldState.copy(
+                        dcList = Asynchronous.Loading(),
+                        worldList = Asynchronous.Loading()
+                    )
 
                 is Asynchronous.Success -> {
                     val newDc = oldState.dcList.resultData
                         .first { dc -> dc.worlds.contains(worldId) }
-                    return@update oldState.copy(
+                    oldState.copy(
                         currentDc = newDc,
                         regionToSearch = newDc.region
                     )
                 }
 
                 is Asynchronous.Uninitialized ->
-                    return@update oldState
+                    oldState.copy(
+                        currentDc = ApiDataCenter("Uninitialized", "", listOf())
+                    )
 
-                is Asynchronous.Error ->
-                    return@update oldState
-
+                is Asynchronous.Error -> oldState
             }
         }
     }
