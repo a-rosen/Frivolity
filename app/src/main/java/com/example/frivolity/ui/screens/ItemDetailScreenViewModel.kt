@@ -113,7 +113,7 @@ class ItemDetailScreenViewModel @Inject constructor(
                 )
             }
         } catch (error: Exception) {
-            handleError(error)
+            handleError(error.message)
         }
     }
 
@@ -137,11 +137,11 @@ class ItemDetailScreenViewModel @Inject constructor(
             .dcFlow
             .catch { error -> handleError(error.message) }
             .collect { listFromNetwork ->
-                _internalScreenStateFlow.update {;
+                _internalScreenStateFlow.update {
                     it.copy(dcList = Asynchronous.Success(listFromNetwork))
                 }
 
-                findCurrentDcAndRegion();
+                findCurrentDcAndRegion()
             }
     }
 
@@ -172,19 +172,26 @@ class ItemDetailScreenViewModel @Inject constructor(
             if (worldId == null) {
                 return@update oldState
             }
+            when (oldState.dcList) {
+                is Asynchronous.Loading ->
+                    return@update oldState
 
-            if (oldState.dcList.isEmpty()) {
-                return@update oldState
+                is Asynchronous.Success -> {
+                    val newDc = oldState.dcList.resultData
+                        .first { dc -> dc.worlds.contains(worldId) }
+                    return@update oldState.copy(
+                        currentDc = newDc,
+                        regionToSearch = newDc.region
+                    )
+                }
+
+                is Asynchronous.Uninitialized ->
+                    return@update oldState
+
+                is Asynchronous.Error ->
+                    return@update oldState
+
             }
-
-            val newDc = oldState
-                .dcList
-                .first { dc -> dc.worlds.contains(worldId) }
-
-            oldState.copy(
-                currentDc = newDc,
-                regionToSearch = newDc.region,
-            )
         }
     }
 
@@ -215,10 +222,8 @@ class ItemDetailScreenViewModel @Inject constructor(
         Log.e("IDSVM Error", "Error occurred: $message")
         _internalScreenStateFlow.update {
             it.copy(
-                dcList =  Asynchronous.Error(message ?: "Unknown Error")
+                dcList = Asynchronous.Error(message ?: "Unknown Error")
             )
         }
     }
-
-
 }

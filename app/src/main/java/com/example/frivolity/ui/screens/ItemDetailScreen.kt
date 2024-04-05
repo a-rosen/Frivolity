@@ -25,6 +25,7 @@ import com.example.frivolity.R
 import com.example.frivolity.navigation.NavigationDestination
 import com.example.frivolity.network.models.universalisapi.asUiListingDetail
 import com.example.frivolity.network.models.xivapi.asUiItemDetail
+import com.example.frivolity.ui.Asynchronous
 import com.example.frivolity.ui.components.ButtonWithDropdown
 import com.example.frivolity.ui.components.ChipRow
 import com.example.frivolity.ui.components.ItemDetailHeader
@@ -80,12 +81,30 @@ fun ItemDetailScreen(
                     ButtonWithDropdown(
                         icon = R.drawable.ic_group,
                         iconDescription = "Switch DC",
-                        menuItems = state.dcList
-                            .filter { it.worlds[0] < 1000 }
-                            .map { dc -> dc.name },
+                        menuItems = when (state.dcList) {
+                            is Asynchronous.Uninitialized ->
+                                listOf<String>()
+                            is Asynchronous.Loading ->
+                                listOf("Loading...")
+                            is Asynchronous.Error ->
+                              listOf("Not Found")
+                            is Asynchronous.Success ->
+                                state.dcList.resultData
+                                    .filter { it.worlds[0] < 1000 }
+                                    .map { dc -> dc.name }
+                        },
                         onItemClicked = { item ->
-                            viewModel.changeDc(state.dcList
-                                .firstOrNull { it.name == item })
+                            when (state.dcList) {
+                                is Asynchronous.Uninitialized -> {}
+                                is Asynchronous.Loading -> {}
+                                is Asynchronous.Error -> {}
+                                is Asynchronous.Success ->
+                                    viewModel.changeDc(state
+                                        .dcList
+                                        .resultData
+                                        .firstOrNull { it.name == item})
+                            }
+
                             viewModel.toggleDcList()
                             viewModel.toggleWorldList()
                         },
