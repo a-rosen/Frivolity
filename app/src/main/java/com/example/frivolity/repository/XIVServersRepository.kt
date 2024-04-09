@@ -1,6 +1,5 @@
 package com.example.frivolity.repository
 
-import android.util.Log
 import com.example.frivolity.network.UniversalisApi
 import com.example.frivolity.network.models.universalisapi.ApiDataCenter
 import com.example.frivolity.network.models.universalisapi.ApiWorld
@@ -19,13 +18,17 @@ class XIVServersRepository @Inject constructor(
             getDcList()
             getWorldList()
             getDcsRaw()
-            Log.d("dcsraw", getDcsRaw())
         }
     }
 
     val dcFlow = flow {
         val dcList = getDcList()
         emit(dcList)
+    }
+
+    val dcRawFlow = flow {
+        val dcListRaw = getDcsRaw()
+        emit(dcListRaw)
     }
 
     val worldFlow = flow {

@@ -30,8 +30,16 @@ class DataStoreRepository @Inject constructor(
             data[storedWorldName] ?: ""
         }
 
-    fun saveDcList() {
-        TODO()
+    val storedDcRawFlow: Flow<String> = dataStore
+        .data
+        .map { preferences -> preferences[storedDcList] ?: "" }
+
+    fun saveDcList(rawDcList: String) {
+        repositoryScope.launch(Dispatchers.IO) {
+            dataStore.edit { preferences ->
+                preferences[storedDcList] = rawDcList
+            }
+        }
     }
 
     fun saveWorldsList() {

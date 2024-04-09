@@ -14,17 +14,25 @@ import com.example.frivolity.ui.screens.ItemDetailScreen
 import com.example.frivolity.ui.screens.ItemDetailScreenState
 import com.example.frivolity.ui.screens.ItemDetailScreenViewModel
 import com.example.frivolity.ui.screens.MainScreen
+import com.example.frivolity.ui.screens.SettingsScreen
 
 
 @Composable
 fun FrivolityNavGraph(
     navController: NavHostController,
-    startDestination: String = "MainScreen"
+    startDestination: String = "SettingsScreen"
 ) {
     NavHost(
         navController = navController,
         startDestination = startDestination
     ) {
+        composable("SettingsScreen") {
+            SettingsScreen(
+                viewModel = hiltViewModel(),
+            )
+        }
+
+
         composable("MainScreen") {
             MainScreen(
                 viewModel = hiltViewModel(),
