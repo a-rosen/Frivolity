@@ -2,23 +2,18 @@ package com.example.frivolity.network
 
 import com.example.frivolity.network.models.universalisapi.ApiDataCenter
 import com.example.frivolity.network.models.universalisapi.ApiMarketItemDetail
-import com.example.frivolity.network.models.universalisapi.ApiMarketItemList
 import com.example.frivolity.network.models.universalisapi.ApiPricesList
 import com.example.frivolity.network.models.universalisapi.ApiWorld
+import okhttp3.ResponseBody
 import retrofit2.http.Path
-import retrofit2.http.Query
 
 class MockUniversalisApi: UniversalisApi {
     override suspend fun getDataCenters(): List<ApiDataCenter> {
         return listOf()
     }
 
-    override suspend fun getRecentlyUpdated(
-        @Query(value = "world") world: String,
-        @Query(value = "dcName") dcName: String,
-        @Query(value = "entries") entries: Int
-    ): ApiMarketItemList {
-        return ApiMarketItemList(items = listOf())
+    override suspend fun getDcsRaw(): ResponseBody {
+        TODO("Not yet implemented")
     }
 
     override suspend fun getWorlds(): List<ApiWorld> {

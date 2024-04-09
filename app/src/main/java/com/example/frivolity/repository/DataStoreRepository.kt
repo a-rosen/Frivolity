@@ -18,6 +18,9 @@ class DataStoreRepository @Inject constructor(
     private val storedDcName = stringPreferencesKey("dcName")
     private val storedWorldName = stringPreferencesKey("worldName")
 
+    private val storedDcList = stringPreferencesKey("dcList")
+    private val storedWorldsList = stringPreferencesKey("worldsList")
+
     val storedDcFlow: Flow<String> = dataStore
         .data
         .map { preferences -> preferences[storedDcName] ?: "" }
@@ -26,6 +29,14 @@ class DataStoreRepository @Inject constructor(
         .map { data ->
             data[storedWorldName] ?: ""
         }
+
+    fun saveDcList() {
+        TODO()
+    }
+
+    fun saveWorldsList() {
+        TODO()
+    }
 
     fun saveSelectedServer(selectedDcName: String, selectedWorldName: String) {
         repositoryScope.launch(Dispatchers.IO) {

@@ -62,7 +62,6 @@ fun ItemDetailScreen(
         it.pricePerUnit
     }
 
-
     Scaffold(
         topBar = {
             TopAppBar(
@@ -83,7 +82,7 @@ fun ItemDetailScreen(
                         iconDescription = "Switch DC",
                         menuItems = when (state.dcList) {
                             is Asynchronous.Uninitialized ->
-                                listOf<String>()
+                                listOf()
                             is Asynchronous.Loading ->
                                 listOf("Loading...")
                             is Asynchronous.Error ->

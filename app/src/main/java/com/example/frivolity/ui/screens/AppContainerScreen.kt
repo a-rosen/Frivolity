@@ -6,6 +6,8 @@ import androidx.navigation.compose.rememberNavController
 import com.example.frivolity.navigation.FrivolityNavGraph
 
 @Composable
-fun AppContainerScreen(navController: NavHostController = rememberNavController()) {
+fun AppContainerScreen(
+    navController: NavHostController = rememberNavController(),
+) {
     FrivolityNavGraph(navController = navController)
 }

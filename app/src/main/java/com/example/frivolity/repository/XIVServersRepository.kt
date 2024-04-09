@@ -1,5 +1,6 @@
 package com.example.frivolity.repository
 
+import android.util.Log
 import com.example.frivolity.network.UniversalisApi
 import com.example.frivolity.network.models.universalisapi.ApiDataCenter
 import com.example.frivolity.network.models.universalisapi.ApiWorld
@@ -17,6 +18,8 @@ class XIVServersRepository @Inject constructor(
         repositoryScope.launch(Dispatchers.IO) {
             getDcList()
             getWorldList()
+            getDcsRaw()
+            Log.d("dcsraw", getDcsRaw())
         }
     }
 
@@ -36,6 +39,10 @@ class XIVServersRepository @Inject constructor(
 
     suspend fun getDcList(): List<ApiDataCenter> {
         return universalisApi.getDataCenters()
+    }
+
+    suspend fun getDcsRaw(): String {
+        return universalisApi.getDcsRaw().string()
     }
 
 

@@ -33,24 +33,6 @@ class MainScreenViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getDcListFromApi() {
-        serverRepository.dcFlow.collect { collectedList ->
-            _internalScreenStateFlow.update {
-                it.copy(dataCentersList = collectedList)
-            }
-        }
-    }
-
-    private suspend fun getWorldListFromApi() {
-        serverRepository.worldFlow.collect { collectedList ->
-            _internalScreenStateFlow.update {
-                it.copy(worldsList = collectedList)
-            }
-        }
-    }
-
-
-
     fun selectDataCenter(dcName: String) {
         val dcToSelect = _internalScreenStateFlow
             .value
@@ -100,31 +82,30 @@ class MainScreenViewModel @Inject constructor(
 
     fun updateSearchBoxText(inputText: String) {
         _internalScreenStateFlow.update {
-            MainScreenState(
-                it.dataCentersList,
-                it.worldsList,
-                it.recentlyUpdatedList,
-                it.selectedDC,
-                it.selectedWorld,
-                inputText,
-                it.searchResults,
-
-                )
+            it.copy(searchBoxText = inputText)
         }
     }
 
     fun submitSearch(inputText: String) {
         viewModelScope.launch(Dispatchers.IO) {
             _internalScreenStateFlow.update {
-                return@update MainScreenState(
-                    it.dataCentersList,
-                    it.worldsList,
-                    it.recentlyUpdatedList,
-                    it.selectedDC,
-                    it.selectedWorld,
-                    it.searchBoxText,
-                    networkRepository.itemSearchByString(inputText).results,
-                )
+                it.copy(searchResults = networkRepository.itemSearchByString(inputText).results)
+            }
+        }
+    }
+
+    private suspend fun getDcListFromApi() {
+        serverRepository.dcFlow.collect { collectedList ->
+            _internalScreenStateFlow.update {
+                it.copy(dataCentersList = collectedList)
+            }
+        }
+    }
+
+    private suspend fun getWorldListFromApi() {
+        serverRepository.worldFlow.collect { collectedList ->
+            _internalScreenStateFlow.update {
+                it.copy(worldsList = collectedList)
             }
         }
     }
@@ -136,16 +117,7 @@ class MainScreenViewModel @Inject constructor(
                     .firstOrNull { it.name == name }
 
                 _internalScreenStateFlow.update {
-                    MainScreenState(
-                        it.dataCentersList,
-                        it.worldsList,
-                        it.recentlyUpdatedList,
-                        dcFromStored,
-                        it.selectedWorld,
-                        it.searchBoxText,
-                        it.searchResults,
-
-                        )
+                    it.copy(selectedDC = dcFromStored)
                 }
             }
         }
@@ -158,15 +130,7 @@ class MainScreenViewModel @Inject constructor(
                     .firstOrNull { it.name == name }
 
                 _internalScreenStateFlow.update {
-                    MainScreenState(
-                        it.dataCentersList,
-                        it.worldsList,
-                        it.recentlyUpdatedList,
-                        it.selectedDC,
-                        worldFromStored,
-                        it.searchBoxText,
-                        it.searchResults,
-                    )
+                    it.copy(selectedWorld = worldFromStored)
                 }
             }
         }

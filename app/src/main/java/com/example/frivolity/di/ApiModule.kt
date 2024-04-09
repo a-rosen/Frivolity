@@ -18,8 +18,9 @@ import javax.inject.Singleton
 class ApiModule {
     @Provides
     @Singleton
-    fun provideClientInterceptor() = OkHttpClient.Builder()
-        .addInterceptor(provideHttpLoggingInterceptor())
+    fun provideOkHttpClient(logInterceptor: Interceptor) = OkHttpClient
+        .Builder()
+        .addInterceptor(logInterceptor)
         .build()
 
     @Provides
@@ -28,21 +29,32 @@ class ApiModule {
         logger.level = HttpLoggingInterceptor.Level.BODY
         return logger
     }
+
     @Provides
     @Singleton
-    fun provideUniversalisApi() = Retrofit.Builder()
+    internal fun provideGsonConvFactory(): GsonConverterFactory = GsonConverterFactory.create()
+
+    @Provides
+    @Singleton
+    fun provideUniversalisApi(
+        okHttpClient: OkHttpClient,
+        gsonConverterFactory: GsonConverterFactory
+    ) = Retrofit.Builder()
         .baseUrl("https://universalis.app/api/v2/")
-        .client(provideClientInterceptor())
-        .addConverterFactory(GsonConverterFactory.create())
+        .client(okHttpClient)
+        .addConverterFactory(gsonConverterFactory)
         .build()
         .create(UniversalisApi::class.java)
 
     @Provides
     @Singleton
-    fun provideXIVApi() = Retrofit.Builder()
+    fun provideXIVApi(
+        okHttpClient: OkHttpClient,
+        gsonConverterFactory: GsonConverterFactory
+    ) = Retrofit.Builder()
         .baseUrl("https://xivapi.com/")
-        .client(provideClientInterceptor())
-        .addConverterFactory(GsonConverterFactory.create())
+        .client(okHttpClient)
+        .addConverterFactory(gsonConverterFactory)
         .build()
         .create(XIVApi::class.java)
 }
