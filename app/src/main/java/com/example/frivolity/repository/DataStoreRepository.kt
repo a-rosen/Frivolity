@@ -49,7 +49,7 @@ class DataStoreRepository @Inject constructor(
     fun deserializeStoredDcList() {
         repositoryScope.launch(Dispatchers.IO) {
             storedDcListFlow.collect {dcListJsonString ->
-                TODO()
+                TODO("let's deserialize, should we even be doing it in this class? idk rofl")
 
             }
         }
