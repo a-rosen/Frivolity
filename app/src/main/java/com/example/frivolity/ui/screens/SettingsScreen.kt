@@ -12,6 +12,7 @@ fun SettingsScreen(
     viewModel: SettingsScreenViewModel,
 ) {
     val state by viewModel.screenStateFlow.collectAsState()
+
     Column {
         Text(text = "Home Data Center:")
         Text(text = "Here's some raw data from the state! ${state.dcListRaw}")

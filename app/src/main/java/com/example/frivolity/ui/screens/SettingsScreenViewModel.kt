@@ -27,31 +27,13 @@ class SettingsScreenViewModel @Inject constructor(
     init {
         viewModelScope.launch(Dispatchers.IO) {
             getRawDcListFromApi()
+            saveDcListToDataStore()
 
-            screenStateFlow.collect {
-                if (it.dcListRaw is Asynchronous.Success) {
-                    saveDcListToDataStore()
-                }
-            }
         }
     }
 
-    private fun saveDcListToDataStore() {
-        when (_internalScreenStateFlow.value.dcListRaw) {
-            is Asynchronous.Loading ->
-                return
-            is Asynchronous.Uninitialized ->
-                return
-            is Asynchronous.Error ->
-                return
-            is Asynchronous.Success -> {
-                val results = (_internalScreenStateFlow
-                    .value
-                    .dcListRaw as Asynchronous.Success<String>)
-                    .resultData
-                dataStore.saveDcList(results)
-            }
-        }
+    suspend fun getDcListFromStore() {
+        TODO("gotta get list from store, deserialize, use")
     }
 
     private suspend fun getRawDcListFromApi() {
@@ -70,6 +52,19 @@ class SettingsScreenViewModel @Inject constructor(
                     )
                 }
             }
+    }
+
+    private suspend fun saveDcListToDataStore() {
+        screenStateFlow.collect {
+            if (it.dcListRaw is Asynchronous.Success) {
+                val results = (_internalScreenStateFlow
+                    .value
+                    .dcListRaw as Asynchronous.Success<String>)
+                    .resultData
+                dataStore.saveDcList(results)
+
+            }
+        }
     }
 
 

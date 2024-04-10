@@ -49,7 +49,7 @@ class DataStoreRepository @Inject constructor(
         TODO()
     }
 
-    fun deserializeStoredDcList() {
+    fun deserializeStoredDcList(rawDcList: String) {
         repositoryScope.launch(Dispatchers.IO) {
             storedDcListFlow.collect {dcListJsonString ->
                 gson.fromJson(dcListJsonString, Array<ApiDataCenter>::class.java)
