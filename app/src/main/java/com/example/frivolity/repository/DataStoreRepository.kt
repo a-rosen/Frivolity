@@ -4,6 +4,8 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
+import com.example.frivolity.network.models.universalisapi.ApiDataCenter
+import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -13,7 +15,8 @@ import javax.inject.Inject
 
 class DataStoreRepository @Inject constructor(
     private val dataStore: DataStore<Preferences>,
-    private val repositoryScope: CoroutineScope
+    private val repositoryScope: CoroutineScope,
+    private val gson: Gson
 ) {
     private val storedDcName = stringPreferencesKey("dcName")
     private val storedWorldName = stringPreferencesKey("worldName")
@@ -49,11 +52,9 @@ class DataStoreRepository @Inject constructor(
     fun deserializeStoredDcList() {
         repositoryScope.launch(Dispatchers.IO) {
             storedDcListFlow.collect {dcListJsonString ->
-                TODO("let's deserialize, should we even be doing it in this class? idk rofl")
-
+                gson.fromJson(dcListJsonString, Array<ApiDataCenter>::class.java)
             }
         }
-
     }
 
     fun saveSelectedServer(selectedDcName: String, selectedWorldName: String) {

@@ -2,6 +2,7 @@ package com.example.frivolity.di
 
 import com.example.frivolity.network.UniversalisApi
 import com.example.frivolity.network.XIVApi
+import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -33,6 +34,10 @@ class ApiModule {
     @Provides
     @Singleton
     internal fun provideGsonConvFactory(): GsonConverterFactory = GsonConverterFactory.create()
+
+    @Provides
+    @Singleton
+    fun provideGson(): Gson = Gson()
 
     @Provides
     @Singleton
