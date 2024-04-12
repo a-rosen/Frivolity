@@ -24,18 +24,12 @@ class DataStoreRepository @Inject constructor(
     private val storedDcList = stringPreferencesKey("dcList")
     private val storedWorldsList = stringPreferencesKey("worldsList")
 
-    val storedDcFlow: Flow<String> = dataStore
+    val storedDcListFlowDeserialized: Flow<Array<ApiDataCenter>> = dataStore
         .data
-        .map { preferences -> preferences[storedDcName] ?: "" }
-
-    val storedWorldFlow: Flow<String> = dataStore.data
-        .map { data ->
-            data[storedWorldName] ?: ""
+        .map { preferences ->
+            deserializeStoredDcList(preferences[storedDcList])
         }
 
-    val storedDcListFlow: Flow<String> = dataStore
-        .data
-        .map { preferences -> preferences[storedDcList] ?: "" }
 
     fun saveDcList(rawDcList: String) {
         repositoryScope.launch(Dispatchers.IO) {
@@ -49,12 +43,8 @@ class DataStoreRepository @Inject constructor(
         TODO()
     }
 
-    fun deserializeStoredDcList(rawDcList: String) {
-        repositoryScope.launch(Dispatchers.IO) {
-            storedDcListFlow.collect {dcListJsonString ->
-                gson.fromJson(dcListJsonString, Array<ApiDataCenter>::class.java)
-            }
-        }
+    fun deserializeStoredDcList(rawDcList: String?): Array<ApiDataCenter> {
+        return gson.fromJson(rawDcList, Array<ApiDataCenter>::class.java)
     }
 
     fun saveSelectedServer(selectedDcName: String, selectedWorldName: String) {
@@ -65,4 +55,17 @@ class DataStoreRepository @Inject constructor(
             }
         }
     }
+
+    // OLD
+
+
+    val storedDcFlow: Flow<String> = dataStore
+        .data
+        .map { preferences -> preferences[storedDcName] ?: "" }
+
+    val storedWorldFlow: Flow<String> = dataStore.data
+        .map { data ->
+            data[storedWorldName] ?: ""
+        }
+
 }

@@ -29,11 +29,27 @@ class SettingsScreenViewModel @Inject constructor(
             getRawDcListFromApi()
             saveDcListToDataStore()
 
+            screenStateFlow.collect {
+                if (it.dcListRaw is Asynchronous.Success) {
+                    getDeserializedDcListFromStore()
+                }
+            }
+
         }
+        Log.d("lolol", "state: ${_internalScreenStateFlow.value.dcListRaw} ${_internalScreenStateFlow.value.dcList}")
     }
 
-    suspend fun getDcListFromStore() {
-        TODO("gotta get list from store, deserialize, use")
+    private suspend fun getDeserializedDcListFromStore() {
+        dataStore.storedDcListFlowDeserialized
+            .catch { error -> handleError(error.message) }
+            .collect { dcListFromStore ->
+                _internalScreenStateFlow.update {
+                    it.copy(
+                        dcList = dcListFromStore.toList()
+                    )
+                }
+            }
+
     }
 
     private suspend fun getRawDcListFromApi() {

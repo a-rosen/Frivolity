@@ -66,7 +66,7 @@ dependencies {
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
 
     // Database
-    val room_version = "2.7.7"
+    val room_version = "2.6.1"
 
     annotationProcessor("androidx.room:room-compiler:$room_version")
     kapt("androidx.room:room-compiler:$room_version")
