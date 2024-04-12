@@ -36,7 +36,10 @@ class SettingsScreenViewModel @Inject constructor(
             }
 
         }
-        Log.d("lolol", "state: ${_internalScreenStateFlow.value.dcListRaw} ${_internalScreenStateFlow.value.dcList}")
+        Log.d(
+            "lolol",
+            "state: ${_internalScreenStateFlow.value.dcListRaw} ${_internalScreenStateFlow.value.dcList}"
+        )
     }
 
     private suspend fun getDeserializedDcListFromStore() {
@@ -68,18 +71,24 @@ class SettingsScreenViewModel @Inject constructor(
                     )
                 }
             }
+        Log.d(
+            "lolol",
+            "getrawdclist functino state: ${_internalScreenStateFlow.value.dcListRaw} ${_internalScreenStateFlow.value.dcList}"
+        )
+
     }
 
     private suspend fun saveDcListToDataStore() {
         screenStateFlow.collect {
             if (it.dcListRaw is Asynchronous.Success) {
-                val results = (_internalScreenStateFlow
-                    .value
-                    .dcListRaw as Asynchronous.Success<String>)
+                val results = it
+                    .dcListRaw
                     .resultData
-                dataStore.saveDcList(results)
 
+                dataStore.saveDcList(results)
             }
+            Log.d("lolol", "state: ${it.dcListRaw} ${it.dcList}")
+
         }
     }
 

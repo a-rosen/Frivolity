@@ -1,5 +1,6 @@
 package com.example.frivolity.repository
 
+import android.util.Log
 import com.example.frivolity.network.UniversalisApi
 import com.example.frivolity.network.models.universalisapi.ApiDataCenter
 import com.example.frivolity.network.models.universalisapi.ApiWorld
@@ -45,7 +46,12 @@ class XIVServersRepository @Inject constructor(
     }
 
     private suspend fun getDcsRaw(): String {
-        return universalisApi.getDcsRaw().string()
+        return try {
+            universalisApi.getDcsRaw().string()
+        } catch (ex: Exception) {
+            Log.e("oops", "network error: ${ex.message}")
+            "Some other string lol"
+        }
     }
 
 
