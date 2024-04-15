@@ -63,4 +63,6 @@ class DataStoreStorage @Inject constructor(
 
 }
 
-// consider making this an implementation of an interface called storage, so that in future if you want to switch among storage methods you can easily
+// consider making this an implementation of an interface called storage,
+// so that in future if you want to switch among storage methods you can easily
+// do that.
