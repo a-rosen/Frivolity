@@ -3,7 +3,7 @@ package com.example.frivolity.ui.screens
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.frivolity.repository.DataStoreRepository
+import com.example.frivolity.repository.DataStoreStorage
 import com.example.frivolity.repository.XIVServersRepository
 import com.example.frivolity.ui.Asynchronous
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,7 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SettingsScreenViewModel @Inject constructor(
     private val serverRepository: XIVServersRepository,
-    private val dataStore: DataStoreRepository,
+    private val dataStore: DataStoreStorage,
 ) : ViewModel() {
     private val _internalScreenStateFlow = MutableStateFlow(value = SettingsScreenState.EMPTY)
     val screenStateFlow: StateFlow<SettingsScreenState> = _internalScreenStateFlow.asStateFlow()
@@ -36,14 +36,12 @@ class SettingsScreenViewModel @Inject constructor(
             }
 
         }
-        Log.d(
-            "lolol",
-            "state: ${_internalScreenStateFlow.value.dcListRaw} ${_internalScreenStateFlow.value.dcList}"
-        )
     }
 
+    // none of this should be happening in here - let the server king handle it
+
     private suspend fun getDeserializedDcListFromStore() {
-        dataStore.storedDcListFlowDeserialized
+        dataStore.storedDcListJsonFlow
             .catch { error -> handleError(error.message) }
             .collect { dcListFromStore ->
                 _internalScreenStateFlow.update {
@@ -71,11 +69,6 @@ class SettingsScreenViewModel @Inject constructor(
                     )
                 }
             }
-        Log.d(
-            "lolol",
-            "getrawdclist functino state: ${_internalScreenStateFlow.value.dcListRaw} ${_internalScreenStateFlow.value.dcList}"
-        )
-
     }
 
     private suspend fun saveDcListToDataStore() {

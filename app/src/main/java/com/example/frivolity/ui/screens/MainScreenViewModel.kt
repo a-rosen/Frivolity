@@ -2,7 +2,7 @@ package com.example.frivolity.ui.screens
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.frivolity.repository.DataStoreRepository
+import com.example.frivolity.repository.DataStoreStorage
 import com.example.frivolity.repository.FrivolityRepository
 import com.example.frivolity.repository.XIVServersRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,7 +18,7 @@ import javax.inject.Inject
 class MainScreenViewModel @Inject constructor(
     private val networkRepository: FrivolityRepository,
     private val serverRepository: XIVServersRepository,
-    private val dataStore: DataStoreRepository,
+    private val dataStore: DataStoreStorage,
 ) : ViewModel() {
     private val _internalScreenStateFlow =
         MutableStateFlow(value = MainScreenState.EMPTY)
