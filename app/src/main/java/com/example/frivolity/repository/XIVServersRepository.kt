@@ -34,7 +34,7 @@ class XIVServersRepository @Inject constructor(
     }
 
     private fun saveNetworkListToEmptyStore(dcListJson: String) {
-
+        storage.saveDcList(dcListJson)
     }
 
     private fun setupDataCenterState() {
