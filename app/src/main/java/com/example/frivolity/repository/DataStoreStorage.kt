@@ -15,8 +15,8 @@ class DataStoreStorage @Inject constructor(
     private val dataStore: DataStore<Preferences>,
     private val repositoryScope: CoroutineScope,
 ) {
-    private val storedDcName = stringPreferencesKey("dcName")
-    private val storedWorldName = stringPreferencesKey("worldName")
+    private val storedSelectedDc = stringPreferencesKey("dcName")
+    private val storedSelectedWorld = stringPreferencesKey("worldName")
 
     private val storedDcList = stringPreferencesKey("dcList")
     private val storedWorldsList = stringPreferencesKey("worldsList")
@@ -26,41 +26,52 @@ class DataStoreStorage @Inject constructor(
         .map { preferences ->
             preferences[storedDcList] ?: ""
         }
+    val storedWorldsListJsonFlow: Flow<String> = dataStore
+        .data
+        .map { preferences ->
+            preferences[storedWorldsList] ?: ""
+        }
+
+    val storedSelectedDcFlow: Flow<String> =
+        dataStore
+            .data
+            .map { preferences ->
+                preferences[storedSelectedDc] ?: ""
+            }
+
+    val storedSelectedWorldFlow: Flow<String> =
+        dataStore
+            .data
+            .map { preferences ->
+                preferences[storedSelectedWorld] ?: ""
+            }
 
 
-    fun saveDcList(rawDcList: String) {
+
+    fun saveDcList(dcListJson: String) {
         repositoryScope.launch(Dispatchers.IO) {
             dataStore.edit { preferences ->
-                preferences[storedDcList] = rawDcList
+                preferences[storedDcList] = dcListJson
             }
         }
     }
 
-    fun saveWorldsList() {
-        TODO()
+    fun saveWorldsList(worldsListJson: String) {
+        repositoryScope.launch(Dispatchers.IO) {
+            dataStore.edit { preferences ->
+                preferences[storedWorldsList] = worldsListJson
+            }
+        }
     }
 
     fun saveSelectedServer(selectedDcName: String, selectedWorldName: String) {
         repositoryScope.launch(Dispatchers.IO) {
             dataStore.edit { preferences ->
-                preferences[storedDcName] = selectedDcName
-                preferences[storedWorldName] = selectedWorldName
+                preferences[storedSelectedDc] = selectedDcName
+                preferences[storedSelectedWorld] = selectedWorldName
             }
         }
     }
-
-    // OLD
-
-
-    val storedDcFlow: Flow<String> = dataStore
-        .data
-        .map { preferences -> preferences[storedDcName] ?: "" }
-
-    val storedWorldFlow: Flow<String> = dataStore.data
-        .map { data ->
-            data[storedWorldName] ?: ""
-        }
-
 }
 
 // consider making this an implementation of an interface called storage,

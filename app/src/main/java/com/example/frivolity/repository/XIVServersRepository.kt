@@ -2,6 +2,7 @@ package com.example.frivolity.repository
 
 import com.example.frivolity.network.UniversalisApi
 import com.example.frivolity.network.models.universalisapi.ApiDataCenter
+import com.example.frivolity.network.models.universalisapi.ApiWorld
 import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -20,21 +21,40 @@ class XIVServersRepository @Inject constructor(
 ) {
     init {
         setupDataCenterState()
+        setupWorldState()
     }
 
-    private val _whatTheRepositoryUnderstandsTheDataCenterSituationToBe = MutableStateFlow<List<ApiDataCenter>>(
-        emptyList()
-    )
-    val viewModelsShouldAskForThis = _whatTheRepositoryUnderstandsTheDataCenterSituationToBe.asStateFlow()
+    private val _whatTheRepositoryUnderstandsTheDataCenterSituationToBe =
+        MutableStateFlow<List<ApiDataCenter>>(
+            emptyList()
+        )
+    private val _whatTheRepositoryUnderstandsTheWorldSituationToBe =
+        MutableStateFlow<List<ApiWorld>>(
+            emptyList()
+        )
+    val dataCentersFromServerKing =
+        _whatTheRepositoryUnderstandsTheDataCenterSituationToBe.asStateFlow()
+    val worldsFromServerKing =
+        _whatTheRepositoryUnderstandsTheWorldSituationToBe.asStateFlow()
 
     private suspend fun getListOfDcsFromNetwork(): String {
-        val dcsJson =  universalisApi.getDcsRaw().string()
-        saveNetworkListToEmptyStore(dcsJson)
+        val dcsJson = universalisApi.getDcsRaw().string()
+        saveNetworkDcListToEmptyStore(dcsJson)
         return dcsJson
     }
 
-    private fun saveNetworkListToEmptyStore(dcListJson: String) {
+    private suspend fun getListOfWorldsFromNetwork(): String {
+        val worldsJson = universalisApi.getWorldsRaw().string()
+        saveNetworkWorldListToEmptyStore(worldsJson)
+        return worldsJson
+    }
+
+    private fun saveNetworkDcListToEmptyStore(dcListJson: String) {
         storage.saveDcList(dcListJson)
+    }
+
+    private fun saveNetworkWorldListToEmptyStore(worldsListJson: String) {
+        storage.saveWorldsList(worldsListJson)
     }
 
     private fun setupDataCenterState() {
@@ -44,19 +64,43 @@ class XIVServersRepository @Inject constructor(
                 if (dcStringFromDataStore.isEmpty()) {
                     val dcStringFromNetwork = getListOfDcsFromNetwork()
                     _whatTheRepositoryUnderstandsTheDataCenterSituationToBe.value =
-                        dcStringFromNetwork.turnIntoAStructuredList()
+                        dcStringFromNetwork.turnIntoStructuredDcList()
                 } else {
                     _whatTheRepositoryUnderstandsTheDataCenterSituationToBe.value =
-                        dcStringFromDataStore.turnIntoAStructuredList()
+                        dcStringFromDataStore.turnIntoStructuredDcList()
                 }
             }
             .flowOn(Dispatchers.IO)
             .launchIn(repositoryScope)
     }
 
-    private fun String.turnIntoAStructuredList(): List<ApiDataCenter> {
+    private fun setupWorldState() {
+        storage
+            .storedWorldsListJsonFlow
+            .onEach { worldsStringFromDataStore ->
+                if (worldsStringFromDataStore.isEmpty()) {
+                    val worldsStringFromNetwork = getListOfWorldsFromNetwork()
+                    _whatTheRepositoryUnderstandsTheWorldSituationToBe.value =
+                        worldsStringFromNetwork.turnIntoStructuredWorldsList()
+                } else {
+                    _whatTheRepositoryUnderstandsTheWorldSituationToBe.value =
+                        worldsStringFromDataStore.turnIntoStructuredWorldsList()
+                }
+            }
+            .flowOn(Dispatchers.IO)
+            .launchIn(repositoryScope)
+    }
+
+    // is there a way to make these functions more generic?
+    private fun String.turnIntoStructuredDcList(): List<ApiDataCenter> {
         return gson
             .fromJson(this, Array<ApiDataCenter>::class.java)
+            .toList()
+    }
+
+    private fun String.turnIntoStructuredWorldsList(): List<ApiWorld> {
+        return gson
+            .fromJson(this, Array<ApiWorld>::class.java)
             .toList()
     }
 }

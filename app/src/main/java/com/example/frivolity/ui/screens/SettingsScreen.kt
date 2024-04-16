@@ -15,7 +15,7 @@ fun SettingsScreen(
 
     Column {
         Text(text = "Home Data Center:")
-        Text(text = "Here's some deserialized data MAYBE ${state.dcList}")
+        Text(text = "Here's some deserialized data MAYBE ${state.dcList} ${state.worldsList}")
         ListOfChoices(
             choices = listOf()
         ) {

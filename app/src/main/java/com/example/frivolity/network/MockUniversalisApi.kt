@@ -20,6 +20,10 @@ class MockUniversalisApi: UniversalisApi {
         return listOf()
     }
 
+    override suspend fun getWorldsRaw(): ResponseBody {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun getItemDetails(
         @Path(value = "world") world: String,
         @Path(value = "id") id: Int

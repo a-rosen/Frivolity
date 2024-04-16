@@ -19,6 +19,9 @@ interface UniversalisApi {
     @GET("worlds")
     suspend fun getWorlds(): List<ApiWorld>
 
+    @GET("worlds")
+    suspend fun getWorldsRaw(): ResponseBody
+
     @GET("{world}/{id}")
     suspend fun getItemDetails(
         @Path("world") world: String,

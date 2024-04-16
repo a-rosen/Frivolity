@@ -19,7 +19,8 @@ class SettingsScreenViewModel @Inject constructor(
     init {
         _internalScreenStateFlow.update {
             it.copy(
-                dcList = serverRepository.viewModelsShouldAskForThis.value
+                dcList = serverRepository.dataCentersFromServerKing.value,
+                worldsList = serverRepository.worldsFromServerKing.value,
             )
         }
     }

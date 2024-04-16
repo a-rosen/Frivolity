@@ -14,7 +14,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -140,13 +139,11 @@ class ItemDetailScreenViewModel @Inject constructor(
         }
 
         serverRepository
-            .dcFlow
-            .catch { error -> handleError(error.message) }
-            .collect { listFromNetwork ->
+            .dataCentersFromServerKing
+            .collect { listFromStorage ->
                 _internalScreenStateFlow.update {
-                    it.copy(dcList = Asynchronous.Success(listFromNetwork))
+                    it.copy(dcList = Asynchronous.Success(listFromStorage))
                 }
-
             }
     }
 
@@ -157,17 +154,16 @@ class ItemDetailScreenViewModel @Inject constructor(
             )
         }
         serverRepository
-            .worldFlow
-            .catch { error -> handleError(error.message) }
-            .collect { listFromNetwork ->
-                val worldId = listFromNetwork
+            .worldsFromServerKing
+            .collect { listFromStorage ->
+                val worldId = listFromStorage
                     .filter { it.name == worldName }
                     .map { it.id }
                     .firstOrNull()
 
                 _internalScreenStateFlow.update {
                     it.copy(
-                        worldList = Asynchronous.Success(listFromNetwork),
+                        worldList = Asynchronous.Success(listFromStorage),
                         worldId = worldId,
                     )
                 }

@@ -18,17 +18,24 @@ fun MainScreen(
     navigateToDetailScreen: (String, Int) -> Unit,
 ) {
     val mainScreenState by viewModel.screenStateFlow.collectAsState()
-    val dataCenters = mainScreenState.dataCentersList.filter { it.worlds[0] < 1000 }
-    val dataCentersNames = dataCenters.map { it.name }
-    val selectedDcWorlds = mainScreenState.worldsList.filter {
-        mainScreenState
-            .selectedDC?.worlds?.contains(it.id) ?: false
-    }
-    val selectedDcWorldsNames = selectedDcWorlds.map { it.name }
+//    val dataCenters = mainScreenState.dataCentersList.filter { it.worlds[0] < 1000 }
+//    val dataCentersNames = dataCenters.map { it.name }
+//    val selectedDcWorlds = mainScreenState.worldsList.filter {
+//        mainScreenState
+//            .selectedDC?.worlds?.contains(it.id) ?: false
+//    }
+//    val selectedDcWorldsNames = selectedDcWorlds.map { it.name }
+
+
+
+
+
+    /////////////////////////
+
 
     Column {
         ChipWithDropdown(
-            menuItems = dataCentersNames,
+            menuItems = listOf(),
             displayText = "Select Data Center",
             onItemClicked = { viewModel.selectDataCenter(it) }
         )
@@ -36,7 +43,7 @@ fun MainScreen(
         Text(text = mainScreenState.selectedDC?.name ?: "")
 
         ChipWithDropdown(
-            menuItems = selectedDcWorldsNames,
+            menuItems = listOf(),
             displayText = "Select World",
             onItemClicked = { viewModel.selectWorld(it) }
         )
