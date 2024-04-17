@@ -8,6 +8,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -32,10 +33,30 @@ class XIVServersRepository @Inject constructor(
         MutableStateFlow<List<ApiWorld>>(
             emptyList()
         )
+
     val dataCentersFromServerKing =
         _whatTheRepositoryUnderstandsTheDataCenterSituationToBe.asStateFlow()
     val worldsFromServerKing =
         _whatTheRepositoryUnderstandsTheWorldSituationToBe.asStateFlow()
+
+    // combine dc and world flows into a new model that i need to build:
+    // a dc model with world information included
+    // do so as below
+
+    val aThirdFlowGasp = combine(
+        dataCentersFromServerKing,
+        worldsFromServerKing
+    ) { centers, worlds ->
+
+        return@combine centers.map {
+            val worldsForThisDataCenter = figureOutHowToMakeThisListItselfWaitYouProbablyAlreadyDid().toList()
+            return@map ConglomeratedDataCenters(
+                name = it.name,
+                worlds = worldsForThisDataCenter,
+                pat = buchanan,
+            )
+        }
+    }
 
     private suspend fun getListOfDcsFromNetwork(): String {
         val dcsJson = universalisApi.getDcsRaw().string()
