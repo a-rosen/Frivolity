@@ -13,9 +13,10 @@ fun SettingsScreen(
 ) {
     val state by viewModel.screenStateFlow.collectAsState()
 
+
     Column {
         Text(text = "Home Data Center:")
-        Text(text = "Here's some deserialized data MAYBE ${state.dcList} ${state.worldsList}")
+        Text(text = "Here's some deserialized data MAYBE ${state.dcList}")
         ListOfChoices(
             choices = listOf()
         ) {
