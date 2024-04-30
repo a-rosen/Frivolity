@@ -20,6 +20,7 @@ class DataStoreStorage @Inject constructor(
 
     private val storedDcList = stringPreferencesKey("dcList")
     private val storedWorldsList = stringPreferencesKey("worldsList")
+    private val storedServerList = stringPreferencesKey("serverList")
 
     val storedDcListJsonFlow: Flow<String> = dataStore
         .data
@@ -31,6 +32,13 @@ class DataStoreStorage @Inject constructor(
         .map { preferences ->
             preferences[storedWorldsList] ?: ""
         }
+
+    val storedServerListJsonFlow: Flow<String> = dataStore
+        .data
+        .map { preferences ->
+            preferences[storedServerList] ?: ""
+        }
+
 
     val storedSelectedDcFlow: Flow<String> =
         dataStore
@@ -60,6 +68,14 @@ class DataStoreStorage @Inject constructor(
         repositoryScope.launch(Dispatchers.IO) {
             dataStore.edit { preferences ->
                 preferences[storedWorldsList] = worldsListJson
+            }
+        }
+    }
+
+    fun saveServerList(serverListJson: String) {
+        repositoryScope.launch(Dispatchers.IO) {
+            dataStore.edit { preferences ->
+                preferences[storedServerList] = serverListJson
             }
         }
     }

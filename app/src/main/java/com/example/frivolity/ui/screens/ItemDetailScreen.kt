@@ -89,7 +89,7 @@ fun ItemDetailScreen(
                               listOf("Not Found")
                             is Asynchronous.Success ->
                                 state.dcList.resultData
-                                    .filter { it.worlds[0] < 1000 }
+                                    .filter { it.worldIds[0] < 1000 }
                                     .map { dc -> dc.name }
                         },
                         onItemClicked = { item ->
@@ -120,7 +120,7 @@ fun ItemDetailScreen(
                                 is Asynchronous.Error -> listOf("Error")
                                 is Asynchronous.Success ->
                                     state.worldList.resultData
-                                        .filter { state.currentDc?.worlds?.contains(it.id) ?: false }
+                                        .filter { state.currentDc?.worldIds?.contains(it.id) ?: false }
                                         .map { world -> world.name }
                             },
                             onItemClicked = { changeServer(it, item.itemID) },

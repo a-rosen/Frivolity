@@ -188,7 +188,7 @@ class ItemDetailScreenViewModel @Inject constructor(
 
                 is Asynchronous.Success -> {
                     val newDc = oldState.dcList.resultData
-                        .first { dc -> dc.worlds.contains(worldId) }
+                        .first { dc -> dc.worldIds.contains(worldId) }
                     oldState.copy(
                         currentDc = newDc,
                         regionToSearch = newDc.region

@@ -1,16 +1,13 @@
 package com.example.frivolity.ui.screens
 
-import com.example.frivolity.network.models.universalisapi.ApiDataCenter
-import com.example.frivolity.network.models.universalisapi.ApiWorld
+import com.example.frivolity.network.models.universalisapi.ApiLogicalDc
 
 data class SettingsScreenState(
-    val dcList: List<ApiDataCenter>,
-    val worldsList: List<ApiWorld>
+    val logicalDcsList: List<ApiLogicalDc>
 ) {
     companion object {
         val EMPTY = SettingsScreenState(
-            dcList = listOf(),
-            worldsList = listOf()
+            logicalDcsList = listOf()
         )
     }
 }

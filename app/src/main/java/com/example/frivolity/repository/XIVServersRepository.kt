@@ -2,6 +2,7 @@ package com.example.frivolity.repository
 
 import com.example.frivolity.network.UniversalisApi
 import com.example.frivolity.network.models.universalisapi.ApiDataCenter
+import com.example.frivolity.network.models.universalisapi.ApiLogicalDc
 import com.example.frivolity.network.models.universalisapi.ApiWorld
 import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
@@ -39,23 +40,20 @@ class XIVServersRepository @Inject constructor(
     val worldsFromServerKing =
         _whatTheRepositoryUnderstandsTheWorldSituationToBe.asStateFlow()
 
-    // combine dc and world flows into a new model that i need to build:
-    // a dc model with world information included
-    // do so as below
-
-    val aThirdFlowGasp = combine(
+    val logicalDcsFlow = combine(
         dataCentersFromServerKing,
         worldsFromServerKing
     ) { centers, worlds ->
-
-        return@combine centers.map {
-            val worldsForThisDataCenter = figureOutHowToMakeThisListItselfWaitYouProbablyAlreadyDid().toList()
-            return@map ConglomeratedDataCenters(
-                name = it.name,
-                worlds = worldsForThisDataCenter,
-                pat = buchanan,
-            )
-        }
+        return@combine centers
+            .map { thisDc ->
+                val worldsForThisDataCenter = worlds
+                    .filter { thisDc.worldIds.contains(it.id) }
+                return@map ApiLogicalDc(
+                    name = thisDc.name,
+                    region = thisDc.region,
+                    worlds = worldsForThisDataCenter,
+                )
+            }
     }
 
     private suspend fun getListOfDcsFromNetwork(): String {

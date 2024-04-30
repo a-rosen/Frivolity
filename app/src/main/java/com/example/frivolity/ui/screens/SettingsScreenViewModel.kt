@@ -24,22 +24,11 @@ class SettingsScreenViewModel @Inject constructor(
 
 
     init {
-        serverRepository.worldsFromServerKing
-            .onEach { worldsList ->
+        serverRepository.logicalDcsFlow
+            .onEach { logicalDcsList ->
                 _internalScreenStateFlow.update {
                     it.copy(
-                        worldsList = worldsList
-                    )
-                }
-            }
-            .flowOn(Dispatchers.IO)
-            .launchIn(repositoryScope)
-
-        serverRepository.dataCentersFromServerKing
-            .onEach { dcList ->
-                _internalScreenStateFlow.update {
-                    it.copy(
-                        dcList = dcList
+                        logicalDcsList = logicalDcsList
                     )
                 }
             }
