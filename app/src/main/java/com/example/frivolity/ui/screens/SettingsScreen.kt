@@ -1,6 +1,7 @@
 package com.example.frivolity.ui.screens
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -16,12 +17,21 @@ fun SettingsScreen(
 
     Column {
         Text(text = "Home Data Center:")
-        Text(text = "Here's some deserialized data MAYBE ${state.logicalDcsList}")
         ListOfChoices(
-            choices = listOf()
-        ) {
-
+            choices = state.logicalDcsList
+                .filter { server ->
+                    val firstWorldOnList = server.worlds.firstOrNull()
+                    if (firstWorldOnList != null) {
+                        firstWorldOnList.id < 1000
+                    } else return
+                }
+                .map { server ->
+                    server.name
+                },
+            onListItemClick = { viewModel.selectDc(it) }
+        )
+        Button(onClick = { /*TODO*/ }) {
+            Text(text = "Next")
         }
     }
-
 }

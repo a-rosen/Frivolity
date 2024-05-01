@@ -35,4 +35,13 @@ class SettingsScreenViewModel @Inject constructor(
             .flowOn(Dispatchers.IO)
             .launchIn(repositoryScope)
     }
+
+    fun selectDc(dcName: String) {
+        _internalScreenStateFlow.update {
+            it.copy(
+                selectedDcName = dcName
+            )
+        }
+
+    }
 }

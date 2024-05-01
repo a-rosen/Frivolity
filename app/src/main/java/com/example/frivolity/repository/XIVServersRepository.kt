@@ -125,4 +125,5 @@ class XIVServersRepository @Inject constructor(
 }
 
 // fix this so that the network call is made each time the app is launched
+// or, after a specific number of days?
 
