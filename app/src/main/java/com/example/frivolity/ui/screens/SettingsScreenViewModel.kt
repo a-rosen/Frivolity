@@ -1,6 +1,7 @@
 package com.example.frivolity.ui.screens
 
 import androidx.lifecycle.ViewModel
+import com.example.frivolity.repository.DataStoreStorage
 import com.example.frivolity.repository.XIVServersRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -17,7 +18,8 @@ import javax.inject.Inject
 @HiltViewModel
 class SettingsScreenViewModel @Inject constructor(
     private val serverRepository: XIVServersRepository,
-    private val repositoryScope: CoroutineScope
+    private val repositoryScope: CoroutineScope,
+    private val storage: DataStoreStorage
 ) : ViewModel() {
     private val _internalScreenStateFlow = MutableStateFlow(value = SettingsScreenState.EMPTY)
     val screenStateFlow: StateFlow<SettingsScreenState> = _internalScreenStateFlow.asStateFlow()
@@ -42,6 +44,17 @@ class SettingsScreenViewModel @Inject constructor(
                 selectedDcName = dcName
             )
         }
+    }
 
+    fun selectWorld(worldName: String) {
+        _internalScreenStateFlow.update {
+            it.copy(
+                selectedWorldName = worldName
+            )
+        }
+    }
+
+    private fun saveSelectedServer(dcName: String, worldName: String) {
+        storage.saveSelectedServer(dcName, worldName)
     }
 }
