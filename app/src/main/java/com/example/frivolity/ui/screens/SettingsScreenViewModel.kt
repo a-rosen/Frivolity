@@ -41,7 +41,8 @@ class SettingsScreenViewModel @Inject constructor(
     fun selectDc(dcName: String) {
         _internalScreenStateFlow.update {
             it.copy(
-                selectedDcName = dcName
+                selectedDcName = dcName,
+                dcHasBeenSelected = true
             )
         }
     }
@@ -54,7 +55,16 @@ class SettingsScreenViewModel @Inject constructor(
         }
     }
 
-    private fun saveSelectedServer(dcName: String, worldName: String) {
+    fun saveSelectedServer(dcName: String, worldName: String) {
         storage.saveSelectedServer(dcName, worldName)
     }
+
+    fun toggleSelectingDcView() {
+        _internalScreenStateFlow.update {
+            it.copy(
+                dcHasBeenSelected = false
+            )
+        }
+    }
+
 }

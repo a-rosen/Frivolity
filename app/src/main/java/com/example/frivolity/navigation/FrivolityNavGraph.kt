@@ -29,9 +29,13 @@ fun FrivolityNavGraph(
         composable("SettingsScreen") {
             SettingsScreen(
                 viewModel = hiltViewModel(),
+                navigateToMainScreen = {
+                    navController.navigate(
+                        route = "MainScreen"
+                    )
+                },
             )
         }
-
 
         composable("MainScreen") {
             MainScreen(
