@@ -1,5 +1,12 @@
 package com.example.frivolity.ui.screens
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -17,7 +24,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import com.example.frivolity.ui.components.ListOfChoices
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
 @Composable
 fun SettingsScreen(
     viewModel: SettingsScreenViewModel,
@@ -56,41 +63,66 @@ fun SettingsScreen(
             modifier = Modifier
                 .padding(innerPadding)
         ) {
-            if (!state.dcHasBeenSelected) {
-                ListOfChoices(
-                    choices = state.logicalDcsList
-                        .filter { server ->
-                            val firstWorldOnList = server.worlds.firstOrNull()
-                            if (firstWorldOnList != null) {
-                                firstWorldOnList.id < 1000
-                            } else return@Column
-                        }
-                        .map { server ->
-                            server.name
-                        },
-                    onListItemClick = { viewModel.selectDc(it) }
-                )
-            } else {
-                val selectedApiDcFromStorage = state.logicalDcsList
-                    .firstOrNull() { logicalDc ->
-                        logicalDc.name == state.selectedDcName
+            AnimatedContent(
+                targetState = state.dcHasBeenSelected,
+                label = "selection",
+                transitionSpec = {
+                    if (state.dcHasBeenSelected) {
+                        (slideInHorizontally { fullWidth -> fullWidth } + fadeIn())
+                            .togetherWith(
+                                slideOutHorizontally { -0 } + fadeOut())
+                    } else {
+                        (slideInHorizontally() + fadeIn())
+                            .togetherWith(
+                                slideOutHorizontally() + fadeOut())
                     }
-                selectedApiDcFromStorage?.worlds?.let { apiWorldList ->
-                    ListOfChoices(
-                        choices = apiWorldList
-                            .map { world -> world.name },
-                        onListItemClick = { viewModel.selectWorld(it) }
-                    )
                 }
+            ) { dcHasBeenSelected ->
+                when (dcHasBeenSelected) {
+                    false -> {
+                        ListOfChoices(
+                            choices = state.logicalDcsList
+                                .filter { server ->
+                                    val firstWorldOnList = server.worlds.firstOrNull()
+                                    if (firstWorldOnList != null) {
+                                        firstWorldOnList.id < 1000
+                                    } else true
+                                }
+                                .map { server ->
+                                    server.name
+                                },
+                            onListItemClick = { viewModel.selectDc(it) }
+                        )
+                    }
 
-                Button(onClick = {
-                    viewModel.saveSelectedServer(state.selectedDcName, state.selectedWorldName)
-                    navigateToMainScreen()
-                }) {
-                    Text(text = "Next")
+                    true -> {
+                        Column {
+                            val selectedApiDcFromStorage = state.logicalDcsList
+                                .firstOrNull() { logicalDc ->
+                                    logicalDc.name == state.selectedDcName
+                                }
+
+                            selectedApiDcFromStorage?.worlds?.let { apiWorldList ->
+                                ListOfChoices(
+                                    choices = apiWorldList
+                                        .map { world -> world.name },
+                                    onListItemClick = { viewModel.selectWorld(it) }
+                                )
+                            }
+
+                            Button(onClick = {
+                                viewModel.saveSelectedServer(
+                                    state.selectedDcName,
+                                    state.selectedWorldName
+                                )
+                                navigateToMainScreen()
+                            }) {
+                                Text(text = "Next")
+                            }
+                        }
+                    }
                 }
             }
         }
     }
-
 }
