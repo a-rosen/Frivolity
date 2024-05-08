@@ -12,9 +12,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -50,10 +52,16 @@ fun SettingsScreen(
                 },
                 title = {
                     if (state.dcHasBeenSelected) {
-                        Text(text = "Select Home World")
+                        Text(
+                            text = "Select Home World:",
+                            style = MaterialTheme.typography.titleMedium
+                        )
 
                     } else {
-                        Text(text = "Select Home Data Center")
+                        Text(
+                            text = "Select Home Data Center:",
+                            style = MaterialTheme.typography.titleMedium
+                        )
                     }
                 }
             )
@@ -63,6 +71,7 @@ fun SettingsScreen(
             modifier = Modifier
                 .padding(innerPadding)
         ) {
+            Divider()
             AnimatedContent(
                 targetState = state.dcHasBeenSelected,
                 label = "selection",
@@ -74,7 +83,8 @@ fun SettingsScreen(
                     } else {
                         (slideInHorizontally() + fadeIn())
                             .togetherWith(
-                                slideOutHorizontally() + fadeOut())
+                                slideOutHorizontally() + fadeOut()
+                            )
                     }
                 }
             ) { dcHasBeenSelected ->
@@ -90,7 +100,8 @@ fun SettingsScreen(
                                 }
                                 .map { server ->
                                     server.name
-                                },
+                                }
+                                .sorted(),
                             onListItemClick = { viewModel.selectDc(it) }
                         )
                     }
@@ -105,7 +116,8 @@ fun SettingsScreen(
                             selectedApiDcFromStorage?.worlds?.let { apiWorldList ->
                                 ListOfChoices(
                                     choices = apiWorldList
-                                        .map { world -> world.name },
+                                        .map { world -> world.name }
+                                        .sorted(),
                                     onListItemClick = { viewModel.selectWorld(it) }
                                 )
                             }
