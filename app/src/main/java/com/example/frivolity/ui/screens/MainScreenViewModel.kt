@@ -11,6 +11,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -19,7 +22,7 @@ import javax.inject.Inject
 class MainScreenViewModel @Inject constructor(
     private val networkRepository: FrivolityRepository,
     private val serverRepository: XIVServersRepository,
-    private val dataStore: DataStoreStorage,
+    private val storage: DataStoreStorage,
 ) : ViewModel() {
     private val _internalScreenStateFlow =
         MutableStateFlow(value = MainScreenState.EMPTY)
@@ -27,49 +30,9 @@ class MainScreenViewModel @Inject constructor(
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            getDcListFromStorage()
-            getWorldsListFromStorage()
-            getSelectedDc()
+            getSelectedServer()
             getSelectedWorld()
         }
-    }
-
-    fun selectDataCenter(dcName: String) {
-        val dcListFromState = _internalScreenStateFlow.value.dataCentersList
-        if (dcListFromState is Asynchronous.Success) {
-            val dcToSelect = dcListFromState
-                .resultData
-                .firstOrNull {
-                    it.name == dcName
-                }
-
-            _internalScreenStateFlow.update {
-                it.copy(
-                    selectedDC = dcToSelect
-                )
-            }
-        }    }
-
-
-    fun selectWorld(worldName: String) {
-        val worldsFromState = _internalScreenStateFlow.value.worldsList
-        if (worldsFromState is Asynchronous.Success) {
-            val worldToSelect = worldsFromState
-                .resultData
-                .firstOrNull {
-                    it.name == worldName
-                }
-
-            _internalScreenStateFlow.update {
-                it.copy(
-                    selectedWorld = worldToSelect
-                )
-            }
-        }
-    }
-
-    fun saveSelectedServer(selectedDcName: String, selectedWorldName: String) {
-        dataStore.saveSelectedServer(selectedDcName, selectedWorldName)
     }
 
     fun updateSearchBoxText(inputText: String) {
@@ -86,64 +49,29 @@ class MainScreenViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getDcListFromStorage() {
-        _internalScreenStateFlow.update {
-            it.copy(
-                dataCentersList = Asynchronous.Loading()
-            )
+    private fun getSelectedServer() {
+        combine(
+            storage.storedSelectedDcFlow,
+            serverRepository.logicalDcsFlow
+        ) { dcName, logicalDcList ->
+            logicalDcList
+                .filter { it.name == dcName }
+                .firstOrNull()
         }
-
-        serverRepository
-            .dataCentersFromServerKing
-            .collect { listFromStorage ->
+            .onEach {logicalDc ->
                 _internalScreenStateFlow.update {
-                    it.copy(dataCentersList = Asynchronous.Success(listFromStorage))
-
+                    it.copy(
+                        selectedServer = logicalDc
+                    )
                 }
             }
-    }
-
-    private suspend fun getWorldsListFromStorage() {
-        _internalScreenStateFlow.update {
-            it.copy(
-                worldsList = Asynchronous.Loading()
-            )
-        }
-
-        serverRepository
-            .worldsFromServerKing
-            .collect { listFromStorage ->
-                _internalScreenStateFlow.update {
-                    it.copy(worldsList = Asynchronous.Success(listFromStorage))
-                }
-
-            }
-    }
-
-
-    private fun getSelectedDc() {
-        val dcListFromState = _internalScreenStateFlow.value.dataCentersList
-        viewModelScope.launch {
-            dataStore
-                .storedSelectedDcFlow
-                .collect { name ->
-                    if (dcListFromState is Asynchronous.Success) {
-                        val selectedDcFromStoredName = dcListFromState
-                            .resultData
-                            .firstOrNull { it.name == name }
-
-                        _internalScreenStateFlow.update {
-                            it.copy(selectedDC = selectedDcFromStoredName)
-                        }
-                    }
-                }
-        }
+            .launchIn(viewModelScope)
     }
 
     private fun getSelectedWorld() {
         val worldsListFromState = _internalScreenStateFlow.value.worldsList
         viewModelScope.launch(Dispatchers.IO) {
-            dataStore
+            storage
                 .storedSelectedWorldFlow
                 .collect { name ->
                     if (worldsListFromState is Asynchronous.Success) {

@@ -1,6 +1,7 @@
 package com.example.frivolity.ui.screens
 
 import com.example.frivolity.network.models.universalisapi.ApiDataCenter
+import com.example.frivolity.network.models.universalisapi.ApiLogicalDc
 import com.example.frivolity.network.models.universalisapi.ApiWorld
 import com.example.frivolity.network.models.xivapi.ApiItem
 import com.example.frivolity.ui.Asynchronous
@@ -8,6 +9,7 @@ import com.example.frivolity.ui.Asynchronous
 data class MainScreenState(
     val dataCentersList: Asynchronous<List<ApiDataCenter>>,
     val worldsList: Asynchronous<List<ApiWorld>>,
+    val selectedServer: ApiLogicalDc?,
     val selectedDC: ApiDataCenter?,
     val selectedWorld: ApiWorld?,
     val searchBoxText: String,
@@ -17,6 +19,7 @@ data class MainScreenState(
         val EMPTY = MainScreenState(
             dataCentersList = Asynchronous.Uninitialized(),
             worldsList = Asynchronous.Uninitialized(),
+            selectedServer = null,
             selectedDC = null,
             selectedWorld = null,
             searchBoxText = "",

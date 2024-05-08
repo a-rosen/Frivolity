@@ -20,7 +20,6 @@ class DataStoreStorage @Inject constructor(
 
     private val storedDcList = stringPreferencesKey("dcList")
     private val storedWorldsList = stringPreferencesKey("worldsList")
-    private val storedServerList = stringPreferencesKey("serverList")
 
     val storedDcListJsonFlow: Flow<String> = dataStore
         .data
