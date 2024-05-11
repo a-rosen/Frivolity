@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.frivolity.repository.DataStoreStorage
 import com.example.frivolity.repository.FrivolityRepository
 import com.example.frivolity.repository.XIVServersRepository
-import com.example.frivolity.ui.Asynchronous
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -31,7 +30,6 @@ class MainScreenViewModel @Inject constructor(
     init {
         viewModelScope.launch(Dispatchers.IO) {
             getSelectedServer()
-            getSelectedWorld()
         }
     }
 
@@ -55,39 +53,36 @@ class MainScreenViewModel @Inject constructor(
             serverRepository.logicalDcsFlow
         ) { dcName, logicalDcList ->
             logicalDcList
-                .filter { it.name == dcName }
-                .firstOrNull()
+                .firstOrNull { it.name == dcName }
         }
-            .onEach {logicalDc ->
+            .onEach { logicalDc ->
                 _internalScreenStateFlow.update {
                     it.copy(
                         selectedServer = logicalDc
                     )
                 }
+                getSelectedWorld()
             }
             .launchIn(viewModelScope)
+
     }
 
     private fun getSelectedWorld() {
-        val worldsListFromState = _internalScreenStateFlow.value.worldsList
-        viewModelScope.launch(Dispatchers.IO) {
-            storage
-                .storedSelectedWorldFlow
-                .collect { name ->
-                    if (worldsListFromState is Asynchronous.Success) {
-                        val selectedWorldFromStoredName = worldsListFromState
-                            .resultData
-                            .firstOrNull { it.name == name }
+        storage.storedSelectedWorldFlow
+            .onEach { storedWorldName ->
+                val selectedApiWorldFromState = _internalScreenStateFlow
+                    .value
+                    .selectedServer
+                    ?.worlds
+                    ?.firstOrNull { apiWorld -> apiWorld.name == storedWorldName }
 
-                        _internalScreenStateFlow.update {
-                            it.copy(
-                                selectedWorld = selectedWorldFromStoredName
-                            )
-                        }
-                    }
-
+                _internalScreenStateFlow.update {
+                    it.copy(
+                        selectedWorld = selectedApiWorldFromState
+                    )
                 }
-        }
+            }
+            .launchIn(viewModelScope)
     }
 }
 
