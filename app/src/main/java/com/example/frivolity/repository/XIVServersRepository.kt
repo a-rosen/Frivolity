@@ -35,14 +35,14 @@ class XIVServersRepository @Inject constructor(
             emptyList()
         )
 
-    val dataCentersFromServerKing =
+    val dcsFlow =
         _whatTheRepositoryUnderstandsTheDataCenterSituationToBe.asStateFlow()
-    val worldsFromServerKing =
+    val worldsFlow =
         _whatTheRepositoryUnderstandsTheWorldSituationToBe.asStateFlow()
 
     val logicalDcsFlow = combine(
-        dataCentersFromServerKing,
-        worldsFromServerKing
+        dcsFlow,
+        worldsFlow
     ) { centers, worlds ->
         return@combine centers
             .map { thisDc ->

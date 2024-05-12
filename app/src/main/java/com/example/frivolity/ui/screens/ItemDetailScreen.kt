@@ -21,12 +21,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.example.frivolity.R
 import com.example.frivolity.navigation.NavigationDestination
 import com.example.frivolity.network.models.universalisapi.asUiListingDetail
 import com.example.frivolity.network.models.xivapi.asUiItemDetail
-import com.example.frivolity.ui.Asynchronous
-import com.example.frivolity.ui.components.ButtonWithDropdown
 import com.example.frivolity.ui.components.ChipRow
 import com.example.frivolity.ui.components.ItemDetailHeader
 import com.example.frivolity.ui.components.ListingListItem
@@ -77,63 +74,11 @@ fun ItemDetailScreen(
                     )
                 },
                 actions = {
-                    ButtonWithDropdown(
-                        icon = R.drawable.ic_group,
-                        iconDescription = "Switch DC",
-                        menuItems = when (state.dcList) {
-                            is Asynchronous.Uninitialized ->
-                                listOf()
-                            is Asynchronous.Loading ->
-                                listOf("Loading...")
-                            is Asynchronous.Error ->
-                              listOf("Not Found")
-                            is Asynchronous.Success ->
-                                state.dcList.resultData
-                                    .filter { it.worldIds[0] < 1000 }
-                                    .map { dc -> dc.name }
-                        },
-                        onItemClicked = { item ->
-                            when (state.dcList) {
-                                is Asynchronous.Uninitialized -> {}
-                                is Asynchronous.Loading -> {}
-                                is Asynchronous.Error -> {}
-                                is Asynchronous.Success ->
-                                    viewModel.changeDc(state
-                                        .dcList
-                                        .resultData
-                                        .firstOrNull { it.name == item})
-                            }
-
-                            viewModel.toggleDcList()
-                            viewModel.toggleWorldList()
-                        },
-                        onIconClicked = { viewModel.toggleDcList() },
-                        expanded = state.shouldShowDcList
-                    )
-                    if (state.worldList !is Asynchronous.Loading) {
-                        ButtonWithDropdown(
-                            icon = R.drawable.ic_world,
-                            iconDescription = "Switch World",
-                            menuItems = when (state.worldList) {
-                                is Asynchronous.Uninitialized -> listOf("Uninitialized")
-                                is Asynchronous.Loading -> listOf("Loading...")
-                                is Asynchronous.Error -> listOf("Error")
-                                is Asynchronous.Success ->
-                                    state.worldList.resultData
-                                        .filter { state.currentDc?.worldIds?.contains(it.id) ?: false }
-                                        .map { world -> world.name }
-                            },
-                            onItemClicked = { changeServer(it, item.itemID) },
-                            onIconClicked = { viewModel.toggleWorldList() },
-                            expanded = state.shouldShowWorldList
-                        )
-                    }
-
 
                 },
                 title = {
                     Text(
-                        text = "Listings Detail:${state.currentDc?.name} ${item.worldName}",
+                        text = "Listings Detail:${state.currentLogicalDc?.name} ${item.worldName}",
                         style = MaterialTheme.typography.labelMedium,
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier
@@ -214,65 +159,3 @@ fun ItemDetailScreen(
         }
     }
 }
-//
-//@Preview
-//@Composable
-//fun ItemDetailScreenPreviewButItsEmptyLol(
-//) {
-//    MaterialTheme {
-//        ItemDetailScreen(
-//            state = ItemDetailScreenState.EMPTY,
-//            viewModel = ItemDetailScreenViewModel(
-//                networkRepository = NetworkRepository(
-//                    MockUniversalisApi(), MockXIVApi()
-//                ),
-//                serverRepository = XIVServersRepository(
-//                    MockUniversalisApi(),
-//                    repositoryScope = TODO()
-//                ),
-//                detailSavedStateHandle = SavedStateHandle()
-//            ),
-//            navigateBack = {},
-//        )
-//    }
-//}
-//
-//@Preview
-//@Composable
-//fun ItemDetailScreenPreviewButHasStuff(
-//) {
-//    MaterialTheme {
-//        ItemDetailScreen(
-//            state = ItemDetailScreenState(
-//                marketItemDetail = ApiMarketItemDetail(),
-//                itemDetail = ApiItemDetail(
-//                    "TestItem",
-//                    0,
-//                    "",
-//                    25,
-//                    50,
-//                    jobToEquip = mapOf(Pair("Name", "ACN BLM RDM SMN")),
-//                    "This sure is an item that does stuff.",
-//                    ApiItemKind("Arms")
-//                ),
-//                regionToSearch = "TestRegion",
-//                cheapestTotalPrice = ApiPrices(
-//                    5, 2000, 400, "Gilgamesh"
-//                ),
-//                cheapestUnitPrice = ApiPrices(
-//                    99, 9900, 100, "Sargatanas"
-//                ),
-//                sortMethod = SortMethods.UNIT,
-//                showHqOnly = false,
-//                shouldShowDropdown = false
-//            ),
-//            viewModel = ItemDetailScreenViewModel(
-//                networkRepository = NetworkRepository(
-//                    MockUniversalisApi(), MockXIVApi()
-//                ),
-//                detailSavedStateHandle = SavedStateHandle()
-//            ),
-//            navigateBack = {},
-//        )
-//    }
-//}

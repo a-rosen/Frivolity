@@ -1,19 +1,15 @@
 package com.example.frivolity.ui.screens
 
-import com.example.frivolity.network.models.universalisapi.ApiDataCenter
+import com.example.frivolity.network.models.universalisapi.ApiLogicalDc
 import com.example.frivolity.network.models.universalisapi.ApiMarketItemDetail
 import com.example.frivolity.network.models.universalisapi.ApiPrices
-import com.example.frivolity.network.models.universalisapi.ApiWorld
 import com.example.frivolity.network.models.xivapi.ApiItemDetail
 import com.example.frivolity.network.models.xivapi.ApiItemKind
-import com.example.frivolity.ui.Asynchronous
 import com.example.frivolity.ui.models.SortMethods
 
 data class ItemDetailScreenState(
-    val dcList: Asynchronous<List<ApiDataCenter>>,
-    val worldList: Asynchronous<List<ApiWorld>>,
     val worldId: Int?,
-    val currentDc: ApiDataCenter? = ApiDataCenter("Loading...", "", listOf()),
+    val currentLogicalDc: ApiLogicalDc?,
     val marketItemDetail: ApiMarketItemDetail,
     val itemDetail: ApiItemDetail?,
     val regionToSearch: String,
@@ -74,13 +70,7 @@ data class ItemDetailScreenState(
             sortMethod = SortMethods.TOTAL,
             showHqOnly = false,
             shouldShowStatsRow = false,
-            dcList = Asynchronous.Uninitialized(),
-            worldList = Asynchronous.Uninitialized(),
-            currentDc = ApiDataCenter(
-                "Loading...",
-                "",
-                listOf()
-            ),
+            currentLogicalDc = ApiLogicalDc("", "", listOf()),
             worldId = 0,
             shouldShowDcList = false,
             shouldShowWorldList = false

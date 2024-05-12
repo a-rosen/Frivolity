@@ -4,16 +4,18 @@ import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.frivolity.network.models.universalisapi.ApiDataCenter
+import com.example.frivolity.repository.DataStoreStorage
 import com.example.frivolity.repository.FrivolityRepository
 import com.example.frivolity.repository.XIVServersRepository
-import com.example.frivolity.ui.Asynchronous
 import com.example.frivolity.ui.models.SortMethods
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -22,6 +24,7 @@ import javax.inject.Inject
 class ItemDetailScreenViewModel @Inject constructor(
     private val networkRepository: FrivolityRepository,
     private val serverRepository: XIVServersRepository,
+    private val storage: DataStoreStorage,
     detailSavedStateHandle: SavedStateHandle
 
 ) : ViewModel() {
@@ -35,27 +38,10 @@ class ItemDetailScreenViewModel @Inject constructor(
             checkNotNull(detailSavedStateHandle[DetailsDestination.worldNameArg])
 
         viewModelScope.launch(Dispatchers.IO) {
-            getListOfWorlds(worldName)
-            getListOfDataCenters()
-
+            getSelectedServer()
             getMarketItemDetails(worldName, itemId)
             getFullItemDetails(itemId)
-
             findCheapestPrices()
-
-            screenStateFlow.collect {
-                if (it.dcList is Asynchronous.Success) {
-                    findCurrentDcAndRegion()
-                }
-            }
-        }
-    }
-
-    fun changeDc(dc: ApiDataCenter?) {
-        _internalScreenStateFlow.update {
-            it.copy(
-                currentDc = dc,
-            )
         }
     }
 
@@ -109,6 +95,25 @@ class ItemDetailScreenViewModel @Inject constructor(
         }
     }
 
+    // this is verbatim same function as MSVM, can we do this some other way?
+    private fun getSelectedServer() {
+        combine(
+            storage.storedSelectedDcFlow,
+            serverRepository.logicalDcsFlow
+        ) { dcName, logicalDcList ->
+            logicalDcList
+                .firstOrNull { it.name == dcName }
+        }
+            .onEach { logicalDc ->
+                _internalScreenStateFlow.update {
+                    it.copy(
+                        currentLogicalDc = logicalDc
+                    )
+                }
+            }
+            .launchIn(viewModelScope)
+    }
+
     private suspend fun getMarketItemDetails(worldName: String, itemId: Int) {
         try {
             val marketItem = networkRepository.getMarketItemDetails(worldName, itemId)
@@ -128,80 +133,6 @@ class ItemDetailScreenViewModel @Inject constructor(
             it.copy(
                 itemDetail = itemDetail
             )
-        }
-    }
-
-    private suspend fun getListOfDataCenters() {
-        _internalScreenStateFlow.update {
-            it.copy(
-                dcList = Asynchronous.Loading()
-            )
-        }
-
-        serverRepository
-            .dataCentersFromServerKing
-            .collect { listFromStorage ->
-                _internalScreenStateFlow.update {
-                    it.copy(dcList = Asynchronous.Success(listFromStorage))
-                }
-            }
-    }
-
-    private suspend fun getListOfWorlds(worldName: String) {
-        _internalScreenStateFlow.update {
-            it.copy(
-                worldList = Asynchronous.Loading()
-            )
-        }
-        serverRepository
-            .worldsFromServerKing
-            .collect { listFromStorage ->
-                val worldId = listFromStorage
-                    .filter { it.name == worldName }
-                    .map { it.id }
-                    .firstOrNull()
-
-                _internalScreenStateFlow.update {
-                    it.copy(
-                        worldList = Asynchronous.Success(listFromStorage),
-                        worldId = worldId,
-                    )
-                }
-
-            }
-    }
-
-    private fun findCurrentDcAndRegion() {
-        _internalScreenStateFlow.update { oldState ->
-            val worldId = oldState.worldId
-
-            if (worldId == null) {
-                return@update oldState
-            }
-
-           when (oldState.dcList) {
-                is Asynchronous.Loading ->
-                    oldState.copy(
-                        dcList = Asynchronous.Loading(),
-                        worldList = Asynchronous.Loading()
-                    )
-
-                is Asynchronous.Success -> {
-                    val newDc = oldState.dcList.resultData
-                        .first { dc -> dc.worldIds.contains(worldId) }
-                    oldState.copy(
-                        currentDc = newDc,
-                        regionToSearch = newDc.region
-                    )
-                }
-
-                is Asynchronous.Uninitialized ->
-                    oldState.copy(
-                        currentDc = ApiDataCenter("Uninitialized", "", listOf())
-                    )
-
-                is Asynchronous.Error -> oldState
-            }
         }
     }
 
@@ -230,10 +161,5 @@ class ItemDetailScreenViewModel @Inject constructor(
 
     private fun handleError(message: String?) {
         Log.e("IDSVM Error", "Error occurred: $message")
-        _internalScreenStateFlow.update {
-            it.copy(
-                dcList = Asynchronous.Error(message ?: "Unknown Error")
-            )
-        }
     }
 }
