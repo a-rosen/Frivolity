@@ -21,9 +21,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.example.frivolity.R
 import com.example.frivolity.navigation.NavigationDestination
 import com.example.frivolity.network.models.universalisapi.asUiListingDetail
 import com.example.frivolity.network.models.xivapi.asUiItemDetail
+import com.example.frivolity.ui.components.ButtonWithDropdown
 import com.example.frivolity.ui.components.ChipRow
 import com.example.frivolity.ui.components.ItemDetailHeader
 import com.example.frivolity.ui.components.ListingListItem
@@ -59,6 +61,8 @@ fun ItemDetailScreen(
         it.pricePerUnit
     }
 
+    val currentDcWorldsList = state.currentLogicalDc?.worlds
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -74,7 +78,17 @@ fun ItemDetailScreen(
                     )
                 },
                 actions = {
-
+                    if (currentDcWorldsList != null) {
+                        ButtonWithDropdown(
+                            icon = R.drawable.ic_world,
+                            iconDescription = "world",
+                            menuItems = currentDcWorldsList
+                                .map { it.name },
+                            onItemClicked = { changeServer(it, item.itemID) },
+                            onIconClicked = { viewModel.toggleWorldList() },
+                            expanded = state.shouldShowWorldList
+                        )
+                    }
                 },
                 title = {
                     Text(
@@ -101,7 +115,7 @@ fun ItemDetailScreen(
         ) {
             if (itemDetail != null) {
                 ItemDetailHeader(
-                    itemDetail = itemDetail.asUiItemDetail() ,
+                    itemDetail = itemDetail.asUiItemDetail(),
                     onDropdownClick = { viewModel.toggleStatsRow() },
                 )
             }
