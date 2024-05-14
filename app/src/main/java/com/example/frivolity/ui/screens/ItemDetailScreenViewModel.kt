@@ -77,15 +77,6 @@ class ItemDetailScreenViewModel @Inject constructor(
         }
     }
 
-    fun toggleDcList() {
-        _internalScreenStateFlow.update {
-            val newShouldShowDcList = !it.shouldShowDcList
-            it.copy(
-                shouldShowDcList = newShouldShowDcList
-            )
-        }
-    }
-
     fun toggleWorldList() {
         _internalScreenStateFlow.update {
             val newShouldShowWorldList = !it.shouldShowWorldList
@@ -139,21 +130,37 @@ class ItemDetailScreenViewModel @Inject constructor(
     private fun findCheapestPrices() {
         viewModelScope.launch(Dispatchers.IO) {
             val state = _internalScreenStateFlow.value
-            val region = state.regionToSearch
+            val region = state.currentLogicalDc?.region
+            val dc = state.currentLogicalDc?.name
+            val itemId = state.marketItemDetail.itemID
 
-            val allPrices = networkRepository
-                .getMarketItemPrices(region, state.marketItemDetail.itemID)
+            val allPricesRegion = networkRepository
+                .getMarketItemPrices(region ?: "North-America", itemId)
+                .listings
+            val allPricesDc = networkRepository
+                .getMarketItemPrices(dc ?: "Aether", itemId)
                 .listings
 
-            val cheapestTotal = allPrices.minOfOrNull { it.total }
-            val cheapestTotalListing = allPrices.firstOrNull() { it.total == cheapestTotal }
-            val cheapestUnit = allPrices.minOfOrNull { it.pricePerUnit }
-            val cheapestUnitListing = allPrices.firstOrNull() { it.pricePerUnit == cheapestUnit }
+            val cheapestTotalRegion = allPricesRegion.minOfOrNull { it.total }
+            val cheapestTotalListingRegion =
+                allPricesRegion.firstOrNull { it.total == cheapestTotalRegion }
+            val cheapestUnitRegion = allPricesRegion.minOfOrNull { it.pricePerUnit }
+            val cheapestUnitListingRegion =
+                allPricesRegion.firstOrNull { it.pricePerUnit == cheapestUnitRegion }
+
+            val cheapestTotalDc = allPricesDc.minOfOrNull { it.total }
+            val cheapestTotalListingDc = allPricesDc.firstOrNull { it.total == cheapestTotalDc }
+            val cheapestUnitDc = allPricesDc.minOfOrNull { it.pricePerUnit }
+            val cheapestUnitListingDc =
+                allPricesDc.firstOrNull { it.pricePerUnit == cheapestUnitDc }
+
 
             _internalScreenStateFlow.update {
                 it.copy(
-                    cheapestTotalPrice = cheapestTotalListing,
-                    cheapestUnitPrice = cheapestUnitListing,
+                    cheapestTotalPriceRegion = cheapestTotalListingRegion,
+                    cheapestUnitPriceRegion = cheapestUnitListingRegion,
+                    cheapestTotalPriceDc = cheapestTotalListingDc,
+                    cheapestUnitPriceDc = cheapestUnitListingDc
                 )
             }
         }

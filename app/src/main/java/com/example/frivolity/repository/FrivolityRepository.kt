@@ -9,5 +9,5 @@ interface FrivolityRepository {
     suspend fun getMarketItemDetails(world: String, id: Int): ApiMarketItemDetail
     suspend fun getFullItemDetails(id: Int): ApiItemDetail
     suspend fun itemSearchByString(string: String): ApiItemList
-    suspend fun getMarketItemPrices(region: String, id: Int): ApiPricesList
+    suspend fun getMarketItemPrices(regionDcWorld: String, id: Int): ApiPricesList
 }

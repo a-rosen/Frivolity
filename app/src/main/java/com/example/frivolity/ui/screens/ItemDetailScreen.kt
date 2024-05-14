@@ -123,8 +123,6 @@ fun ItemDetailScreen(
             AnimatedVisibility(visible = state.shouldShowStatsRow) {
                 StatsRow(
                     state = state,
-                    iLevel = itemDetail?.iLevel ?: 0,
-                    levelToEquip = itemDetail?.levelToEquip ?: 0,
                 )
             }
 

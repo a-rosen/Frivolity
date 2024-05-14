@@ -15,6 +15,7 @@ import com.example.frivolity.ui.screens.ItemDetailScreenState
 
 @Composable
 fun CheapestColumn(
+    text: String,
     prices: ApiPrices,
     state: ItemDetailScreenState,
 ) {
@@ -25,7 +26,7 @@ fun CheapestColumn(
             .padding(8.dp)
     ) {
         Text(
-            text = "CHEAPEST",
+            text = text,
             style = MaterialTheme.typography.labelMedium
         )
 
@@ -52,6 +53,7 @@ fun CheapestColumn(
 @Composable
 fun CheapestColumnPreview() {
     CheapestColumn(
+        text = "CHEAPEST",
         prices = ApiPrices(
             3, 150, 502345, "Faerie"
         ),

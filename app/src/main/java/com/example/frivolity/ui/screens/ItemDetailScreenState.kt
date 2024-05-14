@@ -12,13 +12,13 @@ data class ItemDetailScreenState(
     val currentLogicalDc: ApiLogicalDc?,
     val marketItemDetail: ApiMarketItemDetail,
     val itemDetail: ApiItemDetail?,
-    val regionToSearch: String,
-    val cheapestTotalPrice: ApiPrices?,
-    val cheapestUnitPrice: ApiPrices?,
+    val cheapestTotalPriceRegion: ApiPrices?,
+    val cheapestUnitPriceRegion: ApiPrices?,
+    val cheapestTotalPriceDc: ApiPrices?,
+    val cheapestUnitPriceDc: ApiPrices?,
     val sortMethod: SortMethods,
     val showHqOnly: Boolean,
     val shouldShowStatsRow: Boolean,
-    val shouldShowDcList: Boolean,
     val shouldShowWorldList: Boolean,
 
     ) {
@@ -64,15 +64,15 @@ data class ItemDetailScreenState(
                 "",
                 ApiItemKind("")
             ),
-            regionToSearch = "North-America",
-            cheapestTotalPrice = ApiPrices(0, 0, 0, "Faerie"),
-            cheapestUnitPrice = ApiPrices(0, 0, 0, "Faerie"),
+            cheapestTotalPriceRegion = ApiPrices(0, 0, 0, "Faerie"),
+            cheapestUnitPriceRegion = ApiPrices(0, 0, 0, "Faerie"),
+            cheapestTotalPriceDc = ApiPrices(0, 0, 0, "Faerie"),
+            cheapestUnitPriceDc = ApiPrices(0, 0, 0, "Faerie"),
             sortMethod = SortMethods.TOTAL,
             showHqOnly = false,
             shouldShowStatsRow = false,
             currentLogicalDc = ApiLogicalDc("", "", listOf()),
             worldId = 0,
-            shouldShowDcList = false,
             shouldShowWorldList = false
         )
     }
