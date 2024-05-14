@@ -25,7 +25,7 @@ interface XIVApi {
     @GET("search")
     suspend fun itemSearchByString(
         @Query("string") string: String,
-        @Query("filters") filters: String = "IsUntradable=0",
+        @Query("filters") filters: String = "IsUntradable=0,ID>100",
         @Query("columns") columns: String = "Name,LevelItem,Icon,ID"
     ): ApiItemList
 
