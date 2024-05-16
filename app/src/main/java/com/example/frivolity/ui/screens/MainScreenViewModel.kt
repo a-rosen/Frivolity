@@ -7,6 +7,8 @@ import com.example.frivolity.repository.FrivolityRepository
 import com.example.frivolity.repository.XIVServersRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -27,6 +29,8 @@ class MainScreenViewModel @Inject constructor(
         MutableStateFlow(value = MainScreenState.EMPTY)
     val screenStateFlow: StateFlow<MainScreenState> = _internalScreenStateFlow.asStateFlow()
 
+    private var searchJob: Job? = null
+
     init {
         viewModelScope.launch(Dispatchers.IO) {
             getSelectedServer()
@@ -40,7 +44,9 @@ class MainScreenViewModel @Inject constructor(
     }
 
     fun submitSearch(inputText: String) {
-        viewModelScope.launch(Dispatchers.IO) {
+        searchJob?.cancel()
+        searchJob = viewModelScope.launch(Dispatchers.IO) {
+            delay(300)
             _internalScreenStateFlow.update {
                 it.copy(searchResults = networkRepository.itemSearchByString(inputText).results)
             }
