@@ -129,9 +129,9 @@ fun ItemDetailScreen(
             ChipRow(
                 state = state,
                 sortLabel = if (state.sortMethod == SortMethods.UNIT) {
-                    "Total Sort"
+                    "Show Total Price"
                 } else {
-                    "Unit Sort"
+                    "Show Unit Price"
                 },
                 onSortClick = {
                     if (state.sortMethod == SortMethods.UNIT) {

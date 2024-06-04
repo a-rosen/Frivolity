@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.frivolity.repository.DataStoreStorage
 import com.example.frivolity.repository.FrivolityRepository
 import com.example.frivolity.repository.XIVServersRepository
+import com.example.frivolity.ui.Asynchronous
 import com.example.frivolity.ui.models.SortMethods
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -128,25 +129,72 @@ class ItemDetailScreenViewModel @Inject constructor(
     }
 
     private fun findCheapestPrices() {
-        viewModelScope.launch(Dispatchers.IO) {
-            val state = _internalScreenStateFlow.value
-            val region = state.currentLogicalDc?.region
-            val dc = state.currentLogicalDc?.name
-            val itemId = state.marketItemDetail.itemID
+        findCheapestPricesInRegion()
+        findCheapestPricesOnDc()
+    }
 
-            val allPricesRegion = networkRepository
+    private fun findCheapestPricesInRegion() {
+        val state = _internalScreenStateFlow.value
+        val region = state.currentLogicalDc?.region
+        val itemId = state.marketItemDetail.itemID
+
+        _internalScreenStateFlow.update {
+            it.copy(
+                cheapestUnitPriceRegion = Asynchronous.Loading(),
+                cheapestTotalPriceRegion = Asynchronous.Loading(),
+            )
+        }
+
+        viewModelScope.launch(Dispatchers.IO) {
+            val allMarketItemPricesInRegion = networkRepository
                 .getMarketItemPrices(region ?: "North-America", itemId)
                 .listings
+
+            // move these calculations to a higher level - maybe some kind of repository can do this,
+            // also make another model that isn't directly tied to the API
+
+            val cheapestTotalPriceInRegion = allMarketItemPricesInRegion.minOfOrNull { it.total }
+            val listingWithCheapestTotalPriceInRegion =
+                allMarketItemPricesInRegion.firstOrNull { it.total == cheapestTotalPriceInRegion }
+            val cheapestUnitPriceInRegion =
+                allMarketItemPricesInRegion.minOfOrNull { it.pricePerUnit }
+            val listingWithCheapestUnitPriceInRegion =
+                allMarketItemPricesInRegion.firstOrNull { it.pricePerUnit == cheapestUnitPriceInRegion }
+
+            val cheapestTotalPriceRegion = listingWithCheapestTotalPriceInRegion?.let {
+                Asynchronous.Success(it)
+            } ?: Asynchronous.Error("Api is borked")
+
+            val cheapestUnitPriceRegion = listingWithCheapestUnitPriceInRegion?.let {
+                Asynchronous.Success(it)
+            } ?: Asynchronous.Error("Api is borked")
+
+            _internalScreenStateFlow.update {
+                it.copy(
+                    cheapestTotalPriceRegion = cheapestTotalPriceRegion,
+                    cheapestUnitPriceRegion = cheapestUnitPriceRegion
+                )
+            }
+        }
+    }
+
+
+    private fun findCheapestPricesOnDc() {
+        val state = _internalScreenStateFlow.value
+        val dc = state.currentLogicalDc?.region
+        val itemId = state.marketItemDetail.itemID
+
+        _internalScreenStateFlow.update {
+            it.copy(
+                cheapestTotalPriceDc = Asynchronous.Loading(),
+                cheapestUnitPriceDc = Asynchronous.Loading()
+            )
+        }
+
+        viewModelScope.launch(Dispatchers.IO) {
             val allPricesDc = networkRepository
                 .getMarketItemPrices(dc ?: "Aether", itemId)
                 .listings
-
-            val cheapestTotalRegion = allPricesRegion.minOfOrNull { it.total }
-            val cheapestTotalListingRegion =
-                allPricesRegion.firstOrNull { it.total == cheapestTotalRegion }
-            val cheapestUnitRegion = allPricesRegion.minOfOrNull { it.pricePerUnit }
-            val cheapestUnitListingRegion =
-                allPricesRegion.firstOrNull { it.pricePerUnit == cheapestUnitRegion }
 
             val cheapestTotalDc = allPricesDc.minOfOrNull { it.total }
             val cheapestTotalListingDc = allPricesDc.firstOrNull { it.total == cheapestTotalDc }
@@ -154,14 +202,24 @@ class ItemDetailScreenViewModel @Inject constructor(
             val cheapestUnitListingDc =
                 allPricesDc.firstOrNull { it.pricePerUnit == cheapestUnitDc }
 
-
-            _internalScreenStateFlow.update {
-                it.copy(
-                    cheapestTotalPriceRegion = cheapestTotalListingRegion,
-                    cheapestUnitPriceRegion = cheapestUnitListingRegion,
-                    cheapestTotalPriceDc = cheapestTotalListingDc,
-                    cheapestUnitPriceDc = cheapestUnitListingDc
-                )
+            if (cheapestTotalListingDc == null || cheapestUnitListingDc == null) {
+                _internalScreenStateFlow.update {
+                    it.copy(
+                        cheapestTotalPriceRegion = Asynchronous.Error("Api is borked"),
+                        cheapestUnitPriceRegion = Asynchronous.Error("Api is borked")
+                    )
+                }
+            } else {
+                _internalScreenStateFlow.update {
+                    it.copy(
+                        cheapestTotalPriceDc = Asynchronous.Success(
+                            cheapestTotalListingDc
+                        ),
+                        cheapestUnitPriceDc = Asynchronous.Success(
+                            cheapestUnitListingDc
+                        ),
+                    )
+                }
             }
         }
     }

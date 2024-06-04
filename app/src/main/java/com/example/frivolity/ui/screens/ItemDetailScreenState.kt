@@ -5,6 +5,7 @@ import com.example.frivolity.network.models.universalisapi.ApiMarketItemDetail
 import com.example.frivolity.network.models.universalisapi.ApiPrices
 import com.example.frivolity.network.models.xivapi.ApiItemDetail
 import com.example.frivolity.network.models.xivapi.ApiItemKind
+import com.example.frivolity.ui.Asynchronous
 import com.example.frivolity.ui.models.SortMethods
 
 data class ItemDetailScreenState(
@@ -12,10 +13,10 @@ data class ItemDetailScreenState(
     val currentLogicalDc: ApiLogicalDc?,
     val marketItemDetail: ApiMarketItemDetail,
     val itemDetail: ApiItemDetail?,
-    val cheapestTotalPriceRegion: ApiPrices?,
-    val cheapestUnitPriceRegion: ApiPrices?,
-    val cheapestTotalPriceDc: ApiPrices?,
-    val cheapestUnitPriceDc: ApiPrices?,
+    val cheapestTotalPriceRegion: Asynchronous<ApiPrices>,
+    val cheapestUnitPriceRegion: Asynchronous<ApiPrices>,
+    val cheapestTotalPriceDc: Asynchronous<ApiPrices>,
+    val cheapestUnitPriceDc: Asynchronous<ApiPrices>,
     val sortMethod: SortMethods,
     val showHqOnly: Boolean,
     val shouldShowStatsRow: Boolean,
@@ -64,10 +65,10 @@ data class ItemDetailScreenState(
                 "",
                 ApiItemKind("")
             ),
-            cheapestTotalPriceRegion = ApiPrices(0, 0, 0, "Faerie"),
-            cheapestUnitPriceRegion = ApiPrices(0, 0, 0, "Faerie"),
-            cheapestTotalPriceDc = ApiPrices(0, 0, 0, "Faerie"),
-            cheapestUnitPriceDc = ApiPrices(0, 0, 0, "Faerie"),
+            cheapestTotalPriceRegion = Asynchronous.Uninitialized(),
+            cheapestUnitPriceRegion = Asynchronous.Uninitialized(),
+            cheapestTotalPriceDc = Asynchronous.Uninitialized(),
+            cheapestUnitPriceDc = Asynchronous.Uninitialized(),
             sortMethod = SortMethods.TOTAL,
             showHqOnly = false,
             shouldShowStatsRow = false,

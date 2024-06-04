@@ -37,6 +37,7 @@ fun SearchBox(
                     contentDescription = "Search icon"
                 )
             },
+            singleLine = true,
             modifier = Modifier
                 .padding(16.dp)
                 .fillMaxWidth()

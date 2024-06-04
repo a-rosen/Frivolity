@@ -25,7 +25,6 @@ import com.example.frivolity.ui.theme.PurpleGrey40
 fun ItemListItem(
     iconUrl: String,
     itemName: String = "Item Name Placeholder",
-    itemLevel: Int,
     onClick: () -> Unit,
 ) {
     Row(
@@ -62,6 +61,5 @@ fun ItemListItemPreview() {
     ItemListItem(
         iconUrl = "",
         onClick = {},
-        itemLevel = 0
     )
 }
