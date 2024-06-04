@@ -30,7 +30,6 @@ fun StatsRow(
                         prices = state.cheapestTotalPriceDc.resultData,
                         state = state
                     )
-
                 is Asynchronous.Uninitialized -> TODO()
             }
             when (state.cheapestTotalPriceRegion) {
@@ -42,7 +41,6 @@ fun StatsRow(
                         prices = state.cheapestTotalPriceRegion.resultData,
                         state = state
                     )
-
                 is Asynchronous.Uninitialized -> TODO()
             }
         } else {
@@ -55,7 +53,6 @@ fun StatsRow(
                         prices = state.cheapestUnitPriceDc.resultData,
                         state = state
                     )
-
                 is Asynchronous.Uninitialized -> TODO()
             }
             when (state.cheapestUnitPriceRegion) {
@@ -63,11 +60,10 @@ fun StatsRow(
                 is Asynchronous.Loading -> TODO()
                 is Asynchronous.Success ->
                     CheapestColumn(
-                        text = "CHEAPEST (DC)",
+                        text = "CHEAPEST (REGION)",
                         prices = state.cheapestUnitPriceRegion.resultData,
                         state = state
                     )
-
                 is Asynchronous.Uninitialized -> TODO()
             }
         }

@@ -181,7 +181,7 @@ class ItemDetailScreenViewModel @Inject constructor(
 
     private fun findCheapestPricesOnDc() {
         val state = _internalScreenStateFlow.value
-        val dc = state.currentLogicalDc?.region
+        val dc = state.currentLogicalDc?.name
         val itemId = state.marketItemDetail.itemID
 
         _internalScreenStateFlow.update {
