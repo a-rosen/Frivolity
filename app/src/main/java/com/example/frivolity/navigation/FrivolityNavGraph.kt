@@ -14,6 +14,7 @@ import com.example.frivolity.ui.screens.ItemDetailScreen
 import com.example.frivolity.ui.screens.ItemDetailScreenState
 import com.example.frivolity.ui.screens.ItemDetailScreenViewModel
 import com.example.frivolity.ui.screens.MainScreen
+import com.example.frivolity.ui.screens.MainScreenViewModel
 import com.example.frivolity.ui.screens.SettingsScreen
 
 
@@ -38,8 +39,12 @@ fun FrivolityNavGraph(
         }
 
         composable("MainScreen") {
+            val viewModel = hiltViewModel<MainScreenViewModel>()
+            val state = viewModel.screenStateFlow.collectAsState()
             MainScreen(
-                viewModel = hiltViewModel(),
+                state = state.value,
+                updateSearchBoxText = viewModel::updateSearchBoxText,
+                submitSearch = viewModel::submitSearch,
                 navigateToDetailScreen = { worldname, id ->
                     navController.navigate(
                         "${DetailsDestination.route}/$worldname/$id"
