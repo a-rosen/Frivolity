@@ -2,7 +2,6 @@ package com.example.frivolity.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -11,7 +10,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.frivolity.ui.screens.DetailsDestination
 import com.example.frivolity.ui.screens.ItemDetailScreen
-import com.example.frivolity.ui.screens.ItemDetailScreenState
 import com.example.frivolity.ui.screens.ItemDetailScreenViewModel
 import com.example.frivolity.ui.screens.MainScreen
 import com.example.frivolity.ui.screens.MainScreenViewModel
@@ -59,12 +57,11 @@ fun FrivolityNavGraph(
                 { type = NavType.IntType }
             )
         ) {
-            val itemDetailScreenState by hiltViewModel<ItemDetailScreenViewModel>().screenStateFlow.collectAsState(
-                initial = ItemDetailScreenState.EMPTY
-            )
+            val viewModel = hiltViewModel<ItemDetailScreenViewModel>()
+            val state = viewModel.screenStateFlow.collectAsState()
+
             ItemDetailScreen(
-                state = itemDetailScreenState,
-                viewModel = hiltViewModel(),
+                state = state.value,
                 navigateBack = {
                     navController.navigate(
                         route = "MainScreen"
@@ -74,7 +71,14 @@ fun FrivolityNavGraph(
                     navController.navigate(
                         "${DetailsDestination.route}/$worldname/$id"
                     )
-                }
+                },
+                toggleWorldList = viewModel::toggleWorldList,
+                toggleStatsRow = viewModel::toggleStatsRow,
+                sortByTotal = viewModel::sortByTotal,
+                sortByUnit = viewModel::sortByUnit,
+                filterHq = viewModel::filterHq
+
+
             )
         }
     }

@@ -27,6 +27,7 @@ fun MainScreen(
     Log.d("Timelog", "Rendering Scaffold...")
     Scaffold(
         topBar = {
+            Log.d("Timelog", "Rendering TopAppBar...")
             TopAppBar(
                 title = {
                     Text(
@@ -37,7 +38,6 @@ fun MainScreen(
         }
     ) { innerPadding ->
         Log.d("Timelog", "Rendering Column...")
-
         Column(
             modifier = Modifier
                 .padding(innerPadding)
@@ -55,9 +55,9 @@ fun MainScreen(
                 }
             )
 
+            Log.d("Timelog", "Rendering LazyColumn...")
             LazyColumn {
                 items(state.searchResults) {
-                    Log.d("Timelog", "Rendering ItemListItem ${it.name}...")
                     ItemListItem(
                         itemName = it.name,
                         iconUrl = "https://xivapi.com/${it.icon}",

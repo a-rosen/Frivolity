@@ -5,14 +5,16 @@ import com.example.frivolity.network.models.universalisapi.ApiLogicalDc
 import com.example.frivolity.network.models.universalisapi.ApiWorld
 import com.example.frivolity.network.models.xivapi.ApiItem
 import com.example.frivolity.ui.Asynchronous
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.immutableListOf
 
 data class MainScreenState(
-    val dataCentersList: Asynchronous<List<ApiDataCenter>>,
-    val worldsList: Asynchronous<List<ApiWorld>>,
+    val dataCentersList: Asynchronous<ImmutableList<ApiDataCenter>>,
+    val worldsList: Asynchronous<ImmutableList<ApiWorld>>,
     val selectedServer: ApiLogicalDc?,
     val selectedWorld: ApiWorld?,
     val searchBoxText: String,
-    val searchResults: List<ApiItem>,
+    val searchResults: ImmutableList<ApiItem>,
 ) {
     companion object {
         val EMPTY = MainScreenState(
@@ -21,7 +23,7 @@ data class MainScreenState(
             selectedServer = null,
             selectedWorld = null,
             searchBoxText = "",
-            searchResults = listOf(),
+            searchResults = immutableListOf(),
         )
     }
 }

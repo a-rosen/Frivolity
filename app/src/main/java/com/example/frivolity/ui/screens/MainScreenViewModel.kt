@@ -6,6 +6,7 @@ import com.example.frivolity.repository.DataStoreStorage
 import com.example.frivolity.repository.FrivolityRepository
 import com.example.frivolity.repository.XIVServersRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -48,7 +49,12 @@ class MainScreenViewModel @Inject constructor(
         searchJob = viewModelScope.launch(Dispatchers.IO) {
             delay(300)
             _internalScreenStateFlow.update {
-                it.copy(searchResults = networkRepository.itemSearchByString(inputText).results)
+                it.copy(
+                    searchResults = networkRepository
+                        .itemSearchByString(inputText)
+                        .results
+                        .toImmutableList()
+                )
             }
         }
     }

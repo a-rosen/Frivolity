@@ -43,9 +43,13 @@ object DetailsDestination : NavigationDestination {
 @Composable
 fun ItemDetailScreen(
     state: ItemDetailScreenState,
-    viewModel: ItemDetailScreenViewModel,
     navigateBack: () -> Unit,
-    changeServer: (String, Int) -> Unit
+    changeServer: (String, Int) -> Unit,
+    toggleWorldList: () -> Unit,
+    toggleStatsRow: () -> Unit,
+    sortByTotal: () -> Unit,
+    sortByUnit: () -> Unit,
+    filterHq: () -> Unit,
 ) {
 
     val item = state.marketItemDetail
@@ -85,7 +89,7 @@ fun ItemDetailScreen(
                             menuItems = currentDcWorldsList
                                 .map { it.name },
                             onItemClicked = { changeServer(it, item.itemID) },
-                            onIconClicked = { viewModel.toggleWorldList() },
+                            onIconClicked = { toggleWorldList() },
                             expanded = state.shouldShowWorldList
                         )
                     }
@@ -116,7 +120,7 @@ fun ItemDetailScreen(
             if (itemDetail != null) {
                 ItemDetailHeader(
                     itemDetail = itemDetail.asUiItemDetail(),
-                    onDropdownClick = { viewModel.toggleStatsRow() },
+                    onDropdownClick = { toggleStatsRow() },
                 )
             }
 
@@ -135,12 +139,12 @@ fun ItemDetailScreen(
                 },
                 onSortClick = {
                     if (state.sortMethod == SortMethods.UNIT) {
-                        viewModel.sortByTotal()
+                        sortByTotal()
                     } else {
-                        viewModel.sortByUnit()
+                        sortByUnit()
                     }
                 },
-                onHqOnlyClick = { viewModel.filterHq() },
+                onHqOnlyClick = { filterHq() },
             )
             LazyColumn(
             ) {

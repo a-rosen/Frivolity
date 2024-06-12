@@ -33,7 +33,6 @@ class ItemDetailScreenViewModel @Inject constructor(
     val screenStateFlow: StateFlow<ItemDetailScreenState> = _internalScreenStateFlow.asStateFlow()
 
     init {
-        Log.d("Timelog", "IDSVM: Init")
         val itemId: Int =
             checkNotNull(detailSavedStateHandle[DetailsDestination.itemIdArg])
         val worldName: String =
