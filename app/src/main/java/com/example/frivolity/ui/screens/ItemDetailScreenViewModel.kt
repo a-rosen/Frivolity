@@ -42,7 +42,10 @@ class ItemDetailScreenViewModel @Inject constructor(
             getSelectedServer()
             getMarketItemDetails(worldName, itemId)
             getFullItemDetails(itemId)
-            findCheapestPrices()
+
+            if (screenStateFlow.value.currentLogicalDc is Asynchronous.Success) {
+                findCheapestPrices()
+            }
         }
     }
 
@@ -98,9 +101,16 @@ class ItemDetailScreenViewModel @Inject constructor(
         }
             .onEach { logicalDc ->
                 _internalScreenStateFlow.update {
-                    it.copy(
-                        currentLogicalDc = logicalDc
-                    )
+                    if (logicalDc == null) {
+                        it.copy(
+                            currentLogicalDc = Asynchronous.Error
+                                ("Couldn't find a DC with that name")
+                        )
+                    } else {
+                        it.copy(
+                            currentLogicalDc = Asynchronous.Success(logicalDc)
+                        )
+                    }
                 }
             }
             .launchIn(viewModelScope)
@@ -135,7 +145,7 @@ class ItemDetailScreenViewModel @Inject constructor(
 
     private fun findCheapestPricesInRegion() {
         val state = _internalScreenStateFlow.value
-        val region = state.currentLogicalDc?.region
+        val region = state.currentLogicalDc
         val itemId = state.marketItemDetail.itemID
 
         _internalScreenStateFlow.update {
@@ -147,7 +157,7 @@ class ItemDetailScreenViewModel @Inject constructor(
 
         viewModelScope.launch(Dispatchers.IO) {
             val allMarketItemPricesInRegion = networkRepository
-                .getMarketItemPrices(region ?: "North-America", itemId)
+                .getMarketItemPrices(region.toString(), itemId)
                 .listings
 
             // move these calculations to a higher level - maybe some kind of repository can do this,
@@ -181,7 +191,11 @@ class ItemDetailScreenViewModel @Inject constructor(
 
     private fun findCheapestPricesOnDc() {
         val state = _internalScreenStateFlow.value
-        val dc = state.currentLogicalDc?.name
+        val dc = if (state.currentLogicalDc is Asynchronous.Success) {
+            state.currentLogicalDc.resultData.region
+        } else {
+            TODO()
+        }
         val itemId = state.marketItemDetail.itemID
 
         _internalScreenStateFlow.update {
@@ -193,7 +207,7 @@ class ItemDetailScreenViewModel @Inject constructor(
 
         viewModelScope.launch(Dispatchers.IO) {
             val allPricesDc = networkRepository
-                .getMarketItemPrices(dc ?: "Aether", itemId)
+                .getMarketItemPrices(dc, itemId)
                 .listings
 
             val cheapestTotalDc = allPricesDc.minOfOrNull { it.total }

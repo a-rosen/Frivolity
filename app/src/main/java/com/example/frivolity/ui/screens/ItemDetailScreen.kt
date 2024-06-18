@@ -25,6 +25,7 @@ import com.example.frivolity.R
 import com.example.frivolity.navigation.NavigationDestination
 import com.example.frivolity.network.models.universalisapi.asUiListingDetail
 import com.example.frivolity.network.models.xivapi.asUiItemDetail
+import com.example.frivolity.ui.Asynchronous
 import com.example.frivolity.ui.components.ButtonWithDropdown
 import com.example.frivolity.ui.components.ChipRow
 import com.example.frivolity.ui.components.ItemDetailHeader
@@ -65,8 +66,6 @@ fun ItemDetailScreen(
         it.pricePerUnit
     }
 
-    val currentDcWorldsList = state.currentLogicalDc?.worlds
-
     Scaffold(
         topBar = {
             TopAppBar(
@@ -82,11 +81,12 @@ fun ItemDetailScreen(
                     )
                 },
                 actions = {
-                    if (currentDcWorldsList != null) {
+                    if (state.currentDcWorldsList is Asynchronous.Success) {
                         ButtonWithDropdown(
                             icon = R.drawable.ic_world,
                             iconDescription = "world",
-                            menuItems = currentDcWorldsList
+                            menuItems = state.currentDcWorldsList
+                                .resultData
                                 .map { it.name },
                             onItemClicked = { changeServer(it, item.itemID) },
                             onIconClicked = { toggleWorldList() },
@@ -95,13 +95,24 @@ fun ItemDetailScreen(
                     }
                 },
                 title = {
-                    Text(
-                        text = "Listings Detail:${state.currentLogicalDc?.name} ${item.worldName}",
-                        style = MaterialTheme.typography.labelMedium,
-                        overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier
-                            .padding(8.dp)
-                    )
+                    when (state.currentLogicalDc) {
+                        is Asynchronous.Error ->
+                            Text("Error")
+
+                        is Asynchronous.Loading ->
+                            Text("Loading")
+
+                        is Asynchronous.Success ->
+                            Text(
+                                text = "Listings Detail:${state.currentLogicalDc.resultData.name} ${item.worldName}",
+                                style = MaterialTheme.typography.labelMedium,
+                                overflow = TextOverflow.Ellipsis,
+                                modifier = Modifier
+                                    .padding(8.dp)
+                            )
+
+                        is Asynchronous.Uninitialized -> Text("Uninitialized")
+                    }
                 },
                 modifier = Modifier
             )
