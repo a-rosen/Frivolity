@@ -144,98 +144,113 @@ class ItemDetailScreenViewModel @Inject constructor(
     }
 
     private fun findCheapestPricesInRegion() {
-        val state = _internalScreenStateFlow.value
-        val region = state.currentLogicalDc
-        val itemId = state.marketItemDetail.itemID
-
-        _internalScreenStateFlow.update {
-            it.copy(
-                cheapestUnitPriceRegion = Asynchronous.Loading(),
-                cheapestTotalPriceRegion = Asynchronous.Loading(),
-            )
-        }
-
-        viewModelScope.launch(Dispatchers.IO) {
-            val allMarketItemPricesInRegion = networkRepository
-                .getMarketItemPrices(region.toString(), itemId)
-                .listings
-
-            // move these calculations to a higher level - maybe some kind of repository can do this,
-            // also make another model that isn't directly tied to the API
-
-            val cheapestTotalPriceInRegion = allMarketItemPricesInRegion.minOfOrNull { it.total }
-            val listingWithCheapestTotalPriceInRegion =
-                allMarketItemPricesInRegion.firstOrNull { it.total == cheapestTotalPriceInRegion }
-            val cheapestUnitPriceInRegion =
-                allMarketItemPricesInRegion.minOfOrNull { it.pricePerUnit }
-            val listingWithCheapestUnitPriceInRegion =
-                allMarketItemPricesInRegion.firstOrNull { it.pricePerUnit == cheapestUnitPriceInRegion }
-
-            val cheapestTotalPriceRegion = listingWithCheapestTotalPriceInRegion?.let {
-                Asynchronous.Success(it)
-            } ?: Asynchronous.Error("Api is borked")
-
-            val cheapestUnitPriceRegion = listingWithCheapestUnitPriceInRegion?.let {
-                Asynchronous.Success(it)
-            } ?: Asynchronous.Error("Api is borked")
+        try {
+            val state = _internalScreenStateFlow.value
+            val region = if (state.currentLogicalDc is Asynchronous.Success) {
+                state.currentLogicalDc.resultData.region
+            } else {
+                ""
+            }
+            val itemId = state.marketItemDetail.itemID
 
             _internalScreenStateFlow.update {
                 it.copy(
-                    cheapestTotalPriceRegion = cheapestTotalPriceRegion,
-                    cheapestUnitPriceRegion = cheapestUnitPriceRegion
+                    cheapestUnitPriceRegion = Asynchronous.Loading(),
+                    cheapestTotalPriceRegion = Asynchronous.Loading(),
                 )
             }
+
+            viewModelScope.launch(Dispatchers.IO) {
+                val allMarketItemPricesInRegion = networkRepository
+                    .getMarketItemPrices(region, itemId)
+                    .listings
+
+                // move these calculations to a higher level - maybe some kind of repository can do this,
+                // also make another model that isn't directly tied to the API
+
+                val cheapestTotalPriceInRegion =
+                    allMarketItemPricesInRegion.minOfOrNull { it.total }
+                val listingWithCheapestTotalPriceInRegion =
+                    allMarketItemPricesInRegion.firstOrNull { it.total == cheapestTotalPriceInRegion }
+                val cheapestUnitPriceInRegion =
+                    allMarketItemPricesInRegion.minOfOrNull { it.pricePerUnit }
+                val listingWithCheapestUnitPriceInRegion =
+                    allMarketItemPricesInRegion.firstOrNull { it.pricePerUnit == cheapestUnitPriceInRegion }
+
+                val cheapestTotalPriceRegion = listingWithCheapestTotalPriceInRegion?.let {
+                    Asynchronous.Success(it)
+                } ?: Asynchronous.Error("Api is borked")
+
+                val cheapestUnitPriceRegion = listingWithCheapestUnitPriceInRegion?.let {
+                    Asynchronous.Success(it)
+                } ?: Asynchronous.Error("Api is borked")
+
+                _internalScreenStateFlow.update {
+                    it.copy(
+                        cheapestTotalPriceRegion = cheapestTotalPriceRegion,
+                        cheapestUnitPriceRegion = cheapestUnitPriceRegion
+                    )
+                }
+            }
+
+        } catch (error: Exception) {
+            handleError("Cheapest region prices is borked")
         }
     }
 
 
     private fun findCheapestPricesOnDc() {
-        val state = _internalScreenStateFlow.value
-        val dc = if (state.currentLogicalDc is Asynchronous.Success) {
-            state.currentLogicalDc.resultData.region
-        } else {
-            TODO()
-        }
-        val itemId = state.marketItemDetail.itemID
-
-        _internalScreenStateFlow.update {
-            it.copy(
-                cheapestTotalPriceDc = Asynchronous.Loading(),
-                cheapestUnitPriceDc = Asynchronous.Loading()
-            )
-        }
-
-        viewModelScope.launch(Dispatchers.IO) {
-            val allPricesDc = networkRepository
-                .getMarketItemPrices(dc, itemId)
-                .listings
-
-            val cheapestTotalDc = allPricesDc.minOfOrNull { it.total }
-            val cheapestTotalListingDc = allPricesDc.firstOrNull { it.total == cheapestTotalDc }
-            val cheapestUnitDc = allPricesDc.minOfOrNull { it.pricePerUnit }
-            val cheapestUnitListingDc =
-                allPricesDc.firstOrNull { it.pricePerUnit == cheapestUnitDc }
-
-            if (cheapestTotalListingDc == null || cheapestUnitListingDc == null) {
-                _internalScreenStateFlow.update {
-                    it.copy(
-                        cheapestTotalPriceRegion = Asynchronous.Error("Api is borked"),
-                        cheapestUnitPriceRegion = Asynchronous.Error("Api is borked")
-                    )
-                }
+        try {
+            val state = _internalScreenStateFlow.value
+            val dc = if (state.currentLogicalDc is Asynchronous.Success) {
+                state.currentLogicalDc.resultData.region
             } else {
-                _internalScreenStateFlow.update {
-                    it.copy(
-                        cheapestTotalPriceDc = Asynchronous.Success(
-                            cheapestTotalListingDc
-                        ),
-                        cheapestUnitPriceDc = Asynchronous.Success(
-                            cheapestUnitListingDc
-                        ),
-                    )
+                TODO()
+            }
+            val itemId = state.marketItemDetail.itemID
+
+            _internalScreenStateFlow.update {
+                it.copy(
+                    cheapestTotalPriceDc = Asynchronous.Loading(),
+                    cheapestUnitPriceDc = Asynchronous.Loading()
+                )
+            }
+
+            viewModelScope.launch(Dispatchers.IO) {
+                val allPricesDc = networkRepository
+                    .getMarketItemPrices(dc, itemId)
+                    .listings
+
+                val cheapestTotalDc = allPricesDc.minOfOrNull { it.total }
+                val cheapestTotalListingDc = allPricesDc.firstOrNull { it.total == cheapestTotalDc }
+                val cheapestUnitDc = allPricesDc.minOfOrNull { it.pricePerUnit }
+                val cheapestUnitListingDc =
+                    allPricesDc.firstOrNull { it.pricePerUnit == cheapestUnitDc }
+
+                if (cheapestTotalListingDc == null || cheapestUnitListingDc == null) {
+                    _internalScreenStateFlow.update {
+                        it.copy(
+                            cheapestTotalPriceRegion = Asynchronous.Error("Api is borked"),
+                            cheapestUnitPriceRegion = Asynchronous.Error("Api is borked")
+                        )
+                    }
+                } else {
+                    _internalScreenStateFlow.update {
+                        it.copy(
+                            cheapestTotalPriceDc = Asynchronous.Success(
+                                cheapestTotalListingDc
+                            ),
+                            cheapestUnitPriceDc = Asynchronous.Success(
+                                cheapestUnitListingDc
+                            ),
+                        )
+                    }
                 }
             }
+        } catch (error: Exception) {
+            handleError("Cheapest dc prices is borked")
         }
+
     }
 
     private fun handleError(message: String?) {
